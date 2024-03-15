@@ -111,7 +111,7 @@ class Parser {
 
     encodeOutput(data) {
         console.log(data)
-        console.log(`$${data.length}\r\n${data}\r\n`)
+        console.log(`My data is - $${data.length}\r\n${data}\r\n`)
         return `$${data.length}\r\n${data}\r\n`;
 
     }
