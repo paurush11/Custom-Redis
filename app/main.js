@@ -26,7 +26,7 @@ const handleGetCommand = (parser, connection) => {
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
-            if (!value) connection.write(`$-1\r\n`)
+            if (!val) connection.write(`$-1\r\n`)
             connection.write(parser.encodeOutput(val))
         }
     }
