@@ -24,7 +24,7 @@ const server = net.createServer((connection) => {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
                 const val = parser.mappedValues["GET"][i];
                 console.log(val)
-                connection.write(parser.encodeOutput(parser.getValue(val)))
+                connection.write(parser.encodeOutput(parser.getValue(JSON.stringify(val))))
             }
         }
 
