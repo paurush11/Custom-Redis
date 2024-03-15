@@ -52,7 +52,8 @@ const encodeOutput = (data) => {
     return `$${data.length}\r\n${data}\r\n`;
 
 }
-export {
+
+module.exports = {
     parseInput,
     encodeOutput
 }

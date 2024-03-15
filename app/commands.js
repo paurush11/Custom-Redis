@@ -14,7 +14,7 @@ const SENTINEL_KEYWORD = createEnum(...SENTINEL_KEYWORD_NAMES);
 const RESPONSE_KEYWORD = createEnum(...RESPONSE_KEYWORD_NAMES);
 const CLUSTER_KEYWORD = createEnum(...CLUSTER_KEYWORD_NAMES);
 
-export {
+module.exports = {
     COMMANDS,
     KEYWORDS,
     SENTINEL_KEYWORD,
