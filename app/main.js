@@ -9,6 +9,7 @@ const server = net.createServer((connection) => {
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser());
     }
+    console.log(parser.mappedValues)
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
         parser.setData(data.toString());
