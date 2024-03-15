@@ -6,18 +6,12 @@ const clientParsers = new Map();
 console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
-
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser());
     }
-
     const parser = clientParsers.get(clientId);
-
     connection.on('data', data => {
         parser.setData(data.toString());
-        console.log(parser.savedDict)
-        console.log(parser.mappedValues)
-        console.log(parser.mappedValues["GET"])
         if (parser.mappedValues["GET"]) {
             console.log(parser.getValue(parser.mappedValues["GET"][0]))
         }
@@ -36,6 +30,8 @@ const server = net.createServer((connection) => {
         else if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
                 const val = parser.getValue(parser.mappedValues["GET"][i]);
+                console.log("here")
+                console.log(val)
                 connection.write(parser.encodeOutput(val))
             }
         }
