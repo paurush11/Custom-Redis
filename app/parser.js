@@ -38,6 +38,7 @@ const parseInput = (data, mappedValues) => {
         for (let val = 1; val < length * 2; val += 4) {
             let command = values[val + 1];
             let variableName = values[val + 3];
+
             if (mappedValues[command.toUpperCase()]) {
                 mappedValues[command.toUpperCase()].push(variableName);
             } else {
@@ -57,4 +58,4 @@ module.exports = {
     parseInput,
     encodeOutput
 }
-parseInput("*6\r\n$4\r\necho\r\n$3\r\nhey\r\n$4\r\necho\r\n$6\r\npranav\r\n$5\r\nreset\r\n$3\r\nhey\r\n")
+console.log(parseInput("*6\r\n$4\r\necho\r\n$3\r\nhey\r\n$4\r\necho\r\n$6\r\npranav\r\n$5\r\nreset\r\n$3\r\nhey\r\n", {}))
