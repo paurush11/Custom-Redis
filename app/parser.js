@@ -58,4 +58,3 @@ module.exports = {
     parseInput,
     encodeOutput
 }
-console.log(parseInput("*6\r\n$4\r\necho\r\n$3\r\nhey\r\n$4\r\necho\r\n$6\r\npranav\r\n$5\r\nreset\r\n$3\r\nhey\r\n", {}))

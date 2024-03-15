@@ -7,6 +7,7 @@ const server = net.createServer((connection) => {
     connection.on('data', data => {
         console.log(data.toString())
         const mappedValues = parseInput(data, {});
+        console.log(mappedValues);
         if(mappedValues["PING"]){
             for(let i = 0;i<mappedValues["PING"].length;i++){
                 connection.write(`+PONG\r\n`)
