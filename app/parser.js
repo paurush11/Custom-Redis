@@ -83,6 +83,11 @@ class Parser {
                     case "SET":
                         let variableValue = values[val + 5];
                         this.setValue(variableName.toLowerCase(), variableValue);
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push("OK");
+                        } else {
+                            this.mappedValues[command] = ["OK"];
+                        }
                         val += 2;
                         break;
                     default:
