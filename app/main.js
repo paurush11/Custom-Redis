@@ -17,7 +17,8 @@ const server = net.createServer((connection) => {
         if (parser.mappedValues["GET"]) {
             // console.log(parser.getValue(parser.mappedValues["GET"][0]))
             console.log("I am here")
-            console.log(parser.encodeOutput(parser.getValue(parser.mappedValues["GET"][0])))
+            console.log(parser.getValue(parser.mappedValues["GET"][0]))
+            console.log(parser.encodeOutput())
         }
         for (let i = 0; i < parser.pingCount; i++) {
             connection.write(`+PONG\r\n`)
@@ -35,7 +36,7 @@ const server = net.createServer((connection) => {
         if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
                 const val = parser.getValue(parser.mappedValues["GET"][i]);
-                console.log(parser.encodeOutput(val))
+              
                 connection.write(parser.encodeOutput(val))
             }
         }
