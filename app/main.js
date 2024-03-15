@@ -12,11 +12,11 @@ const server = net.createServer((connection) => {
             }
         } else if (parser.mappedValues["ECHO"]) {
             for (let i = 0; i < parser.mappedValues["ECHO"].length; i++) {
-                connection.write(encodeOutput(parser.mappedValues["ECHO"][i]))
+                connection.write(parser.encodeOutput(parser.mappedValues["ECHO"][i]))
             }
         } else if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
-                connection.write(encodeOutput(parser.getValue(parser.mappedValues["GET"][i])))
+                connection.write(parser.encodeOutput(parser.getValue(parser.mappedValues["GET"][i])))
             }
         }
 
