@@ -72,10 +72,13 @@ class Parser {
             for (let val = 1; val < length * 2; val += 4) {
                 let command = values[val + 1];
                 let variableName = values[val + 3];
-               
+
                 if (command === "SET") {
                     let variableValue = values[val + 5];
                     this.setValue(variableName.toLowerCase(), variableValue);
+                    console.log(this.setValues)
+                    console.log(variableName)
+                    console.log(variableValue)
                     val += 2;
                 } else {
                     if (this.mappedValues[command.toUpperCase()]) {
