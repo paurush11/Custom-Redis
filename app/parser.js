@@ -26,33 +26,7 @@
 // for eg ->  $5\r\nHello\r\n
 
 //arrays --> *<No of elements>\r\n$<length>\r\n<data>
-
-// const handleCommand = (mappedValues) => {
-
-// }
-
-// const parseInput = (data, mappedValues) => {
-//     if (data[0] === "*") {
-//         const values = data.slice(1).split("\r\n");
-//         const length = values[0];
-//         for (let val = 1; val < length * 2; val += 4) {
-//             let command = values[val + 1];
-//             let variableName = values[val + 3];
-
-//             if (mappedValues[command.toUpperCase()]) {
-//                 mappedValues[command.toUpperCase()].push(variableName);
-//             } else {
-//                 mappedValues[command.toUpperCase()] = [variableName];
-//             }
-//         }
-//     }
-//     return mappedValues;
-// }
-
-// const encodeOutput = (data) => {
-//     return `$${data.length}\r\n${data}\r\n`;
-
-// }
+va
 
 
 
@@ -103,26 +77,26 @@ class Parser {
         }
     }
 
-    resetParser(){
+    resetParser() {
         this.mappedValues = {}
+        this.pingCount = 0;
     }
-
     setValue(key, value) {
         this.savedDict[key] = value;
     }
     getValue(key) {
         return this.savedDict[key];
     }
-
     encodeOutput(data) {
         return `$${data.length}\r\n${data}\r\n`;
-
     }
 
 }
 
 
-
 module.exports = {
     Parser
 }
+
+
+// const commamnd = "*3\r\n$3\r\nset\r\n$4\r\npear\r\n$9\r\nraspberry\r\n$2\r\npx\r\n"
