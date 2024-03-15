@@ -70,21 +70,17 @@ class Parser {
             const values = this.data.slice(1).split("\r\n");
             const length = values[0];
             for (let val = 1; val < length * 2; val += 4) {
-                let command = values[val + 1];
-                let variableName = values[val + 3];
-
+                let command = values[val + 1].toUpperCase();
+                let variableName = values[val + 3].toLowerCase();
                 if (command === "SET") {
                     let variableValue = values[val + 5];
-                    this.setValue(variableName.toLowerCase(), variableValue);
-                    console.log(this.setValues)
-                    console.log(variableName)
-                    console.log(variableValue)
+                    this.setValue(variableName, variableValue);
                     val += 2;
                 } else {
-                    if (this.mappedValues[command.toUpperCase()]) {
-                        this.mappedValues[command.toUpperCase()].push(variableName);
+                    if (this.mappedValues[command]) {
+                        this.mappedValues[command].push(variableName);
                     } else {
-                        this.mappedValues[command.toUpperCase()] = [variableName];
+                        this.mappedValues[command] = [variableName];
                     }
                 }
 
@@ -104,6 +100,8 @@ class Parser {
     }
 
 }
+
+
 
 module.exports = {
     Parser
