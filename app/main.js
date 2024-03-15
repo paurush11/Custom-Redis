@@ -12,7 +12,7 @@ const server = net.createServer((connection) => {
     }
 
     const parser = clientParsers.get(clientId);
-
+    console.log(parser.getValue(parser.mappedValues["GET"][0]))
     connection.on('data', data => {
         parser.setData(data.toString());
         for (let i = 0; i < parser.pingCount; i++) {
@@ -30,8 +30,6 @@ const server = net.createServer((connection) => {
         else if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
                 const val = parser.getValue(parser.mappedValues["GET"][i]);
-                console.log(val)
-                console.log(parser.savedDict)
                 connection.write(parser.encodeOutput(val))
             }
         }
