@@ -12,6 +12,9 @@ const server = net.createServer((connection) => {
     }
 
     const parser = clientParsers.get(clientId);
+    console.log(parser.savedDict)
+    console.log(parser.mappedValues)
+    console.log(parser.mappedValues["GET"])
     if (parser.mappedValues["GET"]) {
         console.log(parser.getValue(parser.mappedValues["GET"][0]))
     }
