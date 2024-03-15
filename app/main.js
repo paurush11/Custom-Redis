@@ -14,6 +14,7 @@ const server = net.createServer((connection) => {
         parser.setData(data.toString());
         if (parser.mappedValues["GET"]) {
             console.log(parser.getValue(parser.mappedValues["GET"][0]))
+            console.log(parser.encodeOutput(parser.getValue(parser.mappedValues["GET"][0])))
         }
         for (let i = 0; i < parser.pingCount; i++) {
             connection.write(`+PONG\r\n`)
