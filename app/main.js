@@ -1,20 +1,25 @@
 const net = require("net");
-const { parseInput, encodeOutput } = require("./parser");
+const {Parser } = require("./parser");
 
+const setCommands = {}
+const getCommands = {}
+let mappedValues = {}
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     connection.on('data', data => {
-        console.log(data.toString())
-        const mappedValues = parseInput(data.toString(), {});
-        console.log(mappedValues);
-        if(mappedValues["PING"]){
-            for(let i = 0;i<mappedValues["PING"].length;i++){
+        const parser = new Parser(data.toString())
+        if(parser.mappedValues["PING"]){
+            for(let i = 0;i<parser.mappedValues["PING"].length;i++){
                 connection.write(`+PONG\r\n`)
             }
-        }else if(mappedValues["ECHO"]){
-            for(let i = 0;i<mappedValues["ECHO"].length;i++){
-                connection.write(encodeOutput(mappedValues["ECHO"][i]))
+        }else if(parser.mappedValues["ECHO"]){
+            for(let i = 0;i<parser.mappedValues["ECHO"].length;i++){
+                connection.write(encodeOutput(parser.mappedValues["ECHO"][i]))
+            }
+        }else if(parser.mappedValues["GET"]){
+            for(let i = 0;i<parser.mappedValues["GET"].length;i++){
+                connection.write(encodeOutput(parser.getValue(parser.mappedValues["GET"][i])))
             }
         }
        

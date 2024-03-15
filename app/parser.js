@@ -54,7 +54,52 @@ const encodeOutput = (data) => {
 
 }
 
+
+
+
+class Parser {
+    constructor(data) {
+        this.data = data;
+        this.setValues = {}
+        this.mappedValues = {}
+    }
+
+    parseInput() {
+        if (data[0] === "*") {
+            const values = data.slice(1).split("\r\n");
+            const length = values[0];
+            for (let val = 1; val < length * 2; val += 4) {
+                let command = values[val + 1];
+                let variableName = values[val + 3];
+                if (command === "SET") {
+                    let variableValue = values[val + 5];
+                    this.setValue(variableName.toLowerCase(), variableValue);
+                    val+=2;
+                } else {
+                    if (this.mappedValues[command.toUpperCase()]) {
+                        this.mappedValues[command.toUpperCase()].push(variableName);
+                    } else {
+                        this.mappedValues[command.toUpperCase()] = [variableName];
+                    }
+                }
+
+            }
+        }
+    }
+    setValue (key, value) {
+        this.setValues[key] = value;
+    }
+    getValue (key) {
+        return this.setValues[key];
+    }
+
+    encodeOutput() {
+        return `$${data.length}\r\n${data}\r\n`;
+
+    }
+
+}
+
 module.exports = {
-    parseInput,
-    encodeOutput
+    Parser
 }
