@@ -62,7 +62,7 @@ class Parser {
         this.data = data;
         this.setValues = {}
         this.mappedValues = {}
-        parseInput()
+        this.parseInput()
     }
 
     parseInput() {
