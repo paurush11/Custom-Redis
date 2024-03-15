@@ -5,7 +5,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     connection.on('data', data => {
         const parser = new Parser(data.toString())
-        console.log(parser.setValues)
+        console.log(parser.savedDict)
         console.log(parser.mappedValues)
         if (parser.mappedValues["PING"]) {
             for (let i = 0; i < parser.mappedValues["PING"].length; i++) {
@@ -22,9 +22,9 @@ const server = net.createServer((connection) => {
         }
         else if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
-                const val = parser.mappedValues["GET"][i];
+                const val = parser.getValue(parser.mappedValues["GET"][i]);
                 console.log(val)
-                connection.write(parser.encodeOutput(parser.getValue(JSON.stringify(val))))
+                connection.write(parser.encodeOutput(val))
             }
         }
 

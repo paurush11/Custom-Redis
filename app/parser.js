@@ -60,7 +60,7 @@
 class Parser {
     constructor(data) {
         this.data = data;
-        this.setValues = {}
+        this.savedDict = {}
         this.mappedValues = {}
         this.parseInput()
     }
@@ -102,10 +102,10 @@ class Parser {
         }
     }
     setValue(key, value) {
-        this.setValues[key] = value;
+        this.savedDict[key] = value;
     }
     getValue(key) {
-        return this.setValues[key];
+        return this.savedDict[key];
     }
 
     encodeOutput(data) {
