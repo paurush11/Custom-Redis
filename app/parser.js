@@ -58,10 +58,20 @@
 
 
 class Parser {
-    constructor(data) {
-        this.data = data;
+    static instance = null;
+
+    constructor() {
+        if(Parser.instance){
+            return Parser.instance;
+        }
         this.savedDict = {}
         this.mappedValues = {}
+
+        Parser.instance = this;
+    }
+
+    setData(data){
+        this.data = data;
         this.parseInput()
     }
 

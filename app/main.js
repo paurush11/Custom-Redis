@@ -1,10 +1,13 @@
 const net = require("net");
 const { Parser } = require("./parser");
+
+const parser = new Parser()
+
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     connection.on('data', data => {
-        const parser = new Parser(data.toString())
+        parser.setData(data.toString());
         console.log(parser.savedDict)
         console.log(parser.mappedValues)
         if (parser.mappedValues["PING"]) {
