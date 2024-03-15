@@ -6,8 +6,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     connection.on('data', data => {
         console.log(data.toString())
-        const mappedValues = {};
-        const values = parseInput(data, mappedValues);
+        const mappedValues = parseInput(data, {});
         if(mappedValues["PING"]){
             for(let i = 0;i<mappedValues["PING"].length;i++){
                 connection.write(`+PONG\r\n`)
