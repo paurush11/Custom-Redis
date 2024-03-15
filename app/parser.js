@@ -94,7 +94,7 @@ class Parser {
         return this.setValues[key];
     }
 
-    encodeOutput() {
+    encodeOutput(data) {
         return `$${data.length}\r\n${data}\r\n`;
 
     }
