@@ -102,6 +102,11 @@ class Parser {
             }
         }
     }
+
+    resetParser(){
+        this.mappedValues = {}
+    }
+
     setValue(key, value) {
         this.savedDict[key] = value;
     }
@@ -110,8 +115,6 @@ class Parser {
     }
 
     encodeOutput(data) {
-        console.log(data)
-        console.log(`My data is - $${data.length}\r\n${data}\r\n`)
         return `$${data.length}\r\n${data}\r\n`;
 
     }
