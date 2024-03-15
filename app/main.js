@@ -25,7 +25,7 @@ const server = net.createServer((connection) => {
             for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
                 connection.write(`+OK\r\n`)
             }
-           
+
         }
         if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
@@ -34,8 +34,8 @@ const server = net.createServer((connection) => {
                 connection.write(parser.encodeOutput(val))
             }
         }
-        
-        this.resetParser();
+
+        parser.resetParser();
 
     })
 
