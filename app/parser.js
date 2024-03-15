@@ -59,7 +59,6 @@
 
 class Parser {
 
-
     constructor() {
         this.pingCount = 0;
         this.savedDict = {}
