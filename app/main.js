@@ -22,12 +22,13 @@ const server = net.createServer((connection) => {
             for (let i = 0; i < parser.mappedValues["ECHO"].length; i++) {
                 connection.write(parser.encodeOutput(parser.mappedValues["ECHO"][i]))
             }
-        } else if (parser.mappedValues["SET"]) {
+        }
+        if (parser.mappedValues["SET"]) {
             for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
                 connection.write(`+OK\r\n`)
             }
         }
-        else if (parser.mappedValues["GET"]) {
+        if (parser.mappedValues["GET"]) {
             for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
                 const val = parser.getValue(parser.mappedValues["GET"][i]);
                 console.log("here")
