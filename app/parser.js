@@ -26,7 +26,7 @@
 // for eg ->  $5\r\nHello\r\n
 
 //arrays --> *<No of elements>\r\n$<length>\r\n<data>
-va
+
 
 
 
