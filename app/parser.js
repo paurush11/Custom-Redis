@@ -62,11 +62,13 @@ class Parser {
 
     constructor() {
         if(Parser.instance){
+            Parser.pingCount = 0;
+            Parser.mappedValues = {}
             return Parser.instance;
         }
+        this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
-
         Parser.instance = this;
     }
 
@@ -84,11 +86,7 @@ class Parser {
                 let variableName = values[val + 3];
                 switch (command) {
                     case "PING":
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push("PONG");
-                        } else {
-                            this.mappedValues[command] = ["PONG"];
-                        }
+                        this.pingCount+=1;
                         break;
                     case "SET":
                         let variableValue = values[val + 5];
