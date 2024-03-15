@@ -71,19 +71,24 @@ class Parser {
             const length = values[0];
             for (let val = 1; val < length * 2; val += 4) {
                 let command = values[val + 1].toUpperCase();
-                let variableName = values[val + 3].toLowerCase();
-                if (command === "SET") {
-                    let variableValue = values[val + 5];
-                    this.setValue(variableName, variableValue);
-                    val += 2;
-                } else {
-                    if (this.mappedValues[command]) {
-                        this.mappedValues[command].push(variableName);
-                    } else {
-                        this.mappedValues[command] = [variableName];
-                    }
+                let variableName = values[val + 3];
+                switch (command) {
+                    case "PING":
+                        this.mappedValues[command] = "PONG"
+                        break;
+                    case "SET":
+                        let variableValue = values[val + 5];
+                        this.setValue(variableName.toLowerCase(), variableValue);
+                        val += 2;
+                        break;
+                    default:
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push(variableName);
+                        } else {
+                            this.mappedValues[command] = [variableName];
+                        }
+                        break;
                 }
-
             }
         }
     }
