@@ -66,8 +66,8 @@ class Parser {
     }
 
     parseInput() {
-        if (data[0] === "*") {
-            const values = data.slice(1).split("\r\n");
+        if (this.data[0] === "*") {
+            const values = this.data.slice(1).split("\r\n");
             const length = values[0];
             for (let val = 1; val < length * 2; val += 4) {
                 let command = values[val + 1];
