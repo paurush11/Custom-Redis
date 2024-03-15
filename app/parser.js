@@ -74,7 +74,11 @@ class Parser {
                 let variableName = values[val + 3];
                 switch (command) {
                     case "PING":
-                        this.mappedValues[command] = "PONG"
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push("PONG");
+                        } else {
+                            this.mappedValues[command] = ["PONG"];
+                        }
                         break;
                     case "SET":
                         let variableValue = values[val + 5];
