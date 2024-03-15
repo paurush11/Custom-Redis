@@ -1,11 +1,11 @@
 const net = require("net");
 const { Parser } = require("./parser");
 
-const parser = new Parser()
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
+    const parser = new Parser()
     connection.on('data', data => {
         parser.setData(data.toString());
         console.log(parser.savedDict)
