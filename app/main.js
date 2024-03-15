@@ -11,9 +11,11 @@ const server = net.createServer((connection) => {
     }
 
     const parser = clientParsers.get(clientId);
-    console.log(parser.mappedValues)
+
+
     connection.on('data', data => {
         parser.setData(data.toString());
+        console.log(parser.mappedValues)
         if (parser.mappedValues["GET"]) {
             console.log(parser.getValue(parser.mappedValues["GET"][0]))
             console.log(parser.encodeOutput(parser.getValue(parser.mappedValues["GET"][0])))
