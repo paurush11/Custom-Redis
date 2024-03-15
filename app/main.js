@@ -1,11 +1,18 @@
 const net = require("net");
 const { Parser } = require("./parser");
 
-
+const clientParsers = new Map();
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
-    const parser = new Parser()
+    const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+
+    if (!clientParsers.has(clientId)) {
+        clientParsers.set(clientId, new Parser());
+    }
+
+    const parser = clientParsers.get(clientId);
+
     connection.on('data', data => {
         parser.setData(data.toString());
         console.log(parser.savedDict)
@@ -31,5 +38,11 @@ const server = net.createServer((connection) => {
         }
 
     })
+
+    connection.on('close', () => {
+        // Remove the parser when the client disconnects
+        clientParsers.delete(clientId);
+    });
+
 })
 server.listen(6379, "127.0.0.1");
