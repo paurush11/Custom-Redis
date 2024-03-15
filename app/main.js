@@ -10,11 +10,10 @@ const server = net.createServer((connection) => {
         parser.setData(data.toString());
         console.log(parser.savedDict)
         console.log(parser.mappedValues)
-        if (parser.mappedValues["PING"]) {
-            for (let i = 0; i < parser.pingCount; i++) {
-                connection.write(`+PONG\r\n`)
-            }
-        } else if (parser.mappedValues["ECHO"]) {
+        for (let i = 0; i < parser.pingCount; i++) {
+            connection.write(`+PONG\r\n`)
+        }
+        if (parser.mappedValues["ECHO"]) {
             for (let i = 0; i < parser.mappedValues["ECHO"].length; i++) {
                 connection.write(parser.encodeOutput(parser.mappedValues["ECHO"][i]))
             }
