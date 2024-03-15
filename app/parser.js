@@ -62,6 +62,7 @@ class Parser {
         this.data = data;
         this.setValues = {}
         this.mappedValues = {}
+        parseInput()
     }
 
     parseInput() {
@@ -74,7 +75,7 @@ class Parser {
                 if (command === "SET") {
                     let variableValue = values[val + 5];
                     this.setValue(variableName.toLowerCase(), variableValue);
-                    val+=2;
+                    val += 2;
                 } else {
                     if (this.mappedValues[command.toUpperCase()]) {
                         this.mappedValues[command.toUpperCase()].push(variableName);
@@ -86,10 +87,10 @@ class Parser {
             }
         }
     }
-    setValue (key, value) {
+    setValue(key, value) {
         this.setValues[key] = value;
     }
-    getValue (key) {
+    getValue(key) {
         return this.setValues[key];
     }
 
