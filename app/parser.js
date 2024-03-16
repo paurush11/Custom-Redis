@@ -33,10 +33,11 @@
 
 class Parser {
 
-    constructor() {
+    constructor(port) {
         this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
+        this.port = port;
     }
 
     setData(data) {

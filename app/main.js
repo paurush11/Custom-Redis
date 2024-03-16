@@ -2,6 +2,7 @@ const net = require("net");
 const { Parser } = require("./parser");
 
 const clientParsers = new Map();
+const masterSlavePorts = new Map();
 
 const handlePing = (parser, connection) => {
     for (let i = 0; i < parser.pingCount; i++) {
@@ -25,7 +26,11 @@ const handleSetCommand = (parser, connection) => {
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         for (let i = 0; i < parser.mappedValues["INFO"].length; i++) {
-            connection.write(`$11\r\nrole:master\r\n`)
+            if (masterSlavePorts.has(parser.port)) {
+                connection.write(`$11\r\nrole:slave\r\n`)
+            } else {
+                connection.write(`$11\r\nrole:master\r\n`)
+            }
         }
     }
 }
@@ -61,8 +66,10 @@ const getCommandLineArgs = () => {
             const i = args.indexOf("--port") + 1;
             port = Number(args[i]);
         }
-        if (args.includes("info")) {
-            const i = args.indexOf("info") + 1;
+        if (args.includes("--replicaof")) {
+            const masterHostIndex = args.indexOf("--replicaof") + 1;
+            const masterPortIndex = args.indexOf("--replicaof") + 2;
+            masterSlavePorts.set(port, args[masterHostIndex] + ":" + args[masterPortIndex])
         }
     }
 }
@@ -76,14 +83,15 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
     if (!clientParsers.has(clientId)) {
-        clientParsers.set(clientId, new Parser());
+        clientParsers.set(clientId, new Parser(port));
     }
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
+
         handleParserCommands(data, parser, connection);
     })
-
     connection.on('close', () => {
+
         // Remove the parser when the client disconnects
         clientParsers.delete(clientId);
     });
