@@ -43,27 +43,44 @@ class Parser {
         this.data = data;
         this.parseInput()
     }
+    isErrorValue(data) {
+        return data === "ERROR"
+    }
+    handleErrorValue() {
+        return `$-1\r\n`;
+    }
 
     parseInput() {
         if (this.data[0] === "*") {
-            const values = this.data.slice(1).split("\r\n");
+            const values = this.data.slice(1).split("\r\n").filter((val, index) => !(index & 1));
+            console.log(values);
             const length = values[0];
-            for (let val = 1; val < length * 2; val += 4) {
-                let command = values[val + 1].toUpperCase();
-                let variableName = values[val + 3];
+            for (let val = 1; val <= length; val += 2) {
+                let command = values[val].toUpperCase();
+                let variableName = values[val + 1];
                 switch (command) {
                     case "PING":
                         this.pingCount += 1;
                         break;
                     case "SET":
-                        let variableValue = values[val + 5];
+                        let variableValue = values[val + 2];
                         this.setValue(variableName.toLowerCase(), variableValue);
                         if (this.mappedValues[command]) {
                             this.mappedValues[command].push("OK");
                         } else {
                             this.mappedValues[command] = ["OK"];
                         }
-                        val += 2;
+                        let anotherCommand = values[val + 3];
+                        if (anotherCommand) {
+                            if (anotherCommand.toLowerCase() === "px") {
+                                const expiresIn = Number(values[val + 4]);
+                                setTimeout(() => {
+                                    this.setValue(variableName.toLowerCase(), "ERROR");
+                                }, expiresIn)
+
+                            }
+                        }
+                        val += 1;
                         break;
                     default:
                         if (this.mappedValues[command]) {
@@ -88,6 +105,9 @@ class Parser {
         return this.savedDict[key];
     }
     encodeOutput(data) {
+        if (this.isErrorValue(data)) {
+            return this.handleErrorValue();
+        }
         return `$${data.length}\r\n${data}\r\n`;
     }
 
@@ -97,6 +117,3 @@ class Parser {
 module.exports = {
     Parser
 }
-
-
-// const commamnd = "*3\r\n$3\r\nset\r\n$4\r\npear\r\n$9\r\nraspberry\r\n$2\r\npx\r\n"
