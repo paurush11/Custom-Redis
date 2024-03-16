@@ -82,6 +82,7 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+    console.log(masterSlavePorts)
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port));
     }
