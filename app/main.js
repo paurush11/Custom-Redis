@@ -22,6 +22,13 @@ const handleSetCommand = (parser, connection) => {
         }
     }
 }
+const handleInfoCommand = (parser, connection) => {
+    if (parser.mappedValues["INFO"]) {
+        for (let i = 0; i < parser.mappedValues["INFO"].length; i++) {
+            connection.write(`$11\r\nrole:master\r\n`)
+        }
+    }
+}
 const handleGetCommand = (parser, connection) => {
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
@@ -38,6 +45,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection);
     handleGetCommand(parser, connection);
+    handleInfoCommand(parser, connection);
     parser.resetParser();
 }
 
@@ -73,7 +81,6 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        console.log(data);
     })
 
     connection.on('close', () => {

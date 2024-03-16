@@ -83,6 +83,7 @@ class Parser {
                         }
                         val += 1;
                         break;
+                    
                     default:
                         if (this.mappedValues[command]) {
                             this.mappedValues[command].push(variableName);
