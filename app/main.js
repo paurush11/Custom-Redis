@@ -29,16 +29,20 @@ const handleInfoCommand = (parser, connection) => {
         let master_replid = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
         let master_repl_offset = 0
         let roleString = `${5 + role.length}\r\nrole:${role}\r\n`
+        let master_replidValue = "master_replid" + ":" + master_replid
+        let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
+        let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
         switch (role) {
             case 'master':
-                let master_replidValue = "master_replid" + ":" + master_replid
-                let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
-                let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
-                console.log(finalString)
+                // let master_replidValue = "master_replid" + ":" + master_replid
+                // let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
+                // let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
+                // console.log(finalString)
                 connection.write(finalString);
                 break;
             case 'slave':
-                connection.write(`$${5 + role.length}\r\nrole:${role}\r\n`);
+                connection.write(finalString);
+
                 break;
         }
         // console.log(`$${5 + role.length}\r\nrole:${role}\r\n`)
