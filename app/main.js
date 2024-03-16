@@ -27,7 +27,6 @@ const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         for (let i = 0; i < parser.mappedValues["INFO"].length; i++) {
             if (masterSlavePorts.has(parser.port)) {
-                console.log("here")
                 connection.write(`$11\r\nrole:slave\r\n`)
             } else {
                 connection.write(`$11\r\nrole:master\r\n`)
@@ -98,5 +97,4 @@ const server = net.createServer((connection) => {
 
 })
 getCommandLineArgs()
-
 server.listen(port, "127.0.0.1");
