@@ -27,6 +27,7 @@ const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         for (let i = 0; i < parser.mappedValues["INFO"].length; i++) {
             if (masterSlavePorts.has(parser.port)) {
+                console.log("here")
                 connection.write(`$11\r\nrole:slave\r\n`)
             } else {
                 connection.write(`$11\r\nrole:master\r\n`)
@@ -82,17 +83,15 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
-    console.log(masterSlavePorts)
+
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port));
     }
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
-
         handleParserCommands(data, parser, connection);
     })
     connection.on('close', () => {
-
         // Remove the parser when the client disconnects
         clientParsers.delete(clientId);
     });
