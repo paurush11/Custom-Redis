@@ -40,6 +40,9 @@ const handleParserCommands = (data, parser, connection) => {
     handleGetCommand(parser, connection);
     parser.resetParser();
 }
+
+
+
 let port = 6379;
 const getCommandLineArgs = () => {
     const args = process.argv.slice(2);
@@ -52,7 +55,6 @@ const getCommandLineArgs = () => {
         }
         if (args.includes("info")) {
             const i = args.indexOf("info") + 1;
-            console.log(args[i]);
         }
     }
 }
@@ -60,6 +62,7 @@ const getCommandLineArgs = () => {
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
+
 
 
 const server = net.createServer((connection) => {
@@ -70,6 +73,7 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        console.log(data);
     })
 
     connection.on('close', () => {
