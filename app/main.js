@@ -34,6 +34,7 @@ const handleInfoCommand = (parser, connection) => {
                 let master_replidValue = "master_replid" + ":" + master_replid
                 let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
                 let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
+                console.log(finalString)
                 connection.write(finalString);
                 break;
             case 'slave':
