@@ -25,15 +25,11 @@ const handleSetCommand = (parser, connection) => {
 }
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
-        for (let i = 0; i < parser.mappedValues["INFO"].length; i++) {
-            if (masterSlavePorts.has(parser.port)) {
-                connection.write(`$11\r\nrole:slave\r\n`)
-            } else {
-                connection.write(`$11\r\nrole:master\r\n`)
-            }
-        }
+        const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
+        connection.write(`$${11 + role.length}\r\nrole:${role}\r\n`);
     }
 }
+
 const handleGetCommand = (parser, connection) => {
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
