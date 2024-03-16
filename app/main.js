@@ -50,6 +50,10 @@ const getCommandLineArgs = () => {
             const i = args.indexOf("--port") + 1;
             port = Number(args[i]);
         }
+        if (args.includes("info")) {
+            const i = args.indexOf("info") + 1;
+            console.log(args[i]);
+        }
     }
 }
 
