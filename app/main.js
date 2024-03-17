@@ -64,9 +64,9 @@ const handleHandshake = () => {
     if (role === "slave") {
         const [masterHost, masterPort] = masterSlavePorts.get(port).split(":")
         const masterSlaveConnection = net.createConnection({ host: masterHost, port: masterPort }, () => {
-            masterSlaveConnection.write(encodeArrayOutput['ping'])
-            masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'listening-port', port.toString()])
-            masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'capa', 'psync2'])
+            // masterSlaveConnection.write(encodeArrayOutput['ping'])
+            // masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'listening-port', port.toString()])
+            // masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'capa', 'psync2'])
         })
     }
 
