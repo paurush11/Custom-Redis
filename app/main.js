@@ -60,6 +60,8 @@ const handleParserCommands = (data, parser, connection) => {
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     handleHandshake(parser, connection);
+
+    console.log(masterSlavePorts)
     parser.resetParser();
 }
 
