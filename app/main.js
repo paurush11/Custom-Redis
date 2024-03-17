@@ -34,6 +34,8 @@ const handleREPLCONFCommand = (parser, connection) => {
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         for (let i = 0; i < parser.mappedValues["PSYNC"].length; i++) {
+            console.log(parser.mappedValues["PSYNC"][i])
+            console.log(encodeArrayOutput(parser.mappedValues["PSYNC"][i]))
             connection.write(encodeArrayOutput(parser.mappedValues["PSYNC"][i]))
         }
     }
