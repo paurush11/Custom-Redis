@@ -30,21 +30,6 @@
 
 
 
-class Info {
-    constructor(role) {
-        this.master_replid = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
-        this.master_repl_offset = 0;
-        this.role = role;
-    }
-
-    generateString() {
-        const master_replidValue = `master_replid:${this.master_replid}`
-        const master_repl_offsetValue = `master_repl_offset:${this.master_repl_offset}`
-        const roleValue = `role:${this.role}`
-        const bulkstring = `${roleValue}\r\n${master_replidValue}\r\n${master_repl_offsetValue}`;
-        return `$${bulkstring.length}\r\n${bulkstring}`
-    }
-}
 class Parser {
 
     constructor(port, info) {
@@ -54,7 +39,7 @@ class Parser {
         this.port = port;
         this.INFO = info
     }
-    generateString() {
+    generateInfoString() {
         const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
         return `$${bulkString.length}\r\n${bulkString}\r\n`
     }
@@ -136,5 +121,4 @@ class Parser {
 
 module.exports = {
     Parser,
-    Info
 }

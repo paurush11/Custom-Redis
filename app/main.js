@@ -26,7 +26,7 @@ const handleSetCommand = (parser, connection) => {
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
-        const finalString = parser.generateString()
+        const finalString = parser.generateInfoString()
         console.log(finalString)
         switch (role) {
             case 'master':
@@ -59,10 +59,17 @@ const handleParserCommands = (data, parser, connection) => {
     handleSetCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
+    handleHandshake(parser, connection);
     parser.resetParser();
 }
 
+const handleHandshake = (parser, connection) => {
+    const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
+    if (role === "slave") {
+        connection.write(`*1\r\n$4\r\nping\r\n`)
+    }
 
+}
 
 let port = 6379;
 const getCommandLineArgs = () => {
@@ -96,9 +103,7 @@ const server = net.createServer((connection) => {
         master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
         master_repl_offset: 0
     }
-    if (role === "slave") {
-        connection.write(`*1\r\n$4\r\nping\r\n`)
-    }
+
 
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, info));
