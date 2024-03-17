@@ -36,7 +36,8 @@ function encodeArrayOutput(dataArr) {
     return output;
 }
 
-// console.log(encodeArrayOutput())
+console.log(`*1\r\n$4\r\nping\r\n`)
+console.log(encodeOutput('ping'))
 // console.log(encodeArrayOutput([]))
 console.log(encodeArrayOutput(['ping']))
 // console.log(encodeArrayOutput([1, 2, 3, 4]))
