@@ -41,9 +41,8 @@ class Info {
         const master_replidValue = `master_replid:${this.master_replid}`
         const master_repl_offsetValue = `master_repl_offset:${this.master_repl_offset}`
         const roleValue = `role:${this.role}`
-
-        return `$${roleValue.length}\r\n${roleValue}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}`
-
+        const bulkstring = `${roleValue}\r\n${master_replidValue}\r\n${master_repl_offsetValue}`;
+        return `$${bulkstring.length}\r\n${bulkstring}`
     }
 }
 class Parser {
