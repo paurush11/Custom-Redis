@@ -65,6 +65,7 @@ const handleParserCommands = (data, parser, connection) => {
 
 const handleHandshake = (parser, connection) => {
     const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
+    console.log(role)
     if (role === "slave") {
         connection.write(`*1\r\n$4\r\nping\r\n`)
     }
