@@ -26,7 +26,7 @@ const handleSetCommand = (parser, connection) => {
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
-        const finalString = parser.INFO.generateString()
+        const finalString = parser.generateString()
         console.log(finalString)
         switch (role) {
             case 'master':
@@ -91,7 +91,11 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
-    const info = new Info(role);
+    const info = {
+        role: role,
+        master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
+        master_repl_offset: 0
+    }
 
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, info));

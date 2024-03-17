@@ -54,6 +54,10 @@ class Parser {
         this.port = port;
         this.INFO = info
     }
+    generateString() {
+        const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
+        return `$${bulkString.length}\r\n${bulkString}\r\n`
+    }
     setData(data) {
         this.data = data;
         this.parseInput()
