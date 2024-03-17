@@ -68,7 +68,7 @@ const handleParserCommands = (data, parser, connection) => {
 const handleHandshake = (parser, connection) => {
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     const masterHost = masterSlavePorts.get(port)
-    console.log(masterHost)
+    console.log(masterHost.split(":"))
     // const masterSlaveConnection = net.createConnection({ host: args[masterHostIndex], port: args[masterPortIndex] }, () => {
     //     masterSlaveConnection.write(`*1\r\n$4\r\nping\r\n`)
     // })
