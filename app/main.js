@@ -59,7 +59,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleSetCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
-  
+
 
     console.log(masterSlavePorts)
     parser.resetParser();
@@ -68,6 +68,7 @@ const handleParserCommands = (data, parser, connection) => {
 const handleHandshake = (parser, connection) => {
     const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
     console.log(role)
+
     if (role === "slave") {
         connection.write(`*1\r\n$4\r\nping\r\n`)
     }
@@ -88,6 +89,9 @@ const getCommandLineArgs = () => {
             const masterHostIndex = args.indexOf("--replicaof") + 1;
             const masterPortIndex = args.indexOf("--replicaof") + 2;
             masterSlavePorts.set(port, args[masterHostIndex] + ":" + args[masterPortIndex])
+            const masterSlaveConnection = net.createConnection({ host: args[masterHostIndex], port: args[masterPortIndex] }, () => {
+                masterSlaveConnection.write(`*1\r\n$4\r\nping\r\n`)
+            })
         }
     }
 }
