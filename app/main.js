@@ -24,6 +24,13 @@ const handleSetCommand = (parser, connection) => {
         }
     }
 }
+const handleREPLCONFCommand = (parser, connection) => {
+    if (parser.mappedValues["REPLCONF"]) {
+        for (let i = 0; i < parser.mappedValues["REPLCONF"].length; i++) {
+            connection.write(`+OK\r\n`)
+        }
+    }
+}
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
@@ -54,6 +61,7 @@ const handleParserCommands = (data, parser, connection) => {
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection);
+    handleREPLCONFCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     parser.resetParser();

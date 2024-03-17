@@ -37,7 +37,7 @@ class Parser {
         this.savedDict = {}
         this.mappedValues = {}
         this.port = port;
-        this.INFO =  {
+        this.INFO = {
             role: role,
             master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
             master_repl_offset: 0
@@ -63,6 +63,20 @@ class Parser {
                     case "PING":
                         this.pingCount += 1;
                         break;
+                    case 'ECHO':
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push(variableName);
+                        } else {
+                            this.mappedValues[command] = [variableName];
+                        }
+                        break;
+                    case 'GET':
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push(variableName);
+                        } else {
+                            this.mappedValues[command] = [variableName];
+                        }
+                        break;
                     case "SET":
                         let variableValue = values[val + 2];
                         this.setValue(variableName.toLowerCase(), variableValue);
@@ -82,13 +96,14 @@ class Parser {
                         }
                         val += 1;
                         break;
-
-                    default:
+                    case 'REPLCONF':
                         if (this.mappedValues[command]) {
-                            this.mappedValues[command].push(variableName);
+                            this.mappedValues[command].push("OK");
                         } else {
-                            this.mappedValues[command] = [variableName];
+                            this.mappedValues[command] = ["OK"];
                         }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -106,7 +121,7 @@ class Parser {
     getValue(key) {
         return this.savedDict[key];
     }
-   
+
 
 }
 
