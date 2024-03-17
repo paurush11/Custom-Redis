@@ -90,7 +90,7 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
-    const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
+    const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     const info = new Info(role);
 
     if (!clientParsers.has(clientId)) {
