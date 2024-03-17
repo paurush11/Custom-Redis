@@ -34,7 +34,7 @@ const handleREPLCONFCommand = (parser, connection) => {
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         for (let i = 0; i < parser.mappedValues["PSYNC"].length; i++) {
-            connection.write(`+FULLRESYNC8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb0\r\n`)
+            connection.write(`+FULLRESYNC\r\n$40\r\n8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\r\n0\r\n`)
             // console.log(parser.mappedValues["PSYNC"][i])
             // console.log(encodeArrayOutput(parser.mappedValues["PSYNC"][i]))
             // connection.write(encodeArrayOutput(parser.mappedValues["PSYNC"][i]))
