@@ -59,7 +59,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleSetCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
-    handleHandshake(parser, connection);
+  
 
     console.log(masterSlavePorts)
     parser.resetParser();
@@ -106,12 +106,11 @@ const server = net.createServer((connection) => {
         master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
         master_repl_offset: 0
     }
-
-
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, info));
     }
     const parser = clientParsers.get(clientId);
+    handleHandshake(parser, connection);
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
     })
