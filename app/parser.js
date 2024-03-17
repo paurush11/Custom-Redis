@@ -30,14 +30,30 @@
 
 
 
+class Info {
+    constructor(role) {
+        this.master_replid = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
+        this.master_repl_offset = 0;
+        this.role = role;
+    }
 
+    generateString() {
+        const master_replidValue = `master_replid:${master_replid.length}`
+        const master_repl_offsetValue = `master_repl_offset:${master_repl_offset.length}`
+        const roleValue = `role:${role}`
+
+        return `$${roleValue.length}\r\n${roleValue}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}`
+
+    }
+}
 class Parser {
 
-    constructor(port) {
+    constructor(port, info) {
         this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
         this.port = port;
+        this.INFO = info
     }
     setData(data) {
         this.data = data;
@@ -116,5 +132,6 @@ class Parser {
 
 
 module.exports = {
-    Parser
+    Parser,
+    Info
 }

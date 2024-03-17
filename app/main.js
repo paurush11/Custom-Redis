@@ -1,5 +1,5 @@
 const net = require("net");
-const { Parser } = require("./parser");
+const { Parser, Info } = require("./parser");
 
 const clientParsers = new Map();
 const masterSlavePorts = new Map();
@@ -26,18 +26,10 @@ const handleSetCommand = (parser, connection) => {
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
-        let master_replid = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
-        let master_repl_offset = 0
-        let roleString = `${5 + role.length}\r\nrole:${role}\r\n`
-        let master_replidValue = "master_replid" + ":" + master_replid
-        let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
-        let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
+        const finalString = parser.INFO.generateString()
+        console.log(finalString)
         switch (role) {
             case 'master':
-                // let master_replidValue = "master_replid" + ":" + master_replid
-                // let master_repl_offsetValue = "master_repl_offset" + ":" + master_repl_offset
-                // let finalString = `$${roleString}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}\r\n`
-                // console.log(finalString)
                 connection.write(finalString);
                 break;
             case 'slave':
@@ -98,9 +90,11 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+    const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
+    const info = new Info(role);
 
     if (!clientParsers.has(clientId)) {
-        clientParsers.set(clientId, new Parser(port));
+        clientParsers.set(clientId, new Parser(port, info));
     }
     const parser = clientParsers.get(clientId);
     connection.on('data', data => {
