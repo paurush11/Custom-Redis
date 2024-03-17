@@ -63,7 +63,8 @@ class Parser {
                     case "PING":
                         this.pingCount += 1;
                         break;
-                    case 'ECHO', 'INFO':
+                    case 'ECHO':
+                    case 'INFO':
                         if (this.mappedValues[command]) {
                             this.mappedValues[command].push(variableName);
                         } else {
