@@ -38,9 +38,9 @@ class Info {
     }
 
     generateString() {
-        const master_replidValue = `master_replid:${master_replid.length}`
-        const master_repl_offsetValue = `master_repl_offset:${master_repl_offset.length}`
-        const roleValue = `role:${role}`
+        const master_replidValue = `master_replid:${this.master_replid}`
+        const master_repl_offsetValue = `master_repl_offset:${this.master_repl_offset}`
+        const roleValue = `role:${this.role}`
 
         return `$${roleValue.length}\r\n${roleValue}\r\n$${master_replidValue.length}\r\n${master_replidValue}\r\n$${master_repl_offsetValue.length}\r\n${master_repl_offsetValue}`
 
