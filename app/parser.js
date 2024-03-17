@@ -108,9 +108,9 @@ class Parser {
                         let master_replid = variableName;
                         let master_repl_offset = values[val + 2];
                         if (this.mappedValues[command]) {
-                            this.mappedValues[command].push(["FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']);
+                            this.mappedValues[command].push(["+FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']);
                         } else {
-                            this.mappedValues[command] = [["FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']];
+                            this.mappedValues[command] = [["+FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']];
                         }
                         break;
 
