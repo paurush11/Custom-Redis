@@ -32,26 +32,24 @@
 
 class Parser {
 
-    constructor(port, info) {
+    constructor(port, role) {
         this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
         this.port = port;
-        this.INFO = info
+        this.INFO =  {
+            role: role,
+            master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
+            master_repl_offset: 0
+        }
     }
     generateInfoString() {
         const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
-        return `$${bulkString.length}\r\n${bulkString}\r\n`
+        return bulkString;
     }
     setData(data) {
         this.data = data;
         this.parseInput()
-    }
-    isErrorValue(data) {
-        return data === "ERROR"
-    }
-    handleErrorValue() {
-        return `$-1\r\n`;
     }
 
     parseInput() {
@@ -80,7 +78,6 @@ class Parser {
                                 setTimeout(() => {
                                     this.setValue(variableName.toLowerCase(), "ERROR");
                                 }, expiresIn)
-
                             }
                         }
                         val += 1;
@@ -109,16 +106,11 @@ class Parser {
     getValue(key) {
         return this.savedDict[key];
     }
-    encodeOutput(data) {
-        if (this.isErrorValue(data)) {
-            return this.handleErrorValue();
-        }
-        return `$${data.length}\r\n${data}\r\n`;
-    }
+   
 
 }
 
 
 module.exports = {
-    Parser,
+    Parser
 }

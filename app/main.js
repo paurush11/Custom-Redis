@@ -1,5 +1,6 @@
 const net = require("net");
 const { Parser, Info } = require("./parser");
+const { encodeOutput, encodeArrayOutput } = require("./Utils/sendMessages");
 
 const clientParsers = new Map();
 const masterSlavePorts = new Map();
@@ -12,7 +13,7 @@ const handlePing = (parser, connection) => {
 const handleEchoCommand = (parser, connection) => {
     if (parser.mappedValues["ECHO"]) {
         for (let i = 0; i < parser.mappedValues["ECHO"].length; i++) {
-            connection.write(parser.encodeOutput(parser.mappedValues["ECHO"][i]))
+            connection.write(encodeOutput(parser.mappedValues["ECHO"][i]))
         }
     }
 }
@@ -27,18 +28,14 @@ const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
         const finalString = parser.generateInfoString()
-        console.log(finalString)
         switch (role) {
             case 'master':
-                connection.write(finalString);
+                connection.write(encodeOutput(finalString));
                 break;
             case 'slave':
-                connection.write(finalString);
-
+                connection.write(encodeOutput(finalString));
                 break;
         }
-        // console.log(`$${5 + role.length}\r\nrole:${role}\r\n`)
-
     }
 }
 
@@ -47,7 +44,7 @@ const handleGetCommand = (parser, connection) => {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
             if (!val) connection.write(`$-1\r\n`)
-            connection.write(parser.encodeOutput(val))
+            connection.write(encodeOutput(val))
         }
     }
 }
@@ -59,9 +56,6 @@ const handleParserCommands = (data, parser, connection) => {
     handleSetCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
-
-
-    console.log(masterSlavePorts)
     parser.resetParser();
 }
 
@@ -70,7 +64,9 @@ const handleHandshake = () => {
     if (role === "slave") {
         const [masterHost, masterPort] = masterSlavePorts.get(port).split(":")
         const masterSlaveConnection = net.createConnection({ host: masterHost, port: masterPort }, () => {
-            masterSlaveConnection.write(`*1\r\n$4\r\nping\r\n`)
+            masterSlaveConnection.write(encodeArrayOutput['ping'])
+            masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'listening-port', port.toString()])
+            masterSlaveConnection.write(encodeArrayOutput['REPLCONF', 'capa', 'psync2'])
         })
     }
 
@@ -96,21 +92,16 @@ const getCommandLineArgs = () => {
 }
 
 
+
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
-
 
 
 const server = net.createServer((connection) => {
     const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
-    const info = {
-        role: role,
-        master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
-        master_repl_offset: 0
-    }
     if (!clientParsers.has(clientId)) {
-        clientParsers.set(clientId, new Parser(port, info));
+        clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
 
