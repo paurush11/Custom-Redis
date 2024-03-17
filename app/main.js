@@ -31,6 +31,13 @@ const handleREPLCONFCommand = (parser, connection) => {
         }
     }
 }
+const handlePSYNCCommand = (parser, connection) => {
+    if (parser.mappedValues["PSYNC"]) {
+        for (let i = 0; i < parser.mappedValues["PSYNC"].length; i++) {
+            connection.write(encodeArrayOutput(parser.mappedValues["PSYNC"][i]))
+        }
+    }
+}
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
@@ -62,6 +69,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection);
     handleREPLCONFCommand(parser, connection);
+    handlePSYNCCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     parser.resetParser();
