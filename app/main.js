@@ -41,7 +41,8 @@ const sendRDBFile = (connection) => {
 const sendReplicaCommands = (parser, data) => {
     if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
     for (const [replica, replicaPort] of replicaList) {
-        replica.write(data);
+        // replica.write(data);
+        console.log(data);
         // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.
         const replicaClientId = createClientId(replica);
 
@@ -118,7 +119,6 @@ const handleHandshake = () => {
 let port = 6379;
 const getCommandLineArgs = () => {
     const args = process.argv.slice(2);
-    console.log(args)
     if (args.length === 0) {
         port = 6379;
     } else {
@@ -157,7 +157,6 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
 
     connection.on('data', data => {
-
         handleParserCommands(data, parser, connection);
     })
     connection.on('close', () => {
