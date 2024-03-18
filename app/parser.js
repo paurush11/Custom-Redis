@@ -29,13 +29,13 @@
 
 
 
-
+const savedDict = {}
 
 class Parser {
 
     constructor(port, role) {
         this.pingCount = 0;
-        this.savedDict = {}
+
         this.mappedValues = {}
         this.port = port;
         this.INFO = {
@@ -133,7 +133,7 @@ class Parser {
 
             }
 
-            this.toString()
+            // this.toString()
         }
     }
 
@@ -143,10 +143,10 @@ class Parser {
         this.port = 0;
     }
     setValue(key, value) {
-        this.savedDict[key] = value;
+        savedDict[key] = value;
     }
     getValue(key) {
-        return this.savedDict[key];
+        return savedDict[key];
     }
 
     toString() {
