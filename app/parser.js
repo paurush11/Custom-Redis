@@ -69,6 +69,7 @@ class Parser {
     parseInput() {
         let arrayMessage = this.data.split("\r\n");
         let altered = false
+        console.log(arrayMessage);
         if (this.data[0] === '+') {
             arrayMessage = arrayMessage.slice(7);
             arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
