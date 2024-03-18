@@ -91,6 +91,7 @@ const handleParserCommands = (data, parser, connection) => {
 
 const handleHandshake = () => {
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
+    console.log(port)
     if (role === "slave") {
         const [masterHost, masterPort] = masterSlavePorts.get(port).split(":")
         const masterSlaveConnection = net.createConnection({ host: masterHost, port: masterPort }, () => {
@@ -108,7 +109,7 @@ const handleHandshake = () => {
                 replicaParser.setData(data.toString());
                 handleGetCommand(replicaParser, masterSlaveConnection);
             })
-            
+
         })
 
     }
