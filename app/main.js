@@ -37,7 +37,8 @@ const sendRDBFile = (connection) => {
     const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
     connection.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
 }
-const sendReplicaCommands = (data) => {
+const sendReplicaCommands = (parser, data) => {
+    if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
     for (const replica of replicaList) {
         replica.write(data);
     }
@@ -80,7 +81,7 @@ const handleParserCommands = (data, parser, connection) => {
         if (key in ["ECHO"]) {
             console.log("here")
         } else {
-            sendReplicaCommands(data)
+            sendReplicaCommands(parser, data)
         }
     }
     handlePing(parser, connection);
