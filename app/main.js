@@ -119,6 +119,7 @@ const getCommandLineArgs = () => {
         if (args.includes("--port")) {
             const i = args.indexOf("--port") + 1;
             port = Number(args[i]);
+            console.log(port)
         }
         if (args.includes("--replicaof")) {
             const masterHostIndex = args.indexOf("--replicaof") + 1;
@@ -141,13 +142,12 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = createClientId(connection);
-    console.log(port);
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
-    console.log(parser.port);
+
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
 
