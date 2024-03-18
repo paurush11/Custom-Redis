@@ -1,6 +1,6 @@
 const net = require("net");
 const { Parser, Info } = require("./parser");
-const { encodeOutput, encodeArrayOutput } = require("./Utils/sendMessages");
+const { encodeOutput, encodeArrayOutput, handleOkValue } = require("./Utils/sendMessages");
 
 const clientParsers = new Map();
 const masterSlavePorts = new Map();
