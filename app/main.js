@@ -43,6 +43,7 @@ const sendReplicaCommands = (parser, data) => {
     for (const [replica, replicaPort] of replicaList) {
         replica.write(data);
         console.log(data.toString());
+        console.log(parser.savedDict)
         // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.
         const replicaClientId = createClientId(replica);
 
@@ -50,7 +51,7 @@ const sendReplicaCommands = (parser, data) => {
             clientParsers.set(replicaClientId, new Parser(replicaPort, role));
         }
         const replicaParser = clientParsers.get(replicaClientId);
-        replicaParser.savedDict = parser.savedDict
+        replicaParser.savedDict = parser.console.log(data.toString())
 
         handleGetCommand(replicaParser, replica);
         // replicaParser.setData(data.toString());
