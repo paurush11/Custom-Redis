@@ -24,6 +24,9 @@ const handleSetCommand = (parser, connection) => {
             connection.write(`+OK\r\n`)
         }
     }
+    if (parser.FULLRESYNC) {
+        propogateSavedCommands(parser)
+    }
 }
 const handleREPLCONFCommand = (parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
@@ -91,13 +94,14 @@ const handleHandshake = () => {
     }
 
 }
-
+const propogateSavedCommands = (parser) => {
+    for (let i = 0; i < parser.savedCommands.length; i++) {
+        connection.write(parser.savedCommands[i]);
+    }
+}
 const replyHandShake = (parser, connection) => {
     if (parser.FULLRESYNC) {
         handlePSYNCCommand(parser, connection)
-        for(let i = 0;i<parser.savedCommands.length;i++){
-            connection.write(parser.savedCommands[i]);
-        }
     }
 }
 
