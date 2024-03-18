@@ -68,11 +68,13 @@ class Parser {
 
     parseInput() {
         let arrayMessage = this.data.split("\r\n");
+        let altered = false
         if (this.data[0] === '+') {
             arrayMessage = arrayMessage.slice(7);
-            console.log(arrayMessage);
+            arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
+            altered = true;
         }
-        if (this.data[0] === "*") {
+        if (this.data[0] === "*" || altered) {
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
             const arrayLength = Number(arrayValues[0].substr(1));
