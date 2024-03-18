@@ -72,19 +72,10 @@ class Parser {
         if (this.data[0] === '+') {
 
             if (arrayMessage.length > 6) {
-                console.log(arrayMessage);
                 arrayMessage = arrayMessage.slice(7);
-                console.log(arrayMessage);
-                arrayMessage.splice(0, 0, '*')
-
-                console.log(arrayMessage);
-                // altered = true;
+                arrayMessage.splice(0, 0, '*' + arrayMessage.length)
+                altered = true;
             }
-            // arrayMessage = arrayMessage.slice(7);
-            // console.log(arrayMessage)
-            // arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
-            // // altered = true;
-            // console.log(arrayMessage)
         }
         if (this.data[0] === "*" || altered) {
             let arrayValues = arrayMessage;
