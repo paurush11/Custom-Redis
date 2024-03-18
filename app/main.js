@@ -141,8 +141,9 @@ console.log("Logs from your program will appear here!");
 
 
 const server = net.createServer((connection) => {
-    const clientId = createClientId(connection);
     getCommandLineArgs()
+    const clientId = createClientId(connection);
+
 
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
