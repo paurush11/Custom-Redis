@@ -6,7 +6,7 @@ const clientParsers = new Map();
 const masterSlavePorts = new Map();
 const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
 const replicaList = [];
-const replicaPorts = {};
+
 const handlePing = (parser, connection) => {
     for (let i = 0; i < parser.pingCount; i++) {
         connection.write(`+PONG\r\n`)
@@ -40,21 +40,23 @@ const sendRDBFile = (connection) => {
 }
 const sendReplicaCommands = (parser, data) => {
     if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
-    for (const replica of replicaList) {
+    for (const [replica, replicaPort] of replicaList) {
         replica.write(data);
+        // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.
         const replicaClientId = createClientId(replica);
+
         if (!clientParsers.has(replicaClientId)) {
-            clientParsers.set(replicaClientId, new Parser(port, role));
+            clientParsers.set(replicaClientId, new Parser(replicaPort, role));
         }
+        const replicaParser = clientParsers.get(replicaClientId);
+        replicaParser.setData(data.toString());
     }
 }
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
-        replicaList.push(connection);
-        console.log(parser.mappedValues);
-
+        replicaList.push([connection, parser.port]);
     }
 }
 const handleInfoCommand = (parser, connection) => {
@@ -149,11 +151,8 @@ const server = net.createServer((connection) => {
         clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
-    console.log(parser.port)
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-
-
     })
     connection.on('close', () => {
         clientParsers.delete(clientId);
