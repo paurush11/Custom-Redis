@@ -43,6 +43,7 @@ class Parser {
             master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
             master_repl_offset: 0
         }
+        this.savedCommands = []
     }
     setInfoData(master_replid, master_repl_offset) {
         this.master_replid = master_replid
@@ -85,6 +86,11 @@ class Parser {
                         }
                         break;
                     case "SET":
+                        if(this.savedCommands){
+                            this.savedCommands.push(this.data);
+                        }else{
+                            this.savedCommands = [this.data];
+                        }
                         let variableValue = values[val + 2];
                         this.setValue(variableName.toLowerCase(), variableValue);
                         if (this.mappedValues[command]) {

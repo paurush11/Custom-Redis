@@ -92,6 +92,15 @@ const handleHandshake = () => {
 
 }
 
+const replyHandShake = (parser, connection) => {
+    if (parser.FULLRESYNC) {
+        handlePSYNCCommand(parser, connection)
+        for(let i = 0;i<parser.savedCommands.length;i++){
+            connection.write(parser.savedCommands[i]);
+        }
+    }
+}
+
 let port = 6379;
 const getCommandLineArgs = () => {
     const args = process.argv.slice(2);
@@ -127,9 +136,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        if (parser.FULLRESYNC) {
-            handlePSYNCCommand(parser, connection)
-        }
+        replyHandShake(parser, connection);
     })
     connection.on('close', () => {
         clientParsers.delete(clientId);
