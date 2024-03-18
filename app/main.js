@@ -99,9 +99,9 @@ const propogateSavedCommands = (parser) => {
 }
 const replyHandShake = (parser, connection) => {
     if (parser.FULLRESYNC) {
-        if(replicaList){
+        if (replicaList) {
             replicaList.push(connection);
-        }else{
+        } else {
             replicaList = [connection];
         }
         handlePSYNCCommand(parser, connection)
@@ -145,8 +145,9 @@ const server = net.createServer((connection) => {
         handleParserCommands(data, parser, connection);
         if (parser.FULLRESYNC && parser.mappedValues['SET']) {
             for (const replica of replicaList) {
+                console.log(replica)
                 replica.write(createRespArrayMsg(data));
-              }
+            }
         }
         replyHandShake(parser, connection);
     })
