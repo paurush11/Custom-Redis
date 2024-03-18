@@ -81,9 +81,10 @@ const handleInfoCommand = (parser, connection) => {
 }
 
 const handleGetCommand = (parser, connection) => {
-    console.log("checking get parsers")
-    console.log(parser.savedDict)
+
     if (parser.mappedValues["GET"]) {
+        console.log("checking get parsers")
+        console.log(parser.savedDict)
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
             if (!val) connection.write(`$-1\r\n`)
