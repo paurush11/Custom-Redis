@@ -37,7 +37,11 @@ const sendRDBFile = (connection) => {
     const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
     connection.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
 }
-
+const sendReplicaCommands = (data) => {
+    for (const replica of replicaList) {
+        replica.write(data);
+    }
+}
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
@@ -83,11 +87,8 @@ const handleParserCommands = (data, parser, connection) => {
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     handlePSYNCCommand(parser, connection);
-    console.log(parser.mappedValues)
-    if (parser.mappedValues['SET']) {
-        for (const replica of replicaList) {
-            replica.write(data);
-        }
+    if (!parser.mappedValues["PING"] && !parser.mappedValues["ECHO"]) {
+        sendReplicaCommands(data);
     }
     parser.resetParser();
 }
