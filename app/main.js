@@ -19,14 +19,14 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
-const handleSetCommand = (data, parser, connection) => {
-    // if (parser.mappedValues["SET"]) {
-    //     for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
-    //         connection.write(`+OK\r\n`)
-    //     }
-    // }
+const handleSetCommand = (parser, connection) => {
+    if (parser.mappedValues["SET"]) {
+        for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
+            connection.write(`+OK\r\n`)
+        }
+    }
 }
-const handleREPLCONFCommand = (data, parser, connection) => {
+const handleREPLCONFCommand = (parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
         for (let i = 0; i < parser.mappedValues["REPLCONF"].length; i++) {
             connection.write(`+OK\r\n`)
