@@ -31,7 +31,6 @@ const handleREPLCONFCommand = (data, parser, connection) => {
         for (let i = 0; i < parser.mappedValues["REPLCONF"].length; i++) {
             connection.write(`+OK\r\n`)
         }
-
     }
 }
 const sendRDBFile = (connection) => {
@@ -43,19 +42,14 @@ const sendReplicaCommands = (data) => {
         replica.write(data);
     }
 }
-const handlePSYNCCommand = (data, parser, connection) => {
+const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
-        console.log("idhar")
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
-        if (replicaList) {
-            replicaList.push(connection);
-        } else {
-            replicaList = [connection];
-        }
+        replicaList.push(connection);
     }
 }
-const handleInfoCommand = (data, parser, connection) => {
+const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
         const finalString = parser.generateInfoString()
@@ -70,7 +64,7 @@ const handleInfoCommand = (data, parser, connection) => {
     }
 }
 
-const handleGetCommand = (data, parser, connection) => {
+const handleGetCommand = (parser, connection) => {
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
@@ -84,11 +78,11 @@ const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
-    handleSetCommand(data, parser, connection);
-    handleREPLCONFCommand(data, parser, connection);
-    handleGetCommand(data, parser, connection);
-    handleInfoCommand(data, parser, connection);
-    handlePSYNCCommand(data, parser, connection);
+    handleSetCommand(parser, connection);
+    handleREPLCONFCommand(parser, connection);
+    handleGetCommand(parser, connection);
+    handleInfoCommand(parser, connection);
+    handlePSYNCCommand(parser, connection);
     parser.resetParser();
 }
 
@@ -105,11 +99,7 @@ const handleHandshake = () => {
     }
 
 }
-const propogateSavedCommands = (parser) => {
-    for (let i = 0; i < parser.savedCommands.length; i++) {
-        connection.write(parser.savedCommands[i]);
-    }
-}
+
 
 
 let port = 6379;
@@ -147,6 +137,10 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        for (const [key, val] of Object.entries(parser.mappedValues)) {
+            console.log(key)
+            console.log(val)
+        }
     })
     connection.on('close', () => {
         clientParsers.delete(clientId);

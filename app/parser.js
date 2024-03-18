@@ -42,7 +42,7 @@ class Parser {
             master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
             master_repl_offset: 0
         }
-       
+
     }
     setInfoData(master_replid, master_repl_offset) {
         this.master_replid = master_replid
