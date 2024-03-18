@@ -39,7 +39,7 @@ const sendRDBFile = (connection) => {
     connection.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
 }
 const sendReplicaCommands = (parser, data) => {
-    if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
+    if (replicaList.length == 0) return;
     for (const [replica, replicaPort] of replicaList) {
         replica.write(data);
         // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.
@@ -51,6 +51,7 @@ const sendReplicaCommands = (parser, data) => {
         const replicaParser = clientParsers.get(replicaClientId);
         // replicaParser.savedDict = parser.savedDict
         replicaParser.setData(data.toString());
+        console.log("comparing parsers")
         console.log(parser.savedDict)
         console.log(replicaParser.savedDict)
         handleGetCommand(replicaParser, replica);
@@ -80,7 +81,8 @@ const handleInfoCommand = (parser, connection) => {
 }
 
 const handleGetCommand = (parser, connection) => {
-
+    console.log("checking get parsers")
+    console.log(parser.savedDict)
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);

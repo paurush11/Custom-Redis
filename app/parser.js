@@ -113,7 +113,7 @@ class Parser {
                         break;
 
                 }
-                console.log(valArray);
+                // console.log(valArray);
                 currentIndex = nextArrayIndex;
                 if (arrayValues[nextArrayIndex] === '') break;
                 nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
