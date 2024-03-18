@@ -87,9 +87,9 @@ const handleParserCommands = (data, parser, connection) => {
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     handlePSYNCCommand(parser, connection);
-    if (!parser.mappedValues["PING"] && !parser.mappedValues["ECHO"]) {
-        sendReplicaCommands(data);
-    }
+    // if (!parser.mappedValues["PING"] && !parser.mappedValues["ECHO"]) {
+    //     sendReplicaCommands(data);
+    // }
     parser.resetParser();
 }
 
