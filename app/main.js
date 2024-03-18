@@ -99,15 +99,13 @@ const handleHandshake = () => {
             masterSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
             masterSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
             masterSlaveConnection.on('data', (data) => {
-                console.log(data.toString());
                 const replicaClientId = createClientId(masterSlaveConnection);
-
                 if (!clientParsers.has(replicaClientId)) {
                     clientParsers.set(replicaClientId, new Parser(port, role));
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
-               
                 replicaParser.setData(data.toString());
+                handleGetCommand(replicaParser, masterSlaveConnection);
             })
         })
 
