@@ -82,6 +82,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleREPLCONFCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
+    handlePSYNCCommand(parser, connection);
     if (parser.mappedValues['SET']) {
         for (const replica of replicaList) {
             replica.write(data);
