@@ -51,9 +51,7 @@ const sendReplicaCommands = (parser, data) => {
         const replicaParser = clientParsers.get(replicaClientId);
         // replicaParser.savedDict = parser.savedDict
         replicaParser.setData(data.toString());
-        console.log("comparing parsers")
-        console.log(parser.savedDict)
-        console.log(replicaParser.savedDict)
+
         handleGetCommand(replicaParser, replica);
 
     }
@@ -62,7 +60,7 @@ const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
-        console.log("here")
+
         replicaList.push([connection, parser.port]);
     }
 }
@@ -84,8 +82,7 @@ const handleInfoCommand = (parser, connection) => {
 const handleGetCommand = (parser, connection) => {
 
     if (parser.mappedValues["GET"]) {
-        console.log("checking get parsers")
-        console.log(parser.savedDict)
+
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
             if (!val) connection.write(`$-1\r\n`)
@@ -115,7 +112,11 @@ const handleHandshake = () => {
             masterSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'listening-port', port.toString()]))
             masterSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
             masterSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
+            masterSlaveConnection.on('data', (data) => {
+                console.log(data.toString());
+            })
         })
+
     }
 
 }
@@ -131,7 +132,6 @@ const getCommandLineArgs = () => {
         if (args.includes("--port")) {
             const i = args.indexOf("--port") + 1;
             port = Number(args[i]);
-            // console.log(port)
         }
         if (args.includes("--replicaof")) {
             const masterHostIndex = args.indexOf("--replicaof") + 1;
