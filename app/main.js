@@ -128,6 +128,8 @@ const getCommandLineArgs = () => {
 
         }
     }
+
+    server.listen(port, "127.0.0.1");
 }
 
 const createClientId = (connection) => {
@@ -141,10 +143,7 @@ console.log("Logs from your program will appear here!");
 
 
 const server = net.createServer((connection) => {
-    getCommandLineArgs()
     const clientId = createClientId(connection);
-
-
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, role));
@@ -163,4 +162,4 @@ const server = net.createServer((connection) => {
 })
 
 handleHandshake()
-server.listen(port, "127.0.0.1");
+
