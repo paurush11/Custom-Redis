@@ -118,6 +118,7 @@ const handleHandshake = () => {
 let port = 6379;
 const getCommandLineArgs = () => {
     const args = process.argv.slice(2);
+    console.log(args)
     if (args.length === 0) {
         port = 6379;
     } else {
@@ -156,7 +157,7 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
 
     connection.on('data', data => {
-        console.log(data.toString())
+
         handleParserCommands(data, parser, connection);
     })
     connection.on('close', () => {
