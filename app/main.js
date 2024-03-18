@@ -41,6 +41,8 @@ const sendRDBFile = (connection) => {
 const sendReplicaCommands = (parser, data) => {
     if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
     for (const [replica, replicaPort] of replicaList) {
+        const val = [data.toString()];
+        console.log(val);
         replica.write(data);
         console.log(parser.savedDict)
         // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.

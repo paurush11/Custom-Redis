@@ -59,8 +59,10 @@ class Parser {
 
     parseInput() {
         if (this.data[0] === "*") {
-            const val = [this.data]
-            console.log(val)
+
+
+            // const val = [this.data] /// [[set,foo,123],[set, bar, 456], [set, baz, 789]]
+            // console.log(val)
             const values = this.data.slice(1).split("\r\n").filter((val, index) => !(index & 1));
             const length = values[0];
             console.log(values);
@@ -150,3 +152,13 @@ class Parser {
 module.exports = {
     Parser
 }
+
+
+
+// console.log(`*1\r\n$4\r\nping\r\n`)
+// // console.log(encodeOutput('ping'))
+// // // console.log(encodeArrayOutput([]))
+// console.log(encodeArrayOutput(['ping']))
+// console.log(encodeArrayOutput([1, 2, 3, 4]))
+// console.log(encodeArrayOutput([1, 2, ["hello", "world"], 3, 4]))
+// console.log(encodeArrayOutput([["hello", "world"], [3, 4]])) 
