@@ -138,10 +138,10 @@ const server = net.createServer((connection) => {
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
         console.log(parser.mappedValues)
-        // for (const [key, val] of Object.entries(parser.mappedValues)) {
-        //     console.log(key)
-        //     console.log(val)
-        // }
+        for (const [key, val] of Object.entries(parser.mappedValues)) {
+            console.log(key)
+            console.log(val)
+        }
     })
     connection.on('close', () => {
         clientParsers.delete(clientId);
