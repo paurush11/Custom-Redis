@@ -62,6 +62,7 @@ const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
+        console.log("here")
         replicaList.push([connection, parser.port]);
     }
 }
