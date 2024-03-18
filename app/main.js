@@ -77,8 +77,11 @@ const handleGetCommand = (parser, connection) => {
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
     for (const [key, val] of Object.entries(parser.mappedValues)) {
-        console.log(key)
-        console.log(val)
+        if (key in ["ECHO"]) {
+            console.log("here")
+        } else {
+            sendReplicaCommands(data)
+        }
     }
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
