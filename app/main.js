@@ -53,7 +53,7 @@ const handlePSYNCCommand = (parser, connection) => {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
         replicaList.push(connection);
-        console.log(parser.port)
+        console.log(parser.mappedValues);
     }
 }
 const handleInfoCommand = (parser, connection) => {
