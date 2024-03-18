@@ -156,7 +156,7 @@ class Parser {
     toString() {
         ///display all mapped Values 
 
-        console.log("*************************")
+        console.log("\n*************************")
         console.log("display all mapped Values")
         console.log(this.mappedValues)
         console.log("display ping count")
