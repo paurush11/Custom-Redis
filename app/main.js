@@ -76,13 +76,13 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
-    handlePing(parser, connection);
-    handleEchoCommand(parser, connection);
-    handleSetCommand(parser, connection);
-    handleREPLCONFCommand(parser, connection);
-    handleGetCommand(parser, connection);
-    handleInfoCommand(parser, connection);
-    handlePSYNCCommand(parser, connection);
+    // handlePing(parser, connection);
+    // handleEchoCommand(parser, connection);
+    // handleSetCommand(parser, connection);
+    // handleREPLCONFCommand(parser, connection);
+    // handleGetCommand(parser, connection);
+    // handleInfoCommand(parser, connection);
+    // handlePSYNCCommand(parser, connection);
     parser.resetParser();
 }
 
@@ -137,6 +137,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        console.log(parser.mappedValues)
         // for (const [key, val] of Object.entries(parser.mappedValues)) {
         //     console.log(key)
         //     console.log(val)
