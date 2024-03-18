@@ -35,6 +35,7 @@ const handleREPLCONFCommand = (parser, connection) => {
             if (parser.mappedValues["REPLCONF"][i] === 'OK') {
                 connection.write(handleOkValue());
             } else {
+                console.log(parser.sendAck());
                 connection.write(parser.sendAck());
             }
         }
