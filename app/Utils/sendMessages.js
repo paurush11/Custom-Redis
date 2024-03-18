@@ -1,7 +1,7 @@
 
 
 function isErrorValue(data) {
-    return data === "ERROR"
+    return !data || data === "ERROR"
 }
 function handleErrorValue() {
     return `$-1\r\n`;
@@ -13,6 +13,7 @@ function encodeOutput(data) {
     if (isErrorValue(data)) {
         return handleErrorValue();
     }
+
     return `$${data.length}\r\n${data}\r\n`;
 }
 function encodeArrayOutput(dataArr) {
