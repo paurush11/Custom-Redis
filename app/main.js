@@ -113,7 +113,7 @@ const handleHandshake = () => {
                 replicaParser.setData(data.toString());
                 if (replicaParser.mappedValues["REPLCONF"]) {
                     console.log("here")
-                    slaveSlaveConnection.write(replicaParser.sendAck());
+                    slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"][0]);
                 }
 
 
