@@ -42,18 +42,6 @@ const sendReplicaCommands = (parser, data) => {
     if (replicaList.length == 0) return;
     for (const [replica, replicaPort] of replicaList) {
         replica.write(data);
-        // Iterate through all the key, val in masterSlavePorts to see if val is host:port of current parsers.
-        const replicaClientId = createClientId(replica);
-
-        if (!clientParsers.has(replicaClientId)) {
-            clientParsers.set(replicaClientId, new Parser(replicaPort, role));
-        }
-        const replicaParser = clientParsers.get(replicaClientId);
-        // replicaParser.savedDict = parser.savedDict
-        replicaParser.setData(data.toString());
-
-        handleGetCommand(replicaParser, replica);
-
     }
 }
 const handlePSYNCCommand = (parser, connection) => {
@@ -80,9 +68,7 @@ const handleInfoCommand = (parser, connection) => {
 }
 
 const handleGetCommand = (parser, connection) => {
-
     if (parser.mappedValues["GET"]) {
-
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
             if (!val) connection.write(`$-1\r\n`)
@@ -114,6 +100,14 @@ const handleHandshake = () => {
             masterSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
             masterSlaveConnection.on('data', (data) => {
                 console.log(data.toString());
+                const replicaClientId = createClientId(masterSlaveConnection);
+
+                if (!clientParsers.has(replicaClientId)) {
+                    clientParsers.set(replicaClientId, new Parser(port, role));
+                }
+                const replicaParser = clientParsers.get(replicaClientId);
+               
+                replicaParser.setData(data.toString());
             })
         })
 
