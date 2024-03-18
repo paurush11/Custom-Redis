@@ -50,7 +50,7 @@ const sendReplicaCommands = (parser, data) => {
         }
         const replicaParser = clientParsers.get(replicaClientId);
         replicaParser.savedDict = parser.savedDict
-        console.log(data.toString())
+
         handleGetCommand(replicaParser, replica);
         // replicaParser.setData(data.toString());
     }
@@ -154,7 +154,9 @@ const server = net.createServer((connection) => {
         clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
+
     connection.on('data', data => {
+        console.log(data.toString())
         handleParserCommands(data, parser, connection);
     })
     connection.on('close', () => {
