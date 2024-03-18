@@ -133,7 +133,7 @@ class Parser {
 
             }
 
-            // console.log(this.toString())
+            console.log(this.toString())
         }
     }
 
