@@ -41,6 +41,12 @@ const sendRDBFile = (connection) => {
 const handlePSYNCCommand = (parser, connection) => {
     connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
     sendRDBFile(connection)
+    if (replicaList) {
+        replicaList.push(connection);
+    } else {
+        replicaList = [connection];
+    }
+
 
 }
 const handleInfoCommand = (parser, connection) => {
@@ -76,8 +82,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleREPLCONFCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
-    if (parser.FULLRESYNC && parser.mappedValues['SET']) {
-        console.log("here")
+    if (parser.mappedValues['SET']) {
         for (const replica of replicaList) {
             replica.write(data);
         }
@@ -103,16 +108,7 @@ const propogateSavedCommands = (parser) => {
         connection.write(parser.savedCommands[i]);
     }
 }
-const replyHandShake = (parser, connection) => {
-    if (parser.FULLRESYNC) {
-        if (replicaList) {
-            replicaList.push(connection);
-        } else {
-            replicaList = [connection];
-        }
-        handlePSYNCCommand(parser, connection)
-    }
-}
+
 
 let port = 6379;
 const getCommandLineArgs = () => {
@@ -149,8 +145,6 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-
-        replyHandShake(parser, connection);
     })
     connection.on('close', () => {
         clientParsers.delete(clientId);

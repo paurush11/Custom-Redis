@@ -33,7 +33,6 @@
 class Parser {
 
     constructor(port, role) {
-        this.FULLRESYNC = false
         this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
@@ -86,7 +85,6 @@ class Parser {
                         }
                         break;
                     case "SET":
-                        
                         let variableValue = values[val + 2];
                         this.setValue(variableName.toLowerCase(), variableValue);
                         if (this.mappedValues[command]) {
@@ -116,6 +114,11 @@ class Parser {
                         let master_replid = variableName;
                         let master_repl_offset = values[val + 2];
                         this.setInfoData(master_replid, master_repl_offset)
+                        if (this.mappedValues[command]) {
+                            this.mappedValues[command].push("OK");
+                        } else {
+                            this.mappedValues[command] = ["OK"];
+                        }
                         break;
 
 
