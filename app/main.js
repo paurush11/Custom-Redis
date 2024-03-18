@@ -54,7 +54,7 @@ const handlePSYNCCommand = (parser, connection) => {
         sendRDBFile(connection)
         replicaList.push(connection);
         console.log(parser.mappedValues);
-        console.log(parser.port);
+
     }
 }
 const handleInfoCommand = (parser, connection) => {
@@ -141,12 +141,13 @@ console.log("Logs from your program will appear here!");
 
 const server = net.createServer((connection) => {
     const clientId = createClientId(connection);
+    console.log(port);
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
-
+    console.log(parser.port);
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
 
