@@ -110,8 +110,8 @@ const handleHandshake = () => {
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
                 // console.log(replicaParser.port)
-                handleGetCommand(replicaParser, slaveSlaveConnection);
-                handleEchoCommand(replicaParser, slaveSlaveConnection);
+                // handleGetCommand(replicaParser, slaveSlaveConnection);
+
             })
 
         })

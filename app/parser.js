@@ -35,7 +35,6 @@ class Parser {
 
     constructor(port, role) {
         this.pingCount = 0;
-
         this.mappedValues = {}
         this.port = port;
         this.INFO = {
@@ -133,7 +132,7 @@ class Parser {
 
             }
 
-            // this.toString()
+            this.toString()
         }
     }
 
