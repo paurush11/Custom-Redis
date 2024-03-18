@@ -6,7 +6,7 @@ const clientParsers = new Map();
 const masterSlavePorts = new Map();
 const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
 const replicaList = [];
-
+const replicaPorts = {};
 const handlePing = (parser, connection) => {
     for (let i = 0; i < parser.pingCount; i++) {
         connection.write(`+PONG\r\n`)
@@ -42,6 +42,10 @@ const sendReplicaCommands = (parser, data) => {
     if (parser.INFO.role !== 'master' || replicaList.length == 0) return;
     for (const replica of replicaList) {
         replica.write(data);
+        const replicaClientId = createClientId(replica);
+        if (!clientParsers.has(replicaClientId)) {
+            clientParsers.set(replicaClientId, new Parser(port, role));
+        }
     }
 }
 const handlePSYNCCommand = (parser, connection) => {
@@ -49,6 +53,7 @@ const handlePSYNCCommand = (parser, connection) => {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
         replicaList.push(connection);
+        console.log(parser.port)
     }
 }
 const handleInfoCommand = (parser, connection) => {
@@ -123,6 +128,10 @@ const getCommandLineArgs = () => {
     }
 }
 
+const createClientId = (connection) => {
+    const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+    return clientId;
+}
 
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -130,7 +139,7 @@ console.log("Logs from your program will appear here!");
 
 
 const server = net.createServer((connection) => {
-    const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+    const clientId = createClientId(connection);
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
         clientParsers.set(clientId, new Parser(port, role));

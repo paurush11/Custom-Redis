@@ -47,7 +47,6 @@ class Parser {
     setInfoData(master_replid, master_repl_offset) {
         this.master_replid = master_replid
         this.master_repl_offset = master_repl_offset
-        this.FULLRESYNC = true
     }
     generateInfoString() {
         const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
