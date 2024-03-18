@@ -82,8 +82,7 @@ class Parser {
             }
         }
         if (this.data[0] === "*" || altered) {
-            console.log("I am here")
-            console.log(this.savedDict)
+
             let arrayValues = arrayMessage;
             console.log(arrayValues)
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
@@ -135,8 +134,10 @@ class Parser {
                 if (arrayValues[nextArrayIndex] === '') break;
                 nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
                 // nextArrayIndex = undefined;
-
+               
             }
+            console.log("I am here")
+            console.log(this.savedDict)
         }
     }
 
