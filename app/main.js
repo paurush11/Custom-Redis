@@ -50,6 +50,7 @@ const sendReplicaCommands = (parser, data) => {
         }
         const replicaParser = clientParsers.get(replicaClientId);
         replicaParser.savedDict = parser.savedDict
+        console.log(replicaParser.savedDict)
         handleGetCommand(replicaParser, replica);
         // replicaParser.setData(data.toString());
     }
