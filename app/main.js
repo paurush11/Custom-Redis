@@ -128,7 +128,7 @@ const getCommandLineArgs = () => {
 
         }
     }
-
+    handleHandshake()
     server.listen(port, "127.0.0.1");
 }
 
@@ -161,5 +161,6 @@ const server = net.createServer((connection) => {
 
 })
 
-handleHandshake()
+getCommandLineArgs();
+
 
