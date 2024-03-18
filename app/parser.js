@@ -68,7 +68,9 @@ class Parser {
 
     parseInput() {
         console.log(this.data.split("\r\n"))
-
+        if (this.data[0] === '+') {
+            console.log(this.data.split("\r\n"))
+        }
         if (this.data[0] === "*") {
             let arrayValues = this.data.split("\r\n");
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
