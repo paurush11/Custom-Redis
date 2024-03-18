@@ -6,6 +6,9 @@ function isErrorValue(data) {
 function handleErrorValue() {
     return `$-1\r\n`;
 }
+function handleOkValue() {
+    return `+OK\r\n`;
+}
 function handleNullArrayErrorValue() {
     return `*-1\r\n`;
 }
@@ -47,5 +50,6 @@ function encodeArrayOutput(dataArr) {
 
 module.exports = {
     encodeOutput,
-    encodeArrayOutput
+    encodeArrayOutput,
+    handleOkValue
 }

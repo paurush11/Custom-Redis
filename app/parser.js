@@ -1,5 +1,7 @@
 // TODO is create a protocol using REdis Serialization Protocol (RESP). 
 
+const { encodeArrayOutput } = require("./Utils/sendMessages");
+
 // While RESP is technically non-TCP specific, the protocol is used exclusively with TCP connections (or equivalent stream-oriented connections like Unix sockets) in the context of Redis.
 
 //  CR (\r), LF (\n) and SP ( ) have binary byte values of 13, 10 and 32, respectively.
@@ -65,6 +67,10 @@ class Parser {
         }
     }
 
+    sendAck() {
+        return encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset]);
+    }
+
     parseInput() {
         let arrayMessage = this.data.split("\r\n");
 
@@ -100,8 +106,13 @@ class Parser {
                         this.saveInMappedValues(command, variableName)
                         break;
                     case 'REPLCONF':
+                        if (this.INFO.role === "slave" && variableName.toUpperCase() === "GETACK") {
+                            this.saveInMappedValues(command, this.sendAck())
+                        }else{
+                            this.saveInMappedValues(command, 'OK')
+                        }
                         console.log(valArray)
-                        this.saveInMappedValues(command, 'OK')
+                       
                         break;
                     case 'PSYNC':
                         let master_replid = variableName;
