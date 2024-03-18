@@ -132,8 +132,8 @@ class Parser {
                 // nextArrayIndex = undefined;
 
             }
-            console.log("I am here")
-            console.log(this.toString())
+
+            // console.log(this.toString())
         }
     }
 
