@@ -19,11 +19,12 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
-const handleSetCommand = (parser, connection) => {
+const handleSetCommand = (parser, connection, data) => {
     if (parser.mappedValues["SET"]) {
         for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
             connection.write(`+OK\r\n`)
         }
+        sendReplicaCommands(parser, data);
     }
 }
 const handleREPLCONFCommand = (parser, connection) => {
@@ -77,16 +78,9 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
-    for (const [key, val] of Object.entries(parser.mappedValues)) {
-        if (key in ["ECHO"]) {
-            console.log("here")
-        } else {
-            sendReplicaCommands(parser, data)
-        }
-    }
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
-    handleSetCommand(parser, connection);
+    handleSetCommand(parser, connection, data);
     handleREPLCONFCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
