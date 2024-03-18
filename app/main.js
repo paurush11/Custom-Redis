@@ -93,22 +93,23 @@ const handleHandshake = () => {
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
 
     if (role === "slave") {
+        console.log("STARTING SLAVE SERVER")
         const [masterHost, masterPort] = masterSlavePorts.get(port).split(":")
-        const masterSlaveConnection = net.createConnection({ host: masterHost, port: masterPort }, () => {
-            masterSlaveConnection.write(encodeArrayOutput(['ping']))
-            masterSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'listening-port', port.toString()]))
-            masterSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
-            masterSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
-            masterSlaveConnection.on('data', (data) => {
-                const replicaClientId = createClientId(masterSlaveConnection);
+        const slaveSlaveConnection = net.createConnection({ host: masterHost, port: masterPort }, () => {
+            slaveSlaveConnection.write(encodeArrayOutput(['ping']))
+            slaveSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'listening-port', port.toString()]))
+            slaveSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
+            slaveSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
+            slaveSlaveConnection.on('data', (data) => {
+                const replicaClientId = createClientId(slaveSlaveConnection);
                 if (!clientParsers.has(replicaClientId)) {
                     clientParsers.set(replicaClientId, new Parser(port, role));
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
                 // console.log(replicaParser.port)
-                handleGetCommand(replicaParser, masterSlaveConnection);
-                handleEchoCommand(replicaParser, masterSlaveConnection);
+                handleGetCommand(replicaParser, slaveSlaveConnection);
+                handleEchoCommand(replicaParser, slaveSlaveConnection);
             })
 
         })
@@ -151,6 +152,7 @@ console.log("Logs from your program will appear here!");
 
 
 const server = net.createServer((connection) => {
+    console.log("STARTING MASTER SERVER")
     const clientId = createClientId(connection);
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
     if (!clientParsers.has(clientId)) {
