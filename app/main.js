@@ -36,7 +36,8 @@ const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         for (let i = 0; i < parser.mappedValues["PSYNC"].length; i++) {
             connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
-            connection.write(`$${emptyRDBFileHex.length}\r\n${emptyRDBFileHex}`)
+            const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
+            connection.write(`$${RDB_File_Binary.length}\r\n${RDB_File_Binary}`)
 
         }
     }
