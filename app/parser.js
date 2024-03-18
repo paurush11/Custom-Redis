@@ -75,6 +75,7 @@ class Parser {
                 arrayMessage = arrayMessage.slice(6);
                 console.log(arrayMessage)
                 arrayMessage.splice(0, 0, '*' + 3)
+                console.log(arrayMessage)
 
                 altered = true;
             }
