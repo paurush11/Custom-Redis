@@ -73,7 +73,7 @@ class Parser {
 
             if (arrayMessage.length > 6) {
                 arrayMessage = arrayMessage.slice(7);
-                arrayMessage.splice(0, 0, '*' + arrayMessage.length)
+                arrayMessage.splice(0, 0, '*' + (arrayMessage.length + 1))
                 console.log(arrayMessage)
                 altered = true;
             }
