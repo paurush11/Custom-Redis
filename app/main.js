@@ -45,6 +45,7 @@ const sendReplicaCommands = (data) => {
 }
 const handlePSYNCCommand = (data, parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
+        console.log("idhar")
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
         if (replicaList) {
