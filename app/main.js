@@ -32,14 +32,15 @@ const handleREPLCONFCommand = (parser, connection) => {
         }
     }
 }
+const sendRDBFile = (connection) => {
+    const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
+    connection.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
+}
+
 const handlePSYNCCommand = (parser, connection) => {
-    if (parser.mappedValues["PSYNC"]) {
-        for (let i = 0; i < parser.mappedValues["PSYNC"].length; i++) {
-            connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
-            const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
-            connection.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
-        }
-    }
+    connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
+    sendRDBFile(connection)
+
 }
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
@@ -72,7 +73,6 @@ const handleParserCommands = (data, parser, connection) => {
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection);
     handleREPLCONFCommand(parser, connection);
-    handlePSYNCCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     parser.resetParser();
@@ -127,9 +127,11 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        if (parser.FULLRESYNC) {
+            handlePSYNCCommand(parser, connection)
+        }
     })
     connection.on('close', () => {
-        // Remove the parser when the client disconnects
         clientParsers.delete(clientId);
     });
 

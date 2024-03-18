@@ -33,6 +33,7 @@
 class Parser {
 
     constructor(port, role) {
+        this.FULLRESYNC = false
         this.pingCount = 0;
         this.savedDict = {}
         this.mappedValues = {}
@@ -42,6 +43,11 @@ class Parser {
             master_replid: "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb",
             master_repl_offset: 0
         }
+    }
+    setInfoData(master_replid, master_repl_offset) {
+        this.master_replid = master_replid
+        this.master_repl_offset = master_repl_offset
+        this.FULLRESYNC = true
     }
     generateInfoString() {
         const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
@@ -107,11 +113,7 @@ class Parser {
                     case 'PSYNC':
                         let master_replid = variableName;
                         let master_repl_offset = values[val + 2];
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push(["+FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']);
-                        } else {
-                            this.mappedValues[command] = [["+FULLRESYNC", "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb", '0']];
-                        }
+                        setInfoData(master_replid, master_repl_offset)
                         break;
 
 
