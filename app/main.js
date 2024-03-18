@@ -51,8 +51,9 @@ const sendReplicaCommands = (parser, data) => {
         const replicaParser = clientParsers.get(replicaClientId);
         replicaParser.savedDict = parser.savedDict
 
-        handleGetCommand(replicaParser, replica);
         replicaParser.setData(data.toString());
+        handleGetCommand(replicaParser, replica);
+
     }
 }
 const handlePSYNCCommand = (parser, connection) => {
