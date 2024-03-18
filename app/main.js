@@ -76,6 +76,7 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
+    console.log(parser.mappedValues)
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection);
@@ -137,7 +138,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        console.log(parser.mappedValues)
+
         // for (const [key, val] of Object.entries(parser.mappedValues)) {
         //     console.log(key)
         //     console.log(val)
