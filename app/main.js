@@ -146,7 +146,7 @@ const server = net.createServer((connection) => {
         if (parser.FULLRESYNC && parser.mappedValues['SET']) {
             for (const replica of replicaList) {
                 console.log(replica)
-                replica.write(createRespArrayMsg(data));
+                replica.write(data);
             }
         }
         replyHandShake(parser, connection);
