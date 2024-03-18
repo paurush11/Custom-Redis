@@ -49,7 +49,6 @@ const sendReplicaCommands = (parser, data) => {
             clientParsers.set(replicaClientId, new Parser(replicaPort, role));
         }
         const replicaParser = clientParsers.get(replicaClientId);
-        console.log(data);
         handleParserCommands(data, replicaParser, replica)
         // replicaParser.setData(data.toString());
     }
