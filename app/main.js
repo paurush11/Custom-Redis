@@ -76,6 +76,12 @@ const handleParserCommands = (data, parser, connection) => {
     handleREPLCONFCommand(parser, connection);
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
+    if (parser.FULLRESYNC && parser.mappedValues['SET']) {
+        console.log("here")
+        for (const replica of replicaList) {
+            replica.write(data);
+        }
+    }
     parser.resetParser();
 }
 
@@ -143,12 +149,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        if (parser.FULLRESYNC && parser.mappedValues['SET']) {
-            for (const replica of replicaList) {
-                console.log(replica)
-                replica.write(data);
-            }
-        }
+
         replyHandShake(parser, connection);
     })
     connection.on('close', () => {
