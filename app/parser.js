@@ -82,6 +82,8 @@ class Parser {
             }
         }
         if (this.data[0] === "*" || altered) {
+            console.log("I am here")
+            console.log(this.savedDict)
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
             const arrayLength = Number(arrayValues[0].slice(1));
