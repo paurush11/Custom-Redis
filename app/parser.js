@@ -59,6 +59,7 @@ class Parser {
 
     parseInput() {
         if (this.data[0] === "*") {
+            console.log(data)
             const values = this.data.slice(1).split("\r\n").filter((val, index) => !(index & 1));
             const length = values[0];
             console.log(values);
