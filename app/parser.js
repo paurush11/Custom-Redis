@@ -100,6 +100,7 @@ class Parser {
                         this.saveInMappedValues(command, variableName)
                         break;
                     case 'REPLCONF':
+                        console.log(valArray)
                         this.saveInMappedValues(command, 'OK')
                         break;
                     case 'PSYNC':
@@ -157,7 +158,7 @@ class Parser {
         console.log("display ping count")
         console.log(this.pingCount)
         console.log("display savedValues")
-        console.log(this.savedDict)
+        console.log(savedDict)
         console.log("display port")
         console.log(this.port)
         console.log("*************************\n")
