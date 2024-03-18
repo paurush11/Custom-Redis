@@ -49,8 +49,9 @@ const sendReplicaCommands = (parser, data) => {
             clientParsers.set(replicaClientId, new Parser(replicaPort, role));
         }
         const replicaParser = clientParsers.get(replicaClientId);
-        replicaParser.savedDict = parser.savedDict
-
+        // replicaParser.savedDict = parser.savedDict
+        console.log(parser.savedDict)
+        console.log(replicaParser.savedDict)
         replicaParser.setData(data.toString());
         handleGetCommand(replicaParser, replica);
 
@@ -79,8 +80,7 @@ const handleInfoCommand = (parser, connection) => {
 }
 
 const handleGetCommand = (parser, connection) => {
-    console.log(parser.mappedValues)
-    console.log(parser.savedDict)
+
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
