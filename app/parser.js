@@ -70,10 +70,11 @@ class Parser {
         let arrayMessage = this.data.split("\r\n");
         let altered = false
         if (this.data[0] === '+') {
+            console.log(arrayMessage)
             arrayMessage = arrayMessage.slice(7);
             console.log(arrayMessage)
             arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
-            altered = true;
+            // altered = true;
             console.log(arrayMessage)
         }
         if (this.data[0] === "*" || altered) {
