@@ -73,6 +73,7 @@ class Parser {
             arrayMessage = arrayMessage.slice(7);
             arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
             altered = true;
+            console.log(arrayMessage)
         }
         if (this.data[0] === "*" || altered) {
             let arrayValues = arrayMessage;
