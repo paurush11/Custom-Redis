@@ -72,7 +72,7 @@ class Parser {
         if (this.data[0] === '+') {
 
             if (arrayMessage.length > 6) {
-                arrayMessage = arrayMessage.slice(7);
+                arrayMessage = arrayMessage.slice(6);
                 arrayMessage.splice(0, 0, '*' + 3)
                 console.log(arrayMessage)
                 altered = true;
