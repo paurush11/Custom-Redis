@@ -19,18 +19,19 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
-const handleSetCommand = (parser, connection) => {
+const handleSetCommand = (data, parser, connection) => {
     if (parser.mappedValues["SET"]) {
         for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
             connection.write(`+OK\r\n`)
         }
     }
 }
-const handleREPLCONFCommand = (parser, connection) => {
+const handleREPLCONFCommand = (data, parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
         for (let i = 0; i < parser.mappedValues["REPLCONF"].length; i++) {
             connection.write(`+OK\r\n`)
         }
+
     }
 }
 const sendRDBFile = (connection) => {
@@ -42,7 +43,7 @@ const sendReplicaCommands = (data) => {
         replica.write(data);
     }
 }
-const handlePSYNCCommand = (parser, connection) => {
+const handlePSYNCCommand = (data, parser, connection) => {
     if (parser.mappedValues["REPLCONF"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
@@ -53,7 +54,7 @@ const handlePSYNCCommand = (parser, connection) => {
         }
     }
 }
-const handleInfoCommand = (parser, connection) => {
+const handleInfoCommand = (data, parser, connection) => {
     if (parser.mappedValues["INFO"]) {
         const role = masterSlavePorts.has(parser.port) ? 'slave' : 'master';
         const finalString = parser.generateInfoString()
@@ -68,7 +69,7 @@ const handleInfoCommand = (parser, connection) => {
     }
 }
 
-const handleGetCommand = (parser, connection) => {
+const handleGetCommand = (data, parser, connection) => {
     if (parser.mappedValues["GET"]) {
         for (let i = 0; i < parser.mappedValues["GET"].length; i++) {
             const val = parser.getValue(parser.mappedValues["GET"][i]);
@@ -82,14 +83,11 @@ const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
-    handleSetCommand(parser, connection);
-    handleREPLCONFCommand(parser, connection);
-    handleGetCommand(parser, connection);
-    handleInfoCommand(parser, connection);
-    handlePSYNCCommand(parser, connection);
-    // if (!parser.mappedValues["PING"] && !parser.mappedValues["ECHO"]) {
-    //     sendReplicaCommands(data);
-    // }
+    handleSetCommand(data, parser, connection);
+    handleREPLCONFCommand(data, parser, connection);
+    handleGetCommand(data, parser, connection);
+    handleInfoCommand(data, parser, connection);
+    handlePSYNCCommand(data, parser, connection);
     parser.resetParser();
 }
 
