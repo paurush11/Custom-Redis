@@ -5,6 +5,7 @@ const { encodeOutput, encodeArrayOutput } = require("./Utils/sendMessages");
 const clientParsers = new Map();
 const masterSlavePorts = new Map();
 const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
+const replicaList = [];
 
 const handlePing = (parser, connection) => {
     for (let i = 0; i < parser.pingCount; i++) {
@@ -23,9 +24,6 @@ const handleSetCommand = (parser, connection) => {
         for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
             connection.write(`+OK\r\n`)
         }
-    }
-    if (parser.FULLRESYNC) {
-        propogateSavedCommands(parser)
     }
 }
 const handleREPLCONFCommand = (parser, connection) => {
@@ -101,6 +99,11 @@ const propogateSavedCommands = (parser) => {
 }
 const replyHandShake = (parser, connection) => {
     if (parser.FULLRESYNC) {
+        if(replicaList){
+            replicaList.push(connection);
+        }else{
+            replicaList = [connection];
+        }
         handlePSYNCCommand(parser, connection)
     }
 }
@@ -140,6 +143,11 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        if (parser.FULLRESYNC && parser.mappedValues['SET']) {
+            for (const replica of replicaList) {
+                replica.write(createRespArrayMsg(data));
+              }
+        }
         replyHandShake(parser, connection);
     })
     connection.on('close', () => {
