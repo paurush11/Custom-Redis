@@ -68,7 +68,7 @@ class Parser {
     }
 
     sendAck() {
-        return encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset]);
+        return encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset.toString()]);
     }
 
     parseInput() {
@@ -108,11 +108,11 @@ class Parser {
                     case 'REPLCONF':
                         if (this.INFO.role === "slave" && variableName.toUpperCase() === "GETACK") {
                             this.saveInMappedValues(command, this.sendAck())
-                        }else{
+                        } else {
                             this.saveInMappedValues(command, 'OK')
                         }
                         console.log(valArray)
-                       
+
                         break;
                     case 'PSYNC':
                         let master_replid = variableName;
