@@ -113,7 +113,7 @@ class Parser {
                     case 'PSYNC':
                         let master_replid = variableName;
                         let master_repl_offset = values[val + 2];
-                        setInfoData(master_replid, master_repl_offset)
+                        this.setInfoData(master_replid, master_repl_offset)
                         break;
 
 
