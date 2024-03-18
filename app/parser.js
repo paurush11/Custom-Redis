@@ -74,7 +74,7 @@ class Parser {
             if (arrayMessage.length > 6) {
                 console.log(arrayMessage);
                 arrayMessage = arrayMessage.slice(7);
-                // arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
+                arrayMessage = arrayMessage.splice(0, 0, '*' + arrayMessage.length)
                 console.log(arrayMessage);
                 altered = true;
             }
@@ -87,7 +87,7 @@ class Parser {
         if (this.data[0] === "*" || altered) {
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
-            const arrayLength = Number(arrayValues[0].substr(1));
+            const arrayLength = Number(arrayValues[0].slice(1));
             let nextArrayIndex = arrayLength * 2 + 1;
             let currentIndex = 0;
             while (nextArrayIndex) {
