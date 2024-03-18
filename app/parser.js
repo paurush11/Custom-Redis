@@ -59,13 +59,12 @@ class Parser {
 
     parseInput() {
         if (this.data[0] === "*") {
-
-
-            // const val = [this.data] /// [[set,foo,123],[set, bar, 456], [set, baz, 789]]
-            // console.log(val)
+            const arrayValues = this.data.split("\r\n");
+            const arrayLength = arrayValues[0]
+            console.log(arrayValues)
             const values = this.data.slice(1).split("\r\n").filter((val, index) => !(index & 1));
             const length = values[0];
-            console.log(values);
+
             for (let val = 1; val <= length; val += 2) {
                 let command = values[val].toUpperCase();
                 let variableName = values[val + 1];
