@@ -76,13 +76,13 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
-    // handlePing(parser, connection);
-    // handleEchoCommand(parser, connection);
-    // handleSetCommand(parser, connection);
-    // handleREPLCONFCommand(parser, connection);
-    // handleGetCommand(parser, connection);
-    // handleInfoCommand(parser, connection);
-    // handlePSYNCCommand(parser, connection);
+    handlePing(parser, connection);
+    handleEchoCommand(parser, connection);
+    handleSetCommand(parser, connection);
+    handleREPLCONFCommand(parser, connection);
+    handleGetCommand(parser, connection);
+    handleInfoCommand(parser, connection);
+    handlePSYNCCommand(parser, connection);
     parser.resetParser();
 }
 
