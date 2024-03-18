@@ -30,6 +30,7 @@
 
 
 
+
 class Parser {
 
     constructor(port, role) {
@@ -57,79 +58,67 @@ class Parser {
         this.parseInput()
     }
 
+    saveInMappedValues(command, variableName) {
+        if (this.mappedValues[command]) {
+            this.mappedValues[command].push(variableName);
+        } else {
+            this.mappedValues[command] = [variableName];
+        }
+    }
+
     parseInput() {
         if (this.data[0] === "*") {
             let arrayValues = this.data.split("\r\n");
-            arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
-            const arrayLength = arrayValues[0].slice(0);
-            console.log(arrayValues)
-            console.log(arrayLength)
-            const values = this.data.slice(1).split("\r\n").filter((val, index) => !(index & 1));
-            const length = values[0];
-
-            for (let val = 1; val <= length; val += 2) {
-                let command = values[val].toUpperCase();
-                let variableName = values[val + 1];
+            // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
+            const arrayLength = Number(arrayValues[0].substr(1));
+            let nextArrayIndex = arrayLength * 2 + 1;
+            let currentIndex = 0;
+            while (nextArrayIndex) {
+                const valArray = arrayValues.slice(currentIndex, nextArrayIndex).filter((val, index) => !(index & 1));
+                let command = valArray[1].toUpperCase();
+                let variableName = valArray[2];
                 switch (command) {
+                    default:
+                        break;
                     case "PING":
                         this.pingCount += 1;
                         break;
                     case 'ECHO':
                     case 'INFO':
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push(variableName);
-                        } else {
-                            this.mappedValues[command] = [variableName];
-                        }
-                        break;
                     case 'GET':
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push(variableName);
-                        } else {
-                            this.mappedValues[command] = [variableName];
-                        }
+                        this.saveInMappedValues(command, variableName)
+                        break;
+                    case 'REPLCONF':
+                        this.saveInMappedValues(command, 'OK')
+                        break;
+                    case 'PSYNC':
+                        let master_replid = variableName;
+                        let master_repl_offset = valArray[3];
+                        this.setInfoData(master_replid, master_repl_offset)
+                        this.saveInMappedValues(command, 'OK')
                         break;
                     case "SET":
-                        let variableValue = values[val + 2];
+                        let variableValue = valArray[3];
                         this.setValue(variableName.toLowerCase(), variableValue);
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push("OK");
-                        } else {
-                            this.mappedValues[command] = ["OK"];
-                        }
-                        let anotherCommand = values[val + 3];
+                        this.saveInMappedValues(command, 'OK')
+                        let anotherCommand = valArray[4];
                         if (anotherCommand) {
                             if (anotherCommand.toLowerCase() === "px") {
-                                const expiresIn = Number(values[val + 4]);
+                                const expiresIn = Number(valArray[5]);
                                 setTimeout(() => {
                                     this.setValue(variableName.toLowerCase(), "ERROR");
                                 }, expiresIn)
                             }
                         }
-                        val += 1;
-                        break;
-                    case 'REPLCONF':
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push("OK");
-                        } else {
-                            this.mappedValues[command] = ["OK"];
-                        }
-                        break;
-                    case 'PSYNC':
-                        let master_replid = variableName;
-                        let master_repl_offset = values[val + 2];
-                        this.setInfoData(master_replid, master_repl_offset)
-                        if (this.mappedValues[command]) {
-                            this.mappedValues[command].push("OK");
-                        } else {
-                            this.mappedValues[command] = ["OK"];
-                        }
                         break;
 
-
-                    default:
-                        break;
                 }
+                console.log(valArray);
+                currentIndex = nextArrayIndex;
+                if (arrayValues[nextArrayIndex] === '') break;
+                nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
+                // nextArrayIndex = undefined;
+
             }
         }
     }
@@ -146,6 +135,19 @@ class Parser {
         return this.savedDict[key];
     }
 
+    toString() {
+        ///display all mapped Values 
+
+        console.log("*************************")
+        console.log("display all mapped Values")
+        console.log(this.mappedValues)
+        console.log("display ping count")
+        console.log(this.pingCount)
+        console.log("display savedValues")
+        console.log(this.savedDict)
+        console.log("*************************\n")
+    }
+
 
 }
 
@@ -154,12 +156,38 @@ module.exports = {
     Parser
 }
 
+// const data = `*3\r\n$3\r\nset\r\n$3\r\nfoo\r\n$3\r\n123\r\n*3\r\n$3\r\nset\r\n$3\r\nbar\r\n$3\r\n456\r\n*3\r\n$3\r\nset\r\n$3\r\nbaz\r\n$3\r\n789\r\n`
+// const data2 = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`
+// const data3 = `*1\r\n$4\r\nPING\r\n`
+// const data4 = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`
+// const data5 = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
+// const data6 = `*2\r\n$4\r\ninfo\r\n$11\r\nreplication\r\n`
+// const data7 = `*2\r\n$3\r\nget\r\n$5\r\ngrape\r\n`
+// const data8 = `*5\r\n$3\r\nset\r\n$5\r\ngrape\r\n$6\r\nbanana\r\n$2\r\npx\r\n$3\r\n100\r\n`
 
-
-// console.log(`*1\r\n$4\r\nping\r\n`)
-// // console.log(encodeOutput('ping'))
-// // // console.log(encodeArrayOutput([]))
-// console.log(encodeArrayOutput(['ping']))
-// console.log(encodeArrayOutput([1, 2, 3, 4]))
-// console.log(encodeArrayOutput([1, 2, ["hello", "world"], 3, 4]))
-// console.log(encodeArrayOutput([["hello", "world"], [3, 4]])) 
+// const port = 5555;
+// const parser = new Parser(port, 'master');
+// parser.setData(data);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data2);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data3);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data4);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data5);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data6);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data7);
+// parser.toString()
+// parser.resetParser()
+// parser.setData(data8);
+// parser.toString()
+// parser.resetParser()
