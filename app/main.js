@@ -54,6 +54,7 @@ const handlePSYNCCommand = (parser, connection) => {
         sendRDBFile(connection)
         replicaList.push(connection);
         console.log(parser.mappedValues);
+        console.log(parser.port);
     }
 }
 const handleInfoCommand = (parser, connection) => {
