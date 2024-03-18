@@ -68,15 +68,15 @@ class Parser {
 
     parseInput() {
         let arrayMessage = this.data.split("\r\n");
-        console.log(arrayMessage);
+        // console.log(arrayMessage);
         let altered = false
         if (this.data[0] === '+') {
 
             if (arrayMessage.length > 6) {
                 arrayMessage = arrayMessage.slice(6);
-                console.log(arrayMessage)
+                // console.log(arrayMessage)
                 arrayMessage.splice(0, 0, '*' + 3)
-                console.log(arrayMessage)
+                // console.log(arrayMessage)
 
                 altered = true;
             }
@@ -85,6 +85,7 @@ class Parser {
             console.log("I am here")
             console.log(this.savedDict)
             let arrayValues = arrayMessage;
+            console.log(arrayValues)
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
             const arrayLength = Number(arrayValues[0].slice(1));
             let nextArrayIndex = arrayLength * 2 + 1;
