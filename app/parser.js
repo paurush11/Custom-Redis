@@ -134,10 +134,10 @@ class Parser {
                 if (arrayValues[nextArrayIndex] === '') break;
                 nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
                 // nextArrayIndex = undefined;
-               
+
             }
             console.log("I am here")
-            console.log(this.savedDict)
+            console.log(this.toString())
         }
     }
 
@@ -174,38 +174,38 @@ module.exports = {
     Parser
 }
 
-// const data = `*3\r\n$3\r\nset\r\n$3\r\nfoo\r\n$3\r\n123\r\n*3\r\n$3\r\nset\r\n$3\r\nbar\r\n$3\r\n456\r\n*3\r\n$3\r\nset\r\n$3\r\nbaz\r\n$3\r\n789\r\n`
-// const data2 = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`
-// const data3 = `*1\r\n$4\r\nPING\r\n`
-// const data4 = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`
-// const data5 = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
-// const data6 = `*2\r\n$4\r\ninfo\r\n$11\r\nreplication\r\n`
-// const data7 = `*2\r\n$3\r\nget\r\n$5\r\ngrape\r\n`
-// const data8 = `*5\r\n$3\r\nset\r\n$5\r\ngrape\r\n$6\r\nbanana\r\n$2\r\npx\r\n$3\r\n100\r\n`
+const data = `*3\r\n$3\r\nset\r\n$3\r\nfoo\r\n$3\r\n123\r\n*3\r\n$3\r\nset\r\n$3\r\nbar\r\n$3\r\n456\r\n*3\r\n$3\r\nset\r\n$3\r\nbaz\r\n$3\r\n789\r\n`
+const data2 = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`
+const data3 = `*1\r\n$4\r\nPING\r\n`
+const data4 = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`
+const data5 = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
+const data6 = `*2\r\n$4\r\ninfo\r\n$11\r\nreplication\r\n`
+const data7 = `*2\r\n$3\r\nget\r\n$5\r\ngrape\r\n`
+const data8 = `*5\r\n$3\r\nset\r\n$5\r\ngrape\r\n$6\r\nbanana\r\n$2\r\npx\r\n$3\r\n100\r\n`
 
-// const port = 5555;
-// const parser = new Parser(port, 'master');
-// parser.setData(data);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data2);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data3);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data4);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data5);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data6);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data7);
-// parser.toString()
-// parser.resetParser()
-// parser.setData(data8);
-// parser.toString()
-// parser.resetParser()
+const port = 5555;
+const parser = new Parser(port, 'master');
+parser.setData(data);
+parser.toString()
+parser.resetParser()
+parser.setData(data2);
+parser.toString()
+parser.resetParser()
+parser.setData(data3);
+parser.toString()
+parser.resetParser()
+parser.setData(data4);
+parser.toString()
+parser.resetParser()
+parser.setData(data5);
+parser.toString()
+parser.resetParser()
+parser.setData(data6);
+parser.toString()
+parser.resetParser()
+parser.setData(data7);
+parser.toString()
+parser.resetParser()
+parser.setData(data8);
+parser.toString()
+parser.resetParser()
