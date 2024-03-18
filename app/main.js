@@ -34,9 +34,6 @@ const handleREPLCONFCommand = (parser, connection) => {
         for (let i = 0; i < parser.mappedValues["REPLCONF"].length; i++) {
             if (parser.mappedValues["REPLCONF"][i] === 'OK') {
                 connection.write(handleOkValue());
-            } else {
-                console.log(parser.sendAck());
-                connection.write(parser.sendAck());
             }
         }
     }
@@ -114,6 +111,9 @@ const handleHandshake = () => {
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
+                if (replicaParser.mappedValues["REPLCONF"]) {
+                    replicaParser.sendAck();
+                }
 
 
             })
