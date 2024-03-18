@@ -39,15 +39,15 @@ const sendRDBFile = (connection) => {
 }
 
 const handlePSYNCCommand = (parser, connection) => {
-    connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
-    sendRDBFile(connection)
-    if (replicaList) {
-        replicaList.push(connection);
-    } else {
-        replicaList = [connection];
+    if (parser.mappedValues["REPLCONF"]) {
+        connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
+        sendRDBFile(connection)
+        if (replicaList) {
+            replicaList.push(connection);
+        } else {
+            replicaList = [connection];
+        }
     }
-
-
 }
 const handleInfoCommand = (parser, connection) => {
     if (parser.mappedValues["INFO"]) {
