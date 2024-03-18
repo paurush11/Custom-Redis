@@ -67,7 +67,7 @@ class Parser {
     }
 
     parseInput() {
-        console.log([this.data])
+
         if (this.data[0] === "*") {
             let arrayValues = this.data.split("\r\n");
             console.log(arrayValues)
