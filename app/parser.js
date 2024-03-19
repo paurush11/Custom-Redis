@@ -103,7 +103,9 @@ class Parser {
                         this.pingCount += 1;
                         break;
                     case "WAIT":
-                        this.saveInMappedValues(command, 'OK')
+                        let replicaName = valArray[2];
+                        let timeout = valArray[3];
+                        this.saveInMappedValues(command, replicaName + ":" + timeout)
                         break;
                     case 'ECHO':
                     case 'INFO':

@@ -25,7 +25,9 @@ const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             connection.write(`:${replicaList.length}\r\n`);
-
+            const [replicaNumber, timeout] = parser.mappedValues["WAIT"].split(":");
+            console.log(replicaNumber)
+            console.log(timeout)
         }
     }
 }
@@ -172,7 +174,7 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
 
     connection.on('data', data => {
-        console.log(data.toString())
+
         handleParserCommands(data, parser, connection);
     })
 
