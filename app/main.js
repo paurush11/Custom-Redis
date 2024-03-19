@@ -6,8 +6,8 @@ const clientParsers = new Map();
 const masterSlavePorts = new Map();
 const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
 const replicaList = [];
-let ackCounter = 0;
-let wait = {}
+let activeWaits = [];
+
 
 const handlePing = (parser, connection) => {
     for (let i = 0; i < parser.pingCount; i++) {
@@ -21,43 +21,71 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
+// const handleWaitCommand = (parser, connection) => {
+//     if (parser.mappedValues["WAIT"]) {
+//         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
+//             connection.write(`:${replicaList.length}\r\n`);
+//             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
+//             // make a wait
+//             wait = {}
+//             wait.noOfAckReplies = 0;
+//             wait.noOfReqReplies = replicaNumber;
+//             wait.isDone = false;
+//             wait.connection = connection;
+//             wait.timeout = setTimeout(() => {
+//                 respondToWait(parser,wait,false);
+//             }, timeout)
+//             ///  ask all replicas to acknowledge and once ack received then do rest;
+//             // for (const [replica] of replicaList) {
+//             //     replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
+//             // }
+
+//         }
+//     }
+// }
 const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
-            connection.write(`:${replicaList.length}\r\n`);
-            const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
-            // make a wait
-            wait = {
-                noOfAckReplies: 0,
+            const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":").map(Number);
+            let wait = {
+                noOfAckReplies: ackCounter,
                 noOfReqReplies: replicaNumber,
                 connection: connection,
-                timeout: setTimeout(() => {
-                    respondToWait(wait, false); // Timeout occurred
-                }, timeout)
             };
 
-            // Check if the required number of acks already received before WAIT command is issued
+            activeWaits.push(wait);
+
             if (ackCounter >= replicaNumber) {
-                respondToWait(wait, true); // Enough acks already received
+                respondToWait(wait, true);
+            } else {
+                // Set a timeout to handle the wait expiration
+                setTimeout(() => {
+                    respondToWait(wait, false);
+                }, timeout);
             }
         }
     }
+};
+
+
+const respondToWait = (parser, wait, immediate) => {
+    if (immediate) {
+        wait.connection.write(`:${wait.noOfReqReplies}\r\n`);
+    } else {
+        wait.connection.write(`:${wait.noOfAckReplies}\r\n`);
+    }
+
+    activeWaits = activeWaits.filter(w => w !== wait);
+    
 }
 const acknowledgeFromReplica = () => {
     ackCounter++;
-    // If there is an active wait command, check if it can be responded now
-    if (wait && ackCounter >= wait.noOfReqReplies) {
-        respondToWait(wait, true);
-    }
-};
-const respondToWait = (wait, immediate) => {
-    clearTimeout(wait.timeout); // Always clear the timeout
-    if (immediate) {
-        wait.connection.write(`:${wait.noOfReqReplies}\r\n`); // Send required number as all acks received
-    } else {
-        wait.connection.write(`:${ackCounter}\r\n`); // Send actual number of acks received till timeout
-    }
-    ackCounter = 0; // Reset counter after responding to WAIT
+    activeWaits.forEach(wait => {
+        if (ackCounter >= wait.noOfReqReplies && !wait.responded) {
+            respondToWait(wait, true);
+            wait.responded = true;  // Mark as responded to avoid duplicate responses
+        }
+    });
 };
 
 const handleSetCommand = (parser, connection, data) => {
@@ -133,8 +161,8 @@ const handleParserCommands = (data, parser, connection) => {
 }
 const handleSlaveServerAck = (replicaParser, slaveSlaveConnection) => {
     if (replicaParser.mappedValues["REPLCONF"]) {
-        acknowledgeFromReplica()
         slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
+        acknowledgeFromReplica()
     }
 }
 const handleHandshake = () => {
