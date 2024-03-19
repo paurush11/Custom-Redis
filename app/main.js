@@ -25,7 +25,7 @@ const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             console.log("here")
-            connection.write(`$0\r\n`);
+            connection.write(`:$0\r\n`);
         }
     }
 }
