@@ -86,7 +86,8 @@ class Parser {
         }
         if (this.data[0] === "*" || altered) {
             if (this.INFO.role === "slave") {
-                console.log(this.data.length())
+                const str = this.data
+                console.log(str.length())
             }
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';

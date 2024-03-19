@@ -48,9 +48,9 @@ function encodeArrayOutput(dataArr) {
 // console.log(encodeArrayOutput([1, 2, 3, 4]))
 // console.log(encodeArrayOutput([1, 2, ["hello", "world"], 3, 4]))
 // console.log(encodeArrayOutput([["hello", "world"], [3, 4]]))
-const str = encodeArrayOutput(['replconf', 'getack', '*'])
-console.log(str.length)
-console.log(str)
+// const str = encodeArrayOutput(['replconf', 'getack', '*'])
+// console.log(str.length)
+// console.log(str)
 module.exports = {
     encodeOutput,
     encodeArrayOutput,
