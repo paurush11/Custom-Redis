@@ -98,7 +98,7 @@ class Parser {
 
                 const str = encodeArrayOutput(valArray.slice(1));
                 this.master_repl_offset += str.length;
-                console.log.log(this.master_repl_offset)
+                console.log(this.master_repl_offset)
 
                 switch (command) {
                     default:
