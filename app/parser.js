@@ -47,8 +47,8 @@ class Parser {
 
     }
     setInfoData(master_replid, master_repl_offset) {
-        this.master_replid = master_replid
-        this.master_repl_offset = master_repl_offset
+        this.INFO.master_replid = master_replid
+        this.INFO.master_repl_offset = master_repl_offset
     }
     generateInfoString() {
         const bulkString = Object.entries(this.INFO).map(([key, value]) => `${key}:${value}`).join("\r\n");
@@ -97,8 +97,8 @@ class Parser {
                 let variableName = valArray[2];
 
                 const str = encodeArrayOutput(valArray.slice(1));
-                this.master_repl_offset += str.length;
-                console.log(this.master_repl_offset)
+                this.INFO.master_repl_offset += str.length;
+                console.log(this.INFO.master_repl_offset)
 
                 switch (command) {
                     default:
