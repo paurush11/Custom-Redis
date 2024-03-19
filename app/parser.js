@@ -161,7 +161,6 @@ class Parser {
     resetParser() {
         this.mappedValues = {}
         this.pingCount = 0;
-        this.port = 0;
     }
     setValue(key, value) {
         savedDict[key] = value;
