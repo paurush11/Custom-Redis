@@ -25,7 +25,7 @@ const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             connection.write(`:${replicaList.length}\r\n`);
-            connection.write(`:${replicaList.length}\r\n`);
+
         }
     }
 }
@@ -119,6 +119,7 @@ const handleHandshake = () => {
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
+                console.log(data.toString())
                 if (replicaParser.mappedValues["REPLCONF"]) {
                     slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
                 }
