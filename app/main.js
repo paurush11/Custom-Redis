@@ -111,7 +111,10 @@ const handleHandshake = () => {
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
                 if (replicaParser.mappedValues["REPLCONF"]) {
-                    slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"][0]);
+                    for (let i = 0; i < replicaParser.mappedValues["REPLCONF"].length; i++) {
+                        slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"][i]);
+                    }
+
                 }
 
 
