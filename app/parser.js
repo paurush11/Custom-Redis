@@ -137,11 +137,6 @@ class Parser {
                         break;
 
                 }
-                // console.log(valArray);
-                currentIndex = nextArrayIndex;
-                if (arrayValues[nextArrayIndex] === '') break;
-                nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
-                // nextArrayIndex = undefined;
                 if (this.INFO.role === "slave") {
                     console.log("here")
                     const str = encodeArrayOutput(valArray.slice(1));
@@ -152,6 +147,13 @@ class Parser {
                     console.log(valArray.slice(1))
 
                 }
+
+                // console.log(valArray);
+                currentIndex = nextArrayIndex;
+                if (arrayValues[nextArrayIndex] === '') break;
+                nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
+                // nextArrayIndex = undefined;
+
             }
 
             // this.toString()

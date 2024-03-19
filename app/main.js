@@ -44,7 +44,7 @@ const sendRDBFile = (connection) => {
 }
 const sendReplicaCommands = (parser, data) => {
     if (replicaList.length == 0) return;
-    for (const [replica, replicaPort] of replicaList) {
+    for (const [replica] of replicaList) {
         replica.write(data);
     }
 }
