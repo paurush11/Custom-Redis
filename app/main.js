@@ -94,6 +94,7 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
+    console.log(parser.port)
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection, data);
@@ -102,7 +103,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleInfoCommand(parser, connection);
     handlePSYNCCommand(parser, connection);
     handleWaitCommand(parser, connection);
-    parser.resetParser();
+
 }
 const handleSlaveServerAck = (replicaParser, slaveSlaveConnection) => {
     if (replicaParser.mappedValues["REPLCONF"]) {
@@ -179,6 +180,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        parser.resetParser();
     })
 
     connection.on('close', () => {
