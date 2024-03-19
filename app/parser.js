@@ -149,7 +149,7 @@ class Parser {
                     this.INFO.master_repl_offset += str.length;
                     console.log(this.INFO.master_repl_offset)
                     console.log(str.length)
-                    console.logv(valArray.slice(1))
+                    console.log(valArray.slice(1))
 
                 }
             }
