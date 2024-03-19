@@ -122,7 +122,7 @@ const handleHandshake = () => {
                 if (replicaParser.mappedValues["REPLCONF"]) {
                     slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
                 }
-                handShakeCount += 1;
+
             })
         })
 
@@ -174,15 +174,17 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        console.log(handShakeCount)
+        handShakeCount += 1;
+
     })
     connection.on('close', () => {
+        handShakeCount -= 1;
         clientParsers.delete(clientId);
     });
 
 
 })
-
+console.log(handShakeCount)
 getCommandLineArgs();
 
 
