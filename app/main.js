@@ -26,11 +26,26 @@ const handleWaitCommand = (parser, connection) => {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             connection.write(`:${replicaList.length}\r\n`);
             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
-            // ask all replicas to acknowledge and once ack received then do rest;
-            // console.log(replicaList);
+            // make a wait
+            this.wait = {}
+            this.wait.noOfAckReplies = 0;
+            this.wait.noOfReqReplies = replicaNumber;
+            this.wait.isDone = false;
+            this.wait.timeout = setTimeout(() => {
+                respondToWait();
+            }, timeout)
+            ///  ask all replicas to acknowledge and once ack received then do rest;
+            for (const [replica] of replicaList) {
+                replica.write(encodeArrayOutput["REPLCONF", "GETACK", "*"]);
+            }
         }
     }
 }
+
+const respondToWait = () => {
+    clearTimeout(this.wait.timeout);
+}
+
 const handleSetCommand = (parser, connection, data) => {
     if (parser.mappedValues["SET"]) {
         for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
@@ -60,8 +75,7 @@ const sendReplicaCommands = (parser, data) => {
 }
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
-        console.log("in here")
-        console.log("parser.port" + parser.port + "---" + port)
+
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${0}\r\n`)
         sendRDBFile(connection)
         replicaList.push([connection, parser.port]);
@@ -94,7 +108,6 @@ const handleGetCommand = (parser, connection) => {
 
 const handleParserCommands = (data, parser, connection) => {
     parser.setData(data.toString());
-    console.log(parser.port)
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection, data);
