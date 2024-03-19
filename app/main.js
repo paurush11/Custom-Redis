@@ -26,8 +26,8 @@ const handleWaitCommand = (parser, connection) => {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             connection.write(`:${replicaList.length}\r\n`);
             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
-            console.log(replicaNumber)
-            console.log(timeout)
+            // ask all replicas to acknowledge and once ack received then do rest;
+            console.log(replicaList);
         }
     }
 }
@@ -102,7 +102,11 @@ const handleParserCommands = (data, parser, connection) => {
     handleWaitCommand(parser, connection);
     parser.resetParser();
 }
-
+const handleSlaveServerAck = (replicaParser, slaveSlaveConnection) => {
+    if (replicaParser.mappedValues["REPLCONF"]) {
+        slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
+    }
+}
 const handleHandshake = () => {
     const role = masterSlavePorts.has(port) ? 'slave' : 'master';
 
@@ -121,9 +125,7 @@ const handleHandshake = () => {
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
-                if (replicaParser.mappedValues["REPLCONF"]) {
-                    slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
-                }
+                handleSlaveServerAck(replicaParser, slaveSlaveConnection);
             })
         })
 
