@@ -68,7 +68,7 @@ const handleWaitCommand = (parser, connection) => {
 };
 
 
-const respondToWait = (parser, wait, immediate) => {
+const respondToWait = (wait, immediate) => {
     if (immediate) {
         wait.connection.write(`:${wait.noOfReqReplies}\r\n`);
     } else {
@@ -76,7 +76,7 @@ const respondToWait = (parser, wait, immediate) => {
     }
 
     activeWaits = activeWaits.filter(w => w !== wait);
-    
+
 }
 const acknowledgeFromReplica = () => {
     ackCounter++;
