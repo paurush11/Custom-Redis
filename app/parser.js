@@ -114,8 +114,6 @@ class Parser {
                         } else {
                             this.saveInMappedValues(command, 'OK')
                         }
-
-
                         break;
                     case 'PSYNC':
                         let master_replid = variableName;
@@ -145,7 +143,9 @@ class Parser {
                 nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
                 // nextArrayIndex = undefined;
                 if (this.INFO.role === "slave") {
+                    console.log("here")
                     const str = encodeArrayOutput(valArray.slice(1));
+                    console.log(this.INFO.master_repl_offset)
                     this.INFO.master_repl_offset += str.length;
                     console.log(this.INFO.master_repl_offset)
                     console.log(str.length)
