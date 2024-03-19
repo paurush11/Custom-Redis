@@ -97,8 +97,8 @@ class Parser {
                 let command = valArray[1].toUpperCase();
                 let variableName = valArray[2];
                 if (this.INFO.role === "slave") {
-                    const str = encodeArrayOutput(valArray);
-                    console.log(valArray);
+                    const str = encodeArrayOutput(valArray.slice(1));
+                    console.log(valArray.slice(1));
                     console.log(str.length)
                 }
 
