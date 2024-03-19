@@ -6,7 +6,7 @@ const clientParsers = new Map();
 const masterSlavePorts = new Map();
 const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
 const replicaList = [];
-let handShakeCount = 0;
+
 
 
 const handlePing = (parser, connection) => {
@@ -25,7 +25,7 @@ const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             console.log("here")
-            connection.write(`:0\r\n`);
+            connection.write(`:${replicaList.length}\r\n`);
         }
     }
 }
@@ -122,7 +122,6 @@ const handleHandshake = () => {
                 if (replicaParser.mappedValues["REPLCONF"]) {
                     slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
                 }
-
             })
         })
 
@@ -174,12 +173,9 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
-        handShakeCount += 1;
-        console.log(handShakeCount)
     })
-    console.log(replicaList.length)
+
     connection.on('close', () => {
-        handShakeCount -= 1;
         clientParsers.delete(clientId);
     });
 
