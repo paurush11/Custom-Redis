@@ -27,7 +27,7 @@ const handleWaitCommand = (parser, connection) => {
             connection.write(`:${replicaList.length}\r\n`);
             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
             // ask all replicas to acknowledge and once ack received then do rest;
-            console.log(replicaList);
+            // console.log(replicaList);
         }
     }
 }
