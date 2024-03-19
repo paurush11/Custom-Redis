@@ -102,6 +102,9 @@ class Parser {
                     case "PING":
                         this.pingCount += 1;
                         break;
+                    case "WAIT":
+                        this.saveInMappedValues(command, 'OK')
+                        break;
                     case 'ECHO':
                     case 'INFO':
                     case 'GET':
@@ -139,14 +142,8 @@ class Parser {
 
                 }
                 if (this.INFO.role === "slave") {
-                    console.log("here")
                     const str = encodeArrayOutput(valArray.slice(1));
-                    console.log(this.INFO.master_repl_offset)
                     this.INFO.master_repl_offset += str.length;
-                    console.log(this.INFO.master_repl_offset)
-                    console.log(str.length)
-                    console.log(valArray.slice(1))
-
                 }
 
                 // console.log(valArray);

@@ -21,6 +21,15 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
+const handleWaitCommand = (parser, connection) => {
+    if (parser.mappedValues["WAIT"]) {
+        for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
+            if(replicaList.length === 0){
+                connection.write(encodeOutput('0'));
+            }
+        }
+    }
+}
 const handleSetCommand = (parser, connection, data) => {
     if (parser.mappedValues["SET"]) {
         for (let i = 0; i < parser.mappedValues["SET"].length; i++) {
@@ -89,6 +98,7 @@ const handleParserCommands = (data, parser, connection) => {
     handleGetCommand(parser, connection);
     handleInfoCommand(parser, connection);
     handlePSYNCCommand(parser, connection);
+    handleWaitCommand(parser, connection);
     parser.resetParser();
 }
 
