@@ -175,6 +175,7 @@ const server = net.createServer((connection) => {
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
         handShakeCount += 1;
+        console.log(handShakeCount)
 
     })
     connection.on('close', () => {
@@ -184,7 +185,7 @@ const server = net.createServer((connection) => {
 
 
 })
-console.log(handShakeCount)
+
 getCommandLineArgs();
 
 
