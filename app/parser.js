@@ -87,6 +87,7 @@ class Parser {
         if (this.data[0] === "*" || altered) {
             if (this.INFO.role === "slave") {
                 const str = encodeArrayOutput(arrayMessage);
+                console.log(arrayMessage);
                 console.log(str.length)
             }
             let arrayValues = arrayMessage;
@@ -118,7 +119,7 @@ class Parser {
                         } else {
                             this.saveInMappedValues(command, 'OK')
                         }
-                        console.log(valArray)
+
 
                         break;
                     case 'PSYNC':
