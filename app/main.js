@@ -35,9 +35,9 @@ const handleWaitCommand = (parser, connection) => {
                 respondToWait(wait);
             }, timeout)
             ///  ask all replicas to acknowledge and once ack received then do rest;
-            for (const [replica] of replicaList) {
-                replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
-            }
+            // for (const [replica] of replicaList) {
+            //     replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
+            // }
 
         }
     }
