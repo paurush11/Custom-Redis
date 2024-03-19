@@ -25,7 +25,7 @@ const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
             connection.write(`:${replicaList.length}\r\n`);
-            const [replicaNumber, timeout] = parser.mappedValues["WAIT"].split(":");
+            const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
             console.log(replicaNumber)
             console.log(timeout)
         }
