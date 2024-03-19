@@ -27,24 +27,25 @@ const handleWaitCommand = (parser, connection) => {
             connection.write(`:${replicaList.length}\r\n`);
             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
             // make a wait
-            this.wait = {}
-            this.wait.noOfAckReplies = 0;
-            this.wait.noOfReqReplies = replicaNumber;
-            this.wait.isDone = false;
-            this.wait.timeout = setTimeout(() => {
-                respondToWait();
+            wait = {}
+            wait.noOfAckReplies = 0;
+            wait.noOfReqReplies = replicaNumber;
+            wait.isDone = false;
+            wait.timeout = setTimeout(() => {
+                respondToWait(wait);
             }, timeout)
             ///  ask all replicas to acknowledge and once ack received then do rest;
-            for (const [replica, port] of replicaList) {
-                console.log(replica)
-                replica.write(encodeArrayOutput["REPLCONF", "GETACK", "*"]);
+            for (const [replica] of replicaList) {
+                replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
             }
+
         }
     }
 }
 
-const respondToWait = () => {
-    clearTimeout(this.wait.timeout);
+const respondToWait = (wait) => {
+    console.log("here")
+    clearTimeout(wait.timeout);
 }
 
 const handleSetCommand = (parser, connection, data) => {
