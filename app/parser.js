@@ -110,7 +110,7 @@ class Parser {
                     case 'REPLCONF':
                         if (this.INFO.role === "slave" && variableName.toUpperCase() === "GETACK") {
                             // const recieved = encodeArrayOutput(['replconf', 'GETACK', '*']);
-                            this.saveInMappedValues(command, variableName.toUpperCase())
+                            this.saveInMappedValues(command, this.sendAck())
                         } else {
                             this.saveInMappedValues(command, 'OK')
                         }
