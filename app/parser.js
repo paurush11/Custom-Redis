@@ -68,7 +68,6 @@ class Parser {
     }
     sendAck() {
         const str = encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset.toString()]);
-        this.master_repl_offset += str.length;
         return str;
     }
 
@@ -96,11 +95,9 @@ class Parser {
                 const valArray = arrayValues.slice(currentIndex, nextArrayIndex).filter((val, index) => !(index & 1));
                 let command = valArray[1].toUpperCase();
                 let variableName = valArray[2];
-                if (this.INFO.role === "slave") {
-                    const str = encodeArrayOutput(valArray.slice(1));
-                    console.log(valArray.slice(1));
-                    console.log(str.length)
-                }
+
+                const str = encodeArrayOutput(valArray.slice(1));
+                this.master_repl_offset += str.length;
 
                 switch (command) {
                     default:
