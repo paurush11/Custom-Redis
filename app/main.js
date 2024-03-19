@@ -27,26 +27,38 @@ const handleWaitCommand = (parser, connection) => {
             connection.write(`:${replicaList.length}\r\n`);
             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
             // make a wait
-            wait = {}
-            wait.noOfAckReplies = 0;
-            wait.noOfReqReplies = replicaNumber;
-            wait.isDone = false;
-            wait.timeout = setTimeout(() => {
-                respondToWait(wait);
-            }, timeout)
-            ///  ask all replicas to acknowledge and once ack received then do rest;
-            // for (const [replica] of replicaList) {
-            //     replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
-            // }
+            wait = {
+                noOfAckReplies: 0,
+                noOfReqReplies: replicaNumber,
+                connection: connection,
+                timeout: setTimeout(() => {
+                    respondToWait(wait, false); // Timeout occurred
+                }, timeout)
+            };
 
+            // Check if the required number of acks already received before WAIT command is issued
+            if (ackCounter >= replicaNumber) {
+                respondToWait(wait, true); // Enough acks already received
+            }
         }
     }
 }
-
-const respondToWait = (wait) => {
-    console.log("here")
-    clearTimeout(wait.timeout);
-}
+const acknowledgeFromReplica = () => {
+    ackCounter++;
+    // If there is an active wait command, check if it can be responded now
+    if (wait && ackCounter >= wait.noOfReqReplies) {
+        respondToWait(wait, true);
+    }
+};
+const respondToWait = (wait, immediate) => {
+    clearTimeout(wait.timeout); // Always clear the timeout
+    if (immediate) {
+        wait.connection.write(`:${wait.noOfReqReplies}\r\n`); // Send required number as all acks received
+    } else {
+        wait.connection.write(`:${ackCounter}\r\n`); // Send actual number of acks received till timeout
+    }
+    ackCounter = 0; // Reset counter after responding to WAIT
+};
 
 const handleSetCommand = (parser, connection, data) => {
     if (parser.mappedValues["SET"]) {
@@ -77,7 +89,6 @@ const sendReplicaCommands = (parser, data) => {
 }
 const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
-
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${0}\r\n`)
         sendRDBFile(connection)
         replicaList.push([connection, parser.port]);
