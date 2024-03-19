@@ -125,7 +125,7 @@ class Parser {
                     case 'PSYNC':
                         let master_replid = variableName;
                         let master_repl_offset = valArray[3];
-                        this.setInfoData(master_replid, master_repl_offset)
+                        // this.setInfoData(master_replid, master_repl_offset)
                         this.saveInMappedValues(command, 'OK')
                         break;
                     case "SET":
