@@ -95,12 +95,7 @@ class Parser {
                 const valArray = arrayValues.slice(currentIndex, nextArrayIndex).filter((val, index) => !(index & 1));
                 let command = valArray[1].toUpperCase();
                 let variableName = valArray[2];
-                if (this.INFO.role === "slave") {
-                    const str = encodeArrayOutput(valArray.slice(1));
-                    this.INFO.master_repl_offset += str.length;
-                    console.log(this.INFO.master_repl_offset)
 
-                }
                 switch (command) {
                     default:
                         break;
@@ -150,7 +145,12 @@ class Parser {
                 if (arrayValues[nextArrayIndex] === '') break;
                 nextArrayIndex = currentIndex + Number(arrayValues[nextArrayIndex].substr(1)) * 2 + 1;
                 // nextArrayIndex = undefined;
+                if (this.INFO.role === "slave") {
+                    const str = encodeArrayOutput(valArray.slice(1));
+                    this.INFO.master_repl_offset += str.length;
+                    console.log(this.INFO.master_repl_offset)
 
+                }
             }
 
             // this.toString()
