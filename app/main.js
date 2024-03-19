@@ -91,7 +91,7 @@ const handleGetCommand = (parser, connection) => {
 }
 
 const handleParserCommands = (data, parser, connection) => {
-    parser.setData(data.toString());
+
     handlePing(parser, connection);
     handleEchoCommand(parser, connection);
     handleSetCommand(parser, connection, data);
@@ -176,7 +176,7 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
 
     connection.on('data', data => {
-
+        parser.setData(data.toString());
         handleParserCommands(data, parser, connection);
     })
 
