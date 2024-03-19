@@ -85,20 +85,22 @@ class Parser {
             }
         }
         if (this.data[0] === "*" || altered) {
-            if (this.INFO.role === "slave") {
-                const str = encodeArrayOutput(arrayMessage);
-                console.log(arrayMessage);
-                console.log(str.length)
-            }
+
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
             const arrayLength = Number(arrayValues[0].slice(1));
             let nextArrayIndex = arrayLength * 2 + 1;
             let currentIndex = 0;
             while (nextArrayIndex) {
+
                 const valArray = arrayValues.slice(currentIndex, nextArrayIndex).filter((val, index) => !(index & 1));
                 let command = valArray[1].toUpperCase();
                 let variableName = valArray[2];
+                if (this.INFO.role === "slave") {
+                    const str = encodeArrayOutput(valArray);
+                    console.log(valArray);
+                    console.log(str.length)
+                }
 
                 switch (command) {
                     default:
