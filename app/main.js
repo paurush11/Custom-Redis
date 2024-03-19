@@ -119,7 +119,6 @@ const handleHandshake = () => {
                 }
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
-                console.log(data.toString())
                 if (replicaParser.mappedValues["REPLCONF"]) {
                     slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
                 }
@@ -171,7 +170,7 @@ const server = net.createServer((connection) => {
         clientParsers.set(clientId, new Parser(port, role));
     }
     const parser = clientParsers.get(clientId);
-
+    console.log(data.toString())
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
     })
