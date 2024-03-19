@@ -24,8 +24,8 @@ const handleEchoCommand = (parser, connection) => {
 const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
-            if(replicaList.length === 0){
-                connection.write(encodeOutput('0'));
+            if (replicaList.length === 0) {
+                connection.write(`$0\r\n`);
             }
         }
     }
