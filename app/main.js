@@ -52,7 +52,6 @@ const handlePSYNCCommand = (parser, connection) => {
     if (parser.mappedValues["PSYNC"]) {
         connection.write(`+FULLRESYNC ${parser.INFO.master_replid} ${parser.INFO.master_repl_offset}\r\n`)
         sendRDBFile(connection)
-
         replicaList.push([connection, parser.port]);
     }
 }
@@ -112,8 +111,9 @@ const handleHandshake = () => {
                 const replicaParser = clientParsers.get(replicaClientId);
                 replicaParser.setData(data.toString());
                 if (replicaParser.mappedValues["REPLCONF"]) {
-                    console.log(replicaParser.mappedValues["REPLCONF"][0])
-                    slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"][0]);
+                    if (replicaParser.mappedValues["REPLCONF"][0] === "GETACK") {
+                        slaveSlaveConnection.write(replicaParser.sendAck());
+                    }
                 }
 
 

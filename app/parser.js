@@ -66,9 +66,10 @@ class Parser {
             this.mappedValues[command] = [variableName];
         }
     }
-
     sendAck() {
-        return encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset.toString()]);
+        const str = encodeArrayOutput(['replconf', 'ACK', this.INFO.master_repl_offset.toString()]);
+        this.master_repl_offset += str.length;
+        return str;
     }
 
     parseInput() {
@@ -84,7 +85,9 @@ class Parser {
             }
         }
         if (this.data[0] === "*" || altered) {
-
+            if (this.INFO.role === "slave") {
+                console.log(this.data.length())
+            }
             let arrayValues = arrayMessage;
             // arrayValues = arrayValues.slice(0, arrayValues.length - 1); //removing empty '';
             const arrayLength = Number(arrayValues[0].slice(1));
@@ -94,6 +97,7 @@ class Parser {
                 const valArray = arrayValues.slice(currentIndex, nextArrayIndex).filter((val, index) => !(index & 1));
                 let command = valArray[1].toUpperCase();
                 let variableName = valArray[2];
+
                 switch (command) {
                     default:
                         break;
@@ -107,7 +111,9 @@ class Parser {
                         break;
                     case 'REPLCONF':
                         if (this.INFO.role === "slave" && variableName.toUpperCase() === "GETACK") {
-                            this.saveInMappedValues(command, this.sendAck())
+                            // const recieved = encodeArrayOutput(['replconf', 'GETACK', '*']);
+
+                            this.saveInMappedValues(command, variableName.toUpperCase())
                         } else {
                             this.saveInMappedValues(command, 'OK')
                         }
