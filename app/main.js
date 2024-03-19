@@ -178,8 +178,6 @@ const server = net.createServer((connection) => {
     const parser = clientParsers.get(clientId);
 
     connection.on('data', data => {
-
-        console.log(parser.port)
         handleParserCommands(data, parser, connection);
     })
 
