@@ -176,8 +176,8 @@ const server = net.createServer((connection) => {
         handleParserCommands(data, parser, connection);
         handShakeCount += 1;
         console.log(handShakeCount)
-
     })
+    console.log(replicaList)
     connection.on('close', () => {
         handShakeCount -= 1;
         clientParsers.delete(clientId);
