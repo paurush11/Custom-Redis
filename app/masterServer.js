@@ -37,6 +37,10 @@ class MasterServer {
             })
         })
 
+        server.listen(this.port, this.host, () => {
+            console.log(`Server Listening on ${this.host}:${this.port}`);
+        });
+
     }
 
 
