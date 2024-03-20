@@ -33,8 +33,10 @@ const handleWaitCommand = (parser, connection) => {
             };
             activeWaits.push(wait);
             if (ackCounter >= replicaNumber) {
+                console.log("true")
                 respondToWait(wait, true);
             } else {
+                console.log("true")
                 // Set a timeout to handle the wait expiration
                 setTimeout(() => {
                     respondToWait(wait, false);
