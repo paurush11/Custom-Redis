@@ -3,8 +3,8 @@ class Encoder {
     static generateInfoString(role, masterReplId, masterReplOffset) {
         const info = {
             role: role,
-            masterReplId: masterReplId,
-            masterReplOffset: masterReplOffset
+            master_replid: masterReplId,
+            master_repl_offset: masterReplOffset
         }
 
         return this.generateSimpleString(Object.entries(info).map(([key, value]) => `${key}:${value}`).join('\r\n'));
