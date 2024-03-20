@@ -2,6 +2,7 @@ const { createUid } = require("./Utils/sendMessages");
 const { dataStore } = require("./dataStore");
 const net = require("net");
 const { RequestParser } = require("./requestParser");
+const { Encoder } = require("./Utils/encoder");
 
 class SlaveServer {
 
