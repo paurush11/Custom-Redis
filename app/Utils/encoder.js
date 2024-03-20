@@ -7,7 +7,7 @@ class Encoder {
             master_repl_offset: masterReplOffset
         }
 
-        return this.generateSimpleString(Object.entries(info).map(([key, value]) => `${key}:${value}`).join('\r\n'));
+        return this.generateBulkString(Object.entries(info).map(([key, value]) => `${key}:${value}`).join('\r\n'));
     }
 
     static generateOkValue() {
