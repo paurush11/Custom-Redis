@@ -19,3 +19,7 @@ class dataStore {
 
     }
 }
+
+module.exports = {
+    dataStore
+}

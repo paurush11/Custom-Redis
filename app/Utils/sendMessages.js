@@ -1,4 +1,7 @@
 
+const createUid = (socket) => {
+    return `${socket.remoteAddress}:${socket.remotePort}`
+}
 
 function isErrorValue(data) {
     return !data || data === "ERROR"
@@ -54,5 +57,6 @@ function encodeArrayOutput(dataArr) {
 module.exports = {
     encodeOutput,
     encodeArrayOutput,
-    handleOkValue
+    handleOkValue,
+    createUid
 }
