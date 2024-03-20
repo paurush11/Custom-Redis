@@ -90,7 +90,7 @@ class MasterServer {
         if (args.length === 3) {
             this.dataStore.insert(args[1], args[2]);
         } else {
-            this.dataStore.insertWithExp(args[1], args[2], args[3])
+            this.dataStore.insertWithExp(args[1], args[2], args[4])
         }
 
         return Encoder.generateOkValue();
