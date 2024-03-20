@@ -18,7 +18,7 @@ class SlaveServer {
     }
 
     startServer() {
-        this.performHandshake()
+        // this.performHandshake()
         const server = net.createServer((socket) => {
             const clientKey = createUid(socket);
             this.clientCommands[clientKey] = ''
