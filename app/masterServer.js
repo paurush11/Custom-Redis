@@ -56,7 +56,27 @@ class MasterServer {
     }
 
     handleCommands(args, socket, currentRequest) {
-
+        let command = args[0].toUpperCase()
+        switch (command) {
+            case "PING":
+                socket.write(this.handlePing())
+                break;
+            case "ECHO":
+                socket.write(this.handleEcho())
+                break;
+            case "SET":
+                break;
+            case "GET":
+                break;
+            case "INFO":
+                break;
+            case "REPLCONF":
+                break;
+            case "PSYNC":
+                break;
+            case "WAIT":
+                break;
+        }
     }
 
     handlePing() {
