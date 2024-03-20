@@ -35,18 +35,19 @@ const handleWaitCommand = (parser, connection) => {
                 replica.write(encodeArrayOutput(["REPLCONF","GETACK", "*"]));
             }
 
-            
             activeWaits.push(wait);
-            if (ackCounter >= replicaNumber) {
-                console.log("true")
-                respondToWait(wait, true);
-            } else {
-                console.log("false")
-                // Set a timeout to handle the wait expiration
-                setTimeout(() => {
-                    respondToWait(wait, false);
-                }, timeout);
-            }
+
+            
+            // if (ackCounter >= replicaNumber) {
+            //     console.log("true")
+            //     respondToWait(wait, true);
+            // } else {
+            //     console.log("false")
+            //     // Set a timeout to handle the wait expiration
+            //     setTimeout(() => {
+            //         respondToWait(wait, false);
+            //     }, timeout);
+            // }
         }
     }
 };
