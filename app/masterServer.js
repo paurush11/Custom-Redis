@@ -65,8 +65,10 @@ class MasterServer {
                 socket.write(this.handleEcho(args))
                 break;
             case "SET":
+                socket.write(this.handleSet(args))
                 break;
             case "GET":
+                socket.write(this.handleGet(args))
                 break;
             case "INFO":
                 break;
@@ -83,14 +85,16 @@ class MasterServer {
         return Encoder.generateSimpleString("PONG");
     }
 
-    handleSet() {
-        // this.dataStore.insert()
-
+    handleSet(args) {
+        this.dataStore.insert(args[1], args[2]);
+        return Encoder.generateOkValue();
+    }
+    handleGet(args) {
+        return Encoder.generateBulkString(this.dataStore.get(args[1]));
     }
 
     handleEcho(args) {
-        console.log(args)
-        return Encoder.generateSimpleString(args[0]);
+        return Encoder.generateSimpleString(args[1]);
     }
 }
 

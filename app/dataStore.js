@@ -4,15 +4,18 @@ class dataStore {
     }
 
     insert(key, value){
-
+        this.map.set(key, value);
     }
 
     insertWithExp(key, value, expiration){
-
+        this.map.set(key, value);
+        setTimeout(()=>{
+            this.map.delete(key);
+        }, expiration)
     }
 
-    get(){
-
+    get(key){
+        return this.map.get(key);
     }
 
     has(){
