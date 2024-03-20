@@ -31,23 +31,25 @@ const handleWaitCommand = (parser, connection) => {
                 noOfReqReplies: replicaNumber,
                 connection: connection,
             };
-            for(const [replica] of replicaList){
-                replica.write(encodeArrayOutput(["REPLCONF","GETACK", "*"]));
+            //write to all replicas to req ack
+            for (const [replica] of replicaList) {
+                console.log("sent")
+                replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
             }
 
             activeWaits.push(wait);
 
-            
-            // if (ackCounter >= replicaNumber) {
-            //     console.log("true")
-            //     respondToWait(wait, true);
-            // } else {
-            //     console.log("false")
-            //     // Set a timeout to handle the wait expiration
-            //     setTimeout(() => {
-            //         respondToWait(wait, false);
-            //     }, timeout);
-            // }
+
+            if (ackCounter >= replicaNumber) {
+                console.log("true")
+                respondToWait(wait, true);
+            } else {
+                console.log("false")
+                // Set a timeout to handle the wait expiration
+                setTimeout(() => {
+                    respondToWait(wait, false);
+                }, timeout);
+            }
         }
     }
 };
@@ -66,7 +68,7 @@ const respondToWait = (wait, immediate) => {
 }
 const acknowledgeFromReplica = () => {
     ackCounter++;
-    console.log("acknowledgeFromReplica")
+
     activeWaits.forEach(wait => {
         if (ackCounter >= wait.noOfReqReplies && !wait.responded) {
             respondToWait(wait, true);
