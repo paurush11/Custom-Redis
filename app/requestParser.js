@@ -96,45 +96,45 @@ module.exports = {
 
 
 
-const data = `*3\r\n$3\r\nset\r\n$3\r\nfoo\r\n$3\r\n123\r\n*3\r\n$3\r\nset\r\n$3\r\nbar\r\n$3\r\n456\r\n*3\r\n$3\r\nset\r\n$3\r\nbaz\r\n$3\r\n789\r\n`
-const data2 = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`
-const data3 = `*1\r\n$4\r\nPING\r\n`
-const data4 = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`
-const data5 = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
-const data6 = `*2\r\n$4\r\ninfo\r\n$11\r\nreplication\r\n`
-const data7 = `*2\r\n$3\r\nget\r\n$5\r\ngrape\r\n`
-const data8 = `*5\r\n$3\r\nset\r\n$5\r\ngrape\r\n$6\r\nbanana\r\n$2\r\npx\r\n$3\r\n100\r\n`
+// const data = `*3\r\n$3\r\nset\r\n$3\r\nfoo\r\n$3\r\n123\r\n*3\r\n$3\r\nset\r\n$3\r\nbar\r\n$3\r\n456\r\n*3\r\n$3\r\nset\r\n$3\r\nbaz\r\n$3\r\n789\r\n`
+// const data2 = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`
+// const data3 = `*1\r\n$4\r\nPING\r\n`
+// const data4 = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`
+// const data5 = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
+// const data6 = `*2\r\n$4\r\ninfo\r\n$11\r\nreplication\r\n`
+// const data7 = `*2\r\n$3\r\nget\r\n$5\r\ngrape\r\n`
+// const data8 = `*5\r\n$3\r\nset\r\n$5\r\ngrape\r\n$6\r\nbanana\r\n$2\r\npx\r\n$3\r\n100\r\n`
 
-const parser = new RequestParser(data.toString());
-let args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data2);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data3);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data4);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data5);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data6);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data7);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
-parser.setBufferCommands(data8);
-args = parser.parse();
-console.log(args)
-parser.resetParser();
+// const parser = new RequestParser(data.toString());
+// let args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data2);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data3);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data4);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data5);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data6);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data7);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
+// parser.setBufferCommands(data8);
+// args = parser.parse();
+// console.log(args)
+// parser.resetParser();
 

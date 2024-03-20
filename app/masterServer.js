@@ -72,6 +72,7 @@ class MasterServer {
                 socket.write(this.handleGet(args))
                 break;
             case "INFO":
+                socket.write(this.handleInfo())
                 break;
             case "REPLCONF":
                 break;
@@ -92,7 +93,6 @@ class MasterServer {
         } else {
             this.dataStore.insertWithExp(args[1], args[2], args[4])
         }
-
         return Encoder.generateOkValue();
     }
     handleGet(args) {
@@ -101,6 +101,10 @@ class MasterServer {
 
     handleEcho(args) {
         return Encoder.generateSimpleString(args[1]);
+    }
+
+    handleInfo() {
+        return Encoder.generateBulkArray([`role:master`, `master_replid:${this.masterReplId}`, `master_repl_offset:${this.masterReplOffset}`])
     }
 }
 
