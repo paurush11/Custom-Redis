@@ -42,6 +42,15 @@ class SlaveServer {
 
     }
 
+
+    performHandshake(){
+        const socket = net.createConnection({host: this.masterHost, port: this.masterPort}, () => {
+            console.log(`Connected to master server on ${this.masterHost}:${this.masterPort}`);
+        });
+        
+        this.masterSocket = socket;
+    }
+
     processClientCommands(socket) {
         const clientKey = createUid(socket);
         const clientCommands = this.clientCommands[clientKey];
