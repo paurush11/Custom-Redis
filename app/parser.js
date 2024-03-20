@@ -113,7 +113,7 @@ class Parser {
                         this.saveInMappedValues(command, variableName)
                         break;
                     case 'REPLCONF':
-                        if (this.INFO.role === "slave" && variableName.toUpperCase() === "GETACK") {
+                        if (variableName.toUpperCase() === "GETACK") {
                             this.mappedValues[command] = this.sendAck()
                         } else {
                             this.saveInMappedValues(command, 'OK')
