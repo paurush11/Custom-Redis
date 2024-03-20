@@ -87,12 +87,15 @@ class MasterServer {
     }
 
     handleSet(args) {
-        console.log(args)
-        this.dataStore.insert(args[1], args[2]);
+        if (args.length === 3) {
+            this.dataStore.insert(args[1], args[2]);
+        } else {
+            this.dataStore.insertWithExp(args[1], args[2], args[3])
+        }
+
         return Encoder.generateOkValue();
     }
     handleGet(args) {
-        console.log(this.dataStore.get(args[1]))
         return Encoder.generateBulkString(this.dataStore.get(args[1]));
     }
 
