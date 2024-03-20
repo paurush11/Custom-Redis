@@ -62,7 +62,7 @@ class MasterServer {
                 socket.write(this.handlePing())
                 break;
             case "ECHO":
-                socket.write(this.handleEcho())
+                socket.write(this.handleEcho(args))
                 break;
             case "SET":
                 break;
@@ -84,6 +84,7 @@ class MasterServer {
     }
 
     handleSet() {
+        // this.dataStore.insert()
 
     }
 
