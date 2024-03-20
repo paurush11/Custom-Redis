@@ -88,6 +88,7 @@ class MasterServer {
     }
 
     handleEcho(args) {
+        console.log(args)
         return Encoder.generateSimpleString(args[0]);
     }
 }
