@@ -64,7 +64,7 @@ class RequestParser {
             this.args = [];
             this.currentRequest = '';
         } finally {
-            this.currentRequest = this.request.slice(startCursor, this.cursor);
+            this.currentRequest = this.request.slice(start, this.cursor);
             return this.args;
         }
     }
