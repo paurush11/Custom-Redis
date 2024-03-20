@@ -151,6 +151,7 @@ const handleParserCommands = (data, parser, connection) => {
 const handleSlaveServerAck = (replicaParser, slaveSlaveConnection) => {
     if (replicaParser.mappedValues["REPLCONF"]) {
         slaveSlaveConnection.write(replicaParser.mappedValues["REPLCONF"]);
+        console.log("Iam here")
         acknowledgeFromReplica()
     }
 }
