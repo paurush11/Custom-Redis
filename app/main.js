@@ -167,6 +167,7 @@ const handleHandshake = () => {
             slaveSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
             slaveSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
             slaveSlaveConnection.on('data', (data) => {
+                console.log(data.toString())
                 const replicaClientId = createClientId(slaveSlaveConnection);
                 if (!clientParsers.has(replicaClientId)) {
                     clientParsers.set(replicaClientId, new Parser(port, role));
