@@ -33,7 +33,7 @@ const handleWaitCommand = (parser, connection) => {
             };
             //write to all replicas to req ack
             for (const [replica] of replicaList) {
-                console.log("sent")
+                console.log(replica)
                 replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
             }
 
@@ -167,7 +167,6 @@ const handleHandshake = () => {
             slaveSlaveConnection.write(encodeArrayOutput(['REPLCONF', 'capa', 'psync2']))
             slaveSlaveConnection.write(encodeArrayOutput(['PSYNC', '?', '-1']))
             slaveSlaveConnection.on('data', (data) => {
-                console.log(data.toString())
                 const replicaClientId = createClientId(slaveSlaveConnection);
                 if (!clientParsers.has(replicaClientId)) {
                     clientParsers.set(replicaClientId, new Parser(port, role));
