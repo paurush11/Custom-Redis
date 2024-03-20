@@ -104,7 +104,7 @@ class MasterServer {
     }
 
     handleInfo() {
-        return Encoder.generateBulkArray([`role:master`, `master_replid:${this.masterReplId}`, `master_repl_offset:${this.masterReplOffset}`])
+        return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
     }
 }
 

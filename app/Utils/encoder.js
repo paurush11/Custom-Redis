@@ -1,4 +1,15 @@
-class Encoder { 
+class Encoder {
+
+    static generateInfoString(role, masterReplId, masterReplOffset) {
+        const info = {
+            role: role,
+            masterReplId: masterReplId,
+            masterReplOffset: masterReplOffset
+        }
+
+        return this.generateSimpleString(Object.entries(info).map(([key, value]) => `${key}:${value}`).join('\r\n'));
+    }
+
     static generateOkValue() {
         return `+OK\r\n`;
     }
@@ -13,7 +24,7 @@ class Encoder {
         return `$-1\r\n`;
     }
 
-    static generateSimpleString(string){
+    static generateSimpleString(string) {
         return `+${string}\r\n`;
     }
 
