@@ -258,7 +258,7 @@ const func = (args) => {
         server.startServer();
     } else if (args.length === 5) {
         const [portFlag, port, replicaFlag, masterHost, masterPort] = args;
-        let server = new SlaveServer(HOST, port)
+        let server = new SlaveServer(HOST, port,masterHost, masterPort)
         server.startServer();
     }
 }
