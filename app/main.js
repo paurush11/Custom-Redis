@@ -31,12 +31,17 @@ const handleWaitCommand = (parser, connection) => {
                 noOfReqReplies: replicaNumber,
                 connection: connection,
             };
+            for(const [replica] of replicaList){
+                replica.write(encodeArrayOutput(["REPLCONF","GETACK", "*"]));
+            }
+
+            
             activeWaits.push(wait);
             if (ackCounter >= replicaNumber) {
                 console.log("true")
                 respondToWait(wait, true);
             } else {
-                console.log("true")
+                console.log("false")
                 // Set a timeout to handle the wait expiration
                 setTimeout(() => {
                     respondToWait(wait, false);
