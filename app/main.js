@@ -21,28 +21,7 @@ const handleEchoCommand = (parser, connection) => {
         }
     }
 }
-// const handleWaitCommand = (parser, connection) => {
-//     if (parser.mappedValues["WAIT"]) {
-//         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
-//             connection.write(`:${replicaList.length}\r\n`);
-//             const [replicaNumber, timeout] = parser.mappedValues["WAIT"][i].split(":");
-//             // make a wait
-//             wait = {}
-//             wait.noOfAckReplies = 0;
-//             wait.noOfReqReplies = replicaNumber;
-//             wait.isDone = false;
-//             wait.connection = connection;
-//             wait.timeout = setTimeout(() => {
-//                 respondToWait(parser,wait,false);
-//             }, timeout)
-//             ///  ask all replicas to acknowledge and once ack received then do rest;
-//             // for (const [replica] of replicaList) {
-//             //     replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
-//             // }
 
-//         }
-//     }
-// }
 const handleWaitCommand = (parser, connection) => {
     if (parser.mappedValues["WAIT"]) {
         for (let i = 0; i < parser.mappedValues["WAIT"].length; i++) {
@@ -80,6 +59,7 @@ const respondToWait = (wait, immediate) => {
 }
 const acknowledgeFromReplica = () => {
     ackCounter++;
+    console.log("here")
     activeWaits.forEach(wait => {
         if (ackCounter >= wait.noOfReqReplies && !wait.responded) {
             respondToWait(wait, true);
