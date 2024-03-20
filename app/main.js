@@ -225,6 +225,7 @@ const server = net.createServer((connection) => {
 
     connection.on('data', data => {
         handleParserCommands(data, parser, connection);
+        console.log(data.toString())
         parser.resetParser();
     })
 
