@@ -259,7 +259,7 @@ const func = (args) => {
     } else if (args.length === 5) {
         const [portFlag, port, replicaFlag, masterHost, masterPort] = args;
         let server = new SlaveServer(HOST, port)
-
+        server.startServer();
     }
 }
 
