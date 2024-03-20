@@ -79,7 +79,7 @@ class SlaveServer {
     }
 
     handleInfo() {
-        return Encoder.generateInfoString("slave", this.masterReplId, this.masterReplOffset);
+        return Encoder.generateSimpleString(`role:slave`)
     }
 
 
