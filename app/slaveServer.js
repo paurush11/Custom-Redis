@@ -23,7 +23,7 @@ class SlaveServer {
             this.clientCommands[clientKey] = ''
 
             socket.on('data', (data) => {
-                this.clientCommands[clientKey] = data.toString();
+                this.clientCommands[clientKey] += data.toString();
                 this.processClientCommands(socket);
             })
 
