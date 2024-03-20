@@ -53,6 +53,7 @@ class MasterServer {
             let currentRequest = requestParser.currentRequest;
             this.handleCommands(args, socket, currentRequest)
         }
+        this.clientCommands[clientKey] = requestParser.getRemainingRequest()
     }
 
     handleCommands(args, socket, currentRequest) {
