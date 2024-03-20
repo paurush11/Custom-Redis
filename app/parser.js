@@ -114,6 +114,7 @@ class Parser {
                         break;
                     case 'REPLCONF':
                         if (variableName.toUpperCase() === "GETACK") {
+                            console.log("here")
                             this.mappedValues[command] = this.sendAck()
                         } else {
                             this.saveInMappedValues(command, 'OK')

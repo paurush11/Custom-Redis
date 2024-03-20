@@ -33,7 +33,7 @@ const handleWaitCommand = (parser, connection) => {
             };
             //write to all replicas to req ack
             for (const [replica] of replicaList) {
-                console.log(replica)
+
                 replica.write(encodeArrayOutput(["REPLCONF", "GETACK", "*"]));
             }
 
