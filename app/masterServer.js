@@ -22,8 +22,7 @@ class MasterServer {
 
             socket.on('data', (data) => {
                 this.clientCommands[createUid(socket)] += data.toString();
-                console.log(data.toString())
-                // this.processClientCommands(socket);
+                this.processClientCommands(socket);
             })
 
             socket.on('error', (err) => {
