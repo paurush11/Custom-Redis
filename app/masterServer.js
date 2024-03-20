@@ -86,6 +86,7 @@ class MasterServer {
     }
 
     handleSet(args) {
+        console.log("here")
         this.dataStore.insert(args[1], args[2]);
         return Encoder.generateOkValue();
     }
