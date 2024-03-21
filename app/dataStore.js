@@ -30,8 +30,8 @@ class dataStore {
         return "stream"
     }
 
-    insertStream(key, value) {
-        const [millisecondsTime, sequenceNumber] = key.split("-");
+    insertStream(key, value, stream_key) {
+        const [millisecondsTime, sequenceNumber] = stream_key.split("-");
         if (this.streamCursor === 0) {
             if (millisecondsTime === 0 && sequenceNumber === 0)
                 return Encoder.generateStreamError(false);
