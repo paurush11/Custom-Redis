@@ -123,7 +123,7 @@ class MasterServer {
                 return value
             } else {
 
-                if (arg[1].toUpperCase() === "BLOCK") {
+                if (args[1].toUpperCase() === "BLOCK") {
                     const timer = args[2]
                     setTimeout(() => {
                         const stream_key = args[4]
