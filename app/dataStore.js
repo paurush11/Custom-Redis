@@ -113,6 +113,8 @@ class dataStore {
     getStreamValues(key, start, end) {
         let startTime = '0'
         let endTime = 'max'
+        let startSequence
+        let endSequence
         if (start !== "-") {
             [startTime, startSequence] = start.split("-");
         }
