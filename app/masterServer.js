@@ -179,8 +179,8 @@ class MasterServer {
 
     handleReplicaAcknowledgements(args) {
         if (this.wait.isDone) return;
-
-        const [replicaMasterOffset] = args[2];
+       
+        const replicaMasterOffset = args[2];
         console.log(replicaMasterOffset)
         console.log(this.masterReplOffset)
         if (replicaMasterOffset >= this.masterReplOffset) {
