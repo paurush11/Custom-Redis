@@ -83,7 +83,7 @@ class MasterServer {
                 break;
             case "PSYNC":
                 socket.write(this.handlePsync())
-                socket.write(this.sendRDBfileForHandShake())
+                this.sendRDBfileForHandShake()
                 break;
             case "WAIT":
                 break;
@@ -114,9 +114,9 @@ class MasterServer {
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
     }
 
-    sendRDBfileForHandShake() {
+    sendRDBfileForHandShake(socket) {
         const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
-        return Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary])
+        socket.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
     }
 
     handlePsync() {
