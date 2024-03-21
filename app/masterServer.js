@@ -104,7 +104,7 @@ class MasterServer {
         for (let i = 1; i < args.length; i += 2) {
             streamObject[args[i]] = args[i + 1];
         }
-        this.dataStore.insertStream(stream_key, streamObject);
+        this.dataStore.insertStream(args[1], streamObject);
         return Encoder.generateBulkString(stream_key);
     }
 
