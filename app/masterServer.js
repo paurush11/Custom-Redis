@@ -131,7 +131,7 @@ class MasterServer {
     }
 
     handleWait(args, socket) {
-        socket.write(`:${this.replicas.length}\r\n`)
+        socket.write(`:${Object.keys(this.replicas).length}\r\n`)
     }
 
     handleReplicaConfiguration(args) {
