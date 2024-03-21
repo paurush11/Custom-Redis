@@ -119,10 +119,11 @@ class MasterServer {
                 return value
             } else {
                 let mid = (args.length - 2) / 2 + 2
+                let j = mid;
                 let value = [];
-                for (let i = 2; i < mid - 1; i++, mid++) {
+                for (let i = 2; i < mid; i++, j++) {
                     const stream_key = args[i]
-                    const stream_key_start_value = args[mid]
+                    const stream_key_start_value = args[j]
                     console.log(stream_key)
                     console.log(stream_key_start_value)
                     const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
