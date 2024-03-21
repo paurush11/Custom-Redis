@@ -139,16 +139,20 @@ class MasterServer {
 
         /// So any replica which has processed this command has also processed previous command
         /// ask all the replicas to send their ack.
-     
+
+        ///No replicas
         if (Object.keys(this.replicas).length === 0) {
             return socket.write(Encoder.createInteger(0));
         }
 
-        console.log("here")
+        /// No commands sent to replicas to all will process
+
         if (this.masterReplOffset === 0) {
-            socket.write(Encoder.createInteger(Object.keys(this.replicas).length));
-            return;
+            return socket.write(Encoder.createInteger(Object.keys(this.replicas).length));
+
         }
+
+
         this.wait = {}
         this.wait.noOfAckReplies = 0;
         this.wait.noOfReqReplies = noOfReqReplies;
@@ -174,6 +178,7 @@ class MasterServer {
 
     handleReplicaAcknowledgements(args) {
         if (this.wait.isDone) return;
+        console.log("Here")
         const [replicaMasterOffset] = args[2];
         if (replicaMasterOffset >= this.masterReplOffset) {
             this.wait.noOfAckReplies++;
