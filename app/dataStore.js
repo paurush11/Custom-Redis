@@ -37,6 +37,8 @@ class dataStore {
                 return Encoder.generateStreamError(false);
         } else {
             const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
+            if (millisecondsTime === '0' && sequenceNumber === '0')
+                return Encoder.generateStreamError(false);
             if (millisecondsTime < prevMillisecondsTime || (prevMillisecondsTime === millisecondsTime && sequenceNumber <= prevSequenceNumber)) {
                 return Encoder.generateStreamError(true);
             }
