@@ -1,6 +1,10 @@
+const { Encoder } = require("./Utils/encoder");
+
 class dataStore {
     constructor() {
         this.map = new Map();
+        this.streamCursor = 0;
+        this.streamTimeStamps = [];
     }
 
     insert(key, value) {
@@ -27,6 +31,17 @@ class dataStore {
     }
 
     insertStream(key, value) {
+        const [millisecondsTime, sequenceNumber] = key.split("-");
+        if (this.streamCursor === 0) {
+            if (millisecondsTime === 0 && sequenceNumber === 0)
+                return Encoder.generateStreamError(false);
+        } else {
+            const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
+            if (millisecondsTime < prevMillisecondsTime || (prevMillisecondsTime === millisecondsTime && sequenceNumber < prevSequenceNumber))
+                return Encoder.generateStreamError(true);
+        }
+        this.streamTimeStamps.push(key);
+        this.streamCursor += 1;
         this.map.set(key, value);
     }
 

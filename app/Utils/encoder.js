@@ -12,6 +12,13 @@ class Encoder {
         return this.generateBulkString(Object.entries(info).map(([key, value]) => `${key}:${value}`).join('\r\n'));
     }
 
+    static generateStreamError(isTopError) {
+        if (isTopError) {
+            return `-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n`
+        } else {
+            return `-ERR The ID specified in XADD must be greater than 0-0\r\n`
+        }
+    }
     static generateOkValue() {
         return `+OK\r\n`;
     }
