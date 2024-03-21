@@ -181,9 +181,12 @@ class MasterServer {
         if (this.wait.isDone) return;
 
         const [replicaMasterOffset] = args[2];
+        console.log(replicaMasterOffset)
+        console.log(this.masterReplOffset)
         if (replicaMasterOffset >= this.masterReplOffset) {
             this.wait.noOfAckReplies++;
             console.log(this.noOfAckReplies)
+            console.log(this.noOfReqReplies)
             if (this.wait.noOfAckReplies >= this.wait.noOfReqReplies) {
                 this.handleWaitResponse()
             }
