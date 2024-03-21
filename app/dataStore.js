@@ -124,14 +124,14 @@ class dataStore {
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
-                const arrayKey = [arrayValue[key]]
+                let arrayKey = [arrayValue[key]]
                 if (Number(currTime) >= Number(startTime) && Number(currTime) <= Number(endTime) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
                     arrayKey = this.pushAsArray(arrayValue, arrayKey, key);
                     streamArrayValues.push(arrayKey);
                 }
             }
         })
-        console.log(Encoder.generateBulkArray(streamArrayValues));
+        console.log(streamArrayValues);
 
         return Encoder.generateBulkArray(streamArrayValues);
     }
