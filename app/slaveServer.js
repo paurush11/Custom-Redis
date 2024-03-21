@@ -81,10 +81,10 @@ class SlaveServer {
                     idx++;
                 }
                 idx += 2; // now real data
-                console.log(masterResponse)
-                console.log(sizeOfRDB)
-                console.log(idx)
-                socket.write(Encoder.generateBulkArray(['uuu']))
+                console.log(masterResponse[idx])
+                console.log(masterResponse[idx + sizeOfRDB])
+         \
+
             }
 
 
