@@ -87,10 +87,10 @@ class dataStore {
 
             }
 
-
-            this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
+            let new_stream_key = [newMillisecondsTime, newSequenceNumber].join("-")
+            this.streamTimeStamps.push(new_stream_key);
             this.streamCursor += 1;
-            console.log(value[key])
+            value[key] = new_stream_key
             this.map.set(key, value);
         }
     }
