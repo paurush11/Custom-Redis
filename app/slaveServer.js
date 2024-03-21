@@ -155,6 +155,7 @@ class SlaveServer {
     }
 
     handleSet(args) {
+        console.log(args)
         if (args.length === 3) {
             this.dataStore.insert(args[1], args[2]);
         } else {
