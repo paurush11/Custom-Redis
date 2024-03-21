@@ -107,7 +107,7 @@ class MasterServer {
             streamObject[args[i]] = args[i + 1];
         }
         console.log(streamObject)
-        return Encoder.generateSimpleString(stream_key);
+        return Encoder.generateBulkString(stream_key);
     }
 
     handleType(args) {
