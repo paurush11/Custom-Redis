@@ -91,6 +91,7 @@ class dataStore {
             this.streamTimeStamps.push(new_stream_key);
             this.streamCursor += 1;
             value[key] = new_stream_key
+            console.log(value)
             this.map.set(key, value);
         }
     }
