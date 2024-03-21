@@ -70,7 +70,7 @@ class SlaveServer {
                 this.handShakeStep += 1;
                 socket.write(Encoder.generateBulkArray(['PSYNC', '?', '-1']))
             } else if (this.handShakeStep === 4) {
-                if (!masterResponse.startsWith('+fullresync')) return;
+                if (!masterResponse.startsWith('+')) return;
                 this.handShakeStep += 1;
                 ///handle file rdb
                 let idx = masterResponse.indexOf('\r\n');
