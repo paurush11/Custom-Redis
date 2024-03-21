@@ -98,29 +98,29 @@ class MasterServer {
                 break;
             case "XREAD":
             case "XRANGE":
-                socket.write(this.handleStreamRangeOutputs(args))
+                this.handleStreamRangeOutputs(args, socket)
                 break;
         }
     }
 
 
-    handleStreamRangeOutputs(args) {
+    handleStreamRangeOutputs(args, socket) {
         if (args[0].toUpperCase() === "XRANGE") {
             console.log("here")
             const stream_key = args[1];
             const stream_key_start_value = args[2];
             const stream_key_end_value = args[3];
             const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
-            return value
+            return socket.write(value)
         } else {
             if (args.length === 4) {
                 const stream_key = args[2]
                 const stream_key_start_value = args[3]
                 if (this.blockedKeys.includes(stream_key)) {
-                    return Encoder.handleErrorValue();
+                    return socket.write(Encoder.handleErrorValue());
                 }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
-                return value
+                return socket.write(value)
             } else {
 
                 if (args[1].toUpperCase() === "BLOCK") {
@@ -148,7 +148,7 @@ class MasterServer {
                         value = [...value, ...val]
                     }
 
-                    return Encoder.generateBulkArray(value);
+                    return socket.write(Encoder.generateBulkArray(value));
 
                 }
 
