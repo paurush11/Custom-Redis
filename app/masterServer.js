@@ -91,9 +91,10 @@ class MasterServer {
         }
     }
 
-    handleCommandsToReplica(currentRequest){
-        for(const [key, value] of Object.entries(this.replicas)){
+    handleCommandsToReplica(currentRequest) {
+        for (const [key, value] of Object.entries(this.replicas)) {
             let replicaSocket = value.socket;
+            console.log(currentRequest)
             replicaSocket.write(currentRequest)
         }
     }
