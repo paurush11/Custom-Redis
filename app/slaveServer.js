@@ -84,12 +84,9 @@ class SlaveServer {
                 let rdbData = masterResponse.slice(idx, idx + sizeOfRDB)
                 idx += sizeOfRDB - 1;
                 masterResponse = data.toString().slice(idx);
-                this.masterCommands = ''
-                console.log("here back")
-                console.log(this.handShakeStep)
+                this.masterCommands = '';
             }
             if (this.handShakeStep === 5) {
-                console.log("here")
                 if (masterResponse === '') return;
                 this.masterCommands += masterResponse
                 this.processMasterCommand();
@@ -168,6 +165,11 @@ class SlaveServer {
             return Encoder.generateBulkString('');
         }
         return Encoder.generateBulkString(value);
+    }
+
+    handleAck() {
+
+        return Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset]);
     }
 }
 

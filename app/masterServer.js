@@ -131,8 +131,6 @@ class MasterServer {
 
     handleReplicaConfiguration(args) {
         console.log(args);
-
-
     }
 }
 
