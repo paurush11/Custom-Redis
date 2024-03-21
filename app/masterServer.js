@@ -77,7 +77,7 @@ class MasterServer {
                 break;
             case "REPLCONF":
                 if (args[1] === "ACK") {
-                    socket.write(this.handleReplicaAcknowledgements(args));
+                    this.handleReplicaAcknowledgements(args);
                 } else {
                     socket.write(Encoder.generateOkValue());
                 }

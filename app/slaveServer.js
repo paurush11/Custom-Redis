@@ -168,7 +168,6 @@ class SlaveServer {
     }
 
     handleAck() {
-        console.log("here")
         return Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset.toString()]);
     }
 }
