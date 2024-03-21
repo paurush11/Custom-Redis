@@ -84,8 +84,7 @@ class SlaveServer {
                 console.log(masterResponse)
                 console.log(sizeOfRDB)
                 console.log(idx)
-
-
+                socket.write(Encoder.generateBulkArray(['uuu']))
             }
 
 
