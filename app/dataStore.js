@@ -171,7 +171,7 @@ class dataStore {
             }
         })
         streamArrayValuesParent.push(streamArrayValues);
-        console.log([streamArrayValuesParent])
+        console.log(JSON.stringify([streamArrayValuesParent]))
 
 
 
