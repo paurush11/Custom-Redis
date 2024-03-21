@@ -113,15 +113,16 @@ class dataStore {
         }
         let stream = this.map.get(key);
         const streamArrayValues = [];
-        console.log(startTime + "-" + startSequence)
-        console.log(endTime + "-" + endSequence)
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
-                console.log(currTime + "-" + currSequence)
+                if (Number(currTime) >= Number(startTime) && Number(currTime) <= Number(endTime) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
+                    streamArrayValues.push(arrayValue);
+                }
             }
-
         })
+
+        console.log(streamArrayValues);
     }
 
     has() {
