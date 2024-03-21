@@ -125,7 +125,7 @@ class dataStore {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
                 if (Number(currTime) >= Number(startTime) && Number(currTime) <= Number(endTime) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
-                    streamArrayValues = pushAsArray(arrayValue, streamArrayValues, key);
+                    streamArrayValues = this.pushAsArray(arrayValue, streamArrayValues, key);
                 }
             }
         })
