@@ -37,8 +37,15 @@ class dataStore {
                 return Encoder.generateStreamError(false);
         } else {
             const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
-            if (millisecondsTime < prevMillisecondsTime || (prevMillisecondsTime === millisecondsTime && sequenceNumber <= prevSequenceNumber))
+            console.log(prevMillisecondsTime)
+            console.log(prevSequenceNumber)
+            console.log(millisecondsTime)
+            console.log(sequenceNumber)
+            if (millisecondsTime < prevMillisecondsTime || (prevMillisecondsTime === millisecondsTime && sequenceNumber <= prevSequenceNumber)) {
+                console.log("here")
                 return Encoder.generateStreamError(true);
+            }
+
         }
         this.streamTimeStamps.push(key);
         this.streamCursor += 1;
