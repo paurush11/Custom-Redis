@@ -169,7 +169,7 @@ class SlaveServer {
     }
 
     handleAck() {
-        return Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset]);
+        return Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset.toString()]);
     }
 }
 
