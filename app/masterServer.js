@@ -75,6 +75,11 @@ class MasterServer {
                 socket.write(this.handleInfo())
                 break;
             case "REPLCONF":
+                if (args[1] === "listening-port") {
+                    socket.write(Encoder.generateOkValue());
+                } else {
+                    socket.write(this.handleReplicaConfiguration(args));
+                }
                 break;
             case "PSYNC":
                 break;
@@ -105,6 +110,11 @@ class MasterServer {
 
     handleInfo() {
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
+    }
+
+    handleReplicaConfiguration(args) {
+
+
     }
 }
 

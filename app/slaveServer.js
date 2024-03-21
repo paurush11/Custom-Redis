@@ -51,15 +51,14 @@ class SlaveServer {
         });
 
         this.masterSocket = socket;
-
         socket.write(Encoder.generateBulkArray(['ping']))
-
         this.handShakeStep += 1;
         socket.write(Encoder.generateBulkArray(['REPLCONF', 'listening-port', this.port.toString()]))
         socket.write(Encoder.generateBulkArray(['REPLCONF', 'capa', 'psync2']))
         this.handShakeStep += 1;
         socket.write(Encoder.generateBulkArray(['PSYNC', '?', '-1']))
         this.handShakeStep += 1;
+        
     }
 
     processClientCommands(socket) {
