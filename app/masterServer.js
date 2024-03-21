@@ -111,6 +111,7 @@ class MasterServer {
             const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
             return value
         } else {
+            console.log(args[2])
             const [stream_key, stream_key_start_value] = args[2].split(" ");
             console.log(stream_key)
             console.log(stream_key_start_value)
