@@ -77,7 +77,7 @@ class MasterServer {
                 break;
             case "REPLCONF":
                 if (args[1] === "ack") {
-                    socket.write(this.handleReplicaConfiguration(args));
+                    socket.write(this.handleReplicaAcknowledgements(args));
                 } else {
                     socket.write(Encoder.generateOkValue());
                 }
@@ -132,15 +132,46 @@ class MasterServer {
 
     handleWait(args, socket, request) {
         const [waitCommand, noOfReqReplies, exp] = args
+        /// How to know if request has been processed
 
-        console.log(request);
+        /// when processing master command in slave server, masterReplOffset increases to the request length.
+
+        /// So any replica which has processed this command has also processed previous command
+        /// ask all the replicas to send their ack.
+
+        this.wait = {}
+        this.wait.noOfAckReplies = 0;
+        this.wait.noOfReqReplies = noOfReqReplies;
+        this.wait.timeout = setTimeout(() => {
+            this.handleWaitResponse();
+        }, exp);
+        this.wait.socket = socket
+        this.wait.request = request;
+        this.wait.isDone = false;
+
+        for (const [key, val] of Object.entries(this.replicas)) {
+            const replicaSocket = val.socket;
+            replicaSocket.write(Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset.toString()]));
+        }
         socket.write(`:${Object.keys(this.replicas).length}\r\n`)
-
-
     }
 
-    handleReplicaConfiguration(args) {
-        console.log(args);
+    handleWaitResponse() {
+        clearTimeout(this.wait.timeout);
+        this.masterReplOffset += this.wait.request.length
+        this.wait.socket.write(`:${this.wait.noOfAckReplies}`);
+        this.wait.isDone = true;
+    }
+
+    handleReplicaAcknowledgements(args) {
+        if (this.wait.isDone) return;
+        const [replicaMasterOffset] = args[2];
+        if (replicaMasterOffset >= this.masterReplOffset) {
+            this.wait.noOfAckReplies++;
+            if (this.wait.noOfAckReplies >= this.wait.noOfReqReplies) {
+                this.handleWaitResponse()
+            }
+        }
     }
 }
 
