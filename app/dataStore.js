@@ -19,8 +19,15 @@ class dataStore {
     }
 
     type(key) {
-        if (!this.map.get(key)) return "none"
-        return "string"
+        const value = this.map.get(key)
+        if (!value) return "none";
+        if (typeof value === "string")
+            return "string"
+        return "stream"
+    }
+
+    insertStream(key, value) {
+        this.map.set(key, value);
     }
 
     has() {

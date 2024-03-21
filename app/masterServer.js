@@ -100,13 +100,11 @@ class MasterServer {
 
     handleStreams(args) {
         const stream_key = args[2];
-        const streamObject = {
-
-        }
+        const streamObject = {}
         for (let i = 1; i < args.length; i += 2) {
             streamObject[args[i]] = args[i + 1];
         }
-        console.log(streamObject)
+        this.dataStore.insertStream(stream_key, streamObject);
         return Encoder.generateBulkString(stream_key);
     }
 
