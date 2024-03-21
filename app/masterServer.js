@@ -107,7 +107,7 @@ class MasterServer {
         const stream_key_start_value = args[2];
         const stream_key_end_value = args[2];
 
-        this.dataStore.getStreamValues()
+        this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
     }
 
     handleStreams(args) {
