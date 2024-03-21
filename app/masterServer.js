@@ -114,7 +114,8 @@ class MasterServer {
             const stream_key = args[2]
             const stream_key_start_value = args[3]
             const value = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
-            return value
+            // return value
+            return '*1\r\n*2\r\n$9\r\nstream_key\r\n*1\r\n*2\r\n$3\r\n0-1\r\n*2\r\n$11\r\ntemperature\r\n$2\r\n96\r\n'
         }
 
 
