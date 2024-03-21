@@ -162,9 +162,11 @@ class SlaveServer {
         }
     }
     handleGet(args) {
-        console.log(args)
-        console.log(this.dataStore)
-        return Encoder.generateBulkString(this.dataStore.get(args[1]));
+        let value = this.dataStore.get(args[1]);
+        if (!value) {
+            return Encoder.generateBulkString('');
+        }
+        return Encoder.generateBulkString(value);
     }
 }
 
