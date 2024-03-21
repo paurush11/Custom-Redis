@@ -156,6 +156,7 @@ class dataStore {
             endSequence = 'max'
         }
         let stream = this.map.get(key);
+        let streamArrayValuesChild = [key];
         let streamArrayValues = [];
 
         stream.forEach((arrayValue) => {
@@ -165,10 +166,11 @@ class dataStore {
 
                 if (Number(currTime) >= Number(startTime) && (endTime === "max" || Number(currTime) <= Number(endTime)) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
                     arrayKey = this.pushAsArray(arrayValue, arrayKey, key);
-                    streamArrayValues.push(arrayKey);
+                    streamArrayValuesChild.push(arrayKey);
                 }
             }
         })
+        streamArrayValues.push(streamArrayValuesChild)
         return Encoder.generateBulkArray(streamArrayValues);
     }
 
