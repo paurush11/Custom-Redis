@@ -42,13 +42,15 @@ class dataStore {
         let newSequenceNumber = '0'
         let newMillisecondsTime = '1526919030474'
         if (stream_key === "*") {
+            const time = Date.now()
             if (this.streamCursor === 0) {
+
                 newSequenceNumber = '0'
-                newMillisecondsTime = '1526919030474'
+                newMillisecondsTime = time.toString()
             } else {
                 const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
                 newSequenceNumber = '0'
-                newMillisecondsTime = '1526919030474'
+                newMillisecondsTime = time.toString()
             }
         } else {
             const [millisecondsTime, sequenceNumber] = stream_key.split("-");
