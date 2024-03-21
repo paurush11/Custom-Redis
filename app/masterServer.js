@@ -130,10 +130,8 @@ class MasterServer {
         socket.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
     }
 
-    handleWait(args, socket){
-        for(const replica of Object.values(this.replicas)){
-            replica.write(`:0\r\n`)
-        }
+    handleWait(args, socket) {
+        socket.write(this.replicas.length)
     }
 
     handleReplicaConfiguration(args) {

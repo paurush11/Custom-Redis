@@ -116,7 +116,6 @@ class SlaveServer {
 
     handleCommands(args, socket, currentRequest) {
         let command = args[0].toUpperCase();
-        console.log(command)
         switch (command) {
             case "INFO":
                 socket.write(this.handleInfo());
