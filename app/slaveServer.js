@@ -163,6 +163,8 @@ class SlaveServer {
         return Encoder.generateOkValue();
     }
     handleGet(args) {
+        console.log(args)
+        console.log(this.dataStore.get(args[1]))
         return Encoder.generateBulkString(this.dataStore.get(args[1]));
     }
 }
