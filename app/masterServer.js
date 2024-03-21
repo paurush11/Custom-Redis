@@ -115,7 +115,7 @@ class MasterServer {
     }
 
     sendRDBfileForHandShake(socket) {
-        const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
+        const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "base64");
         socket.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
     }
 
