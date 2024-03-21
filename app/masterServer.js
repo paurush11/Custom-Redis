@@ -13,6 +13,7 @@ class MasterServer {
         this.masterReplId = '8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb';
         this.masterReplOffset = 0;
         this.replicas = {}
+        this.blockedKeys = []
     }
 
     startServer() {
@@ -115,23 +116,44 @@ class MasterServer {
             if (args.length === 4) {
                 const stream_key = args[2]
                 const stream_key_start_value = args[3]
+                if (this.blockedKeys.includes(stream_key)) {
+                    return Encoder.handleErrorValue();
+                }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
                 return value
             } else {
-                let mid = (args.length - 2) / 2 + 2
-                let j = mid;
-                let value = [];
-                for (let i = 2; i < mid; i++, j++) {
-                    const stream_key = args[i]
-                    const stream_key_start_value = args[j]
-                    console.log(stream_key)
-                    console.log(stream_key_start_value)
-                    const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
 
-                    value = [...value, ...val]
+                if (arg[1].toUpperCase() === "BLOCK") {
+                    const timer = args[2]
+                    setTimeout(() => {
+                        const stream_key = args[4]
+                        const stream_key_start_value = args[5];
+                        this.blockedKeys.push(stream_key)
+                    }, timer)
+
+                } else {
+
+                    let mid = (args.length - 2) / 2 + 2
+                    let j = mid;
+                    let value = [];
+                    for (let i = 2; i < mid; i++, j++) {
+                        const stream_key = args[i]
+                        const stream_key_start_value = args[j]
+                        if (this.blockedKeys.includes(stream_key)) {
+                            value = [...value, Encoder.handleErrorValue()]
+                            continue;
+                        }
+                        const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
+
+                        value = [...value, ...val]
+                    }
+
+                    return Encoder.generateBulkArray(value);
+
                 }
-                console.log(value)
-                return Encoder.generateBulkArray(value);
+
+
+
             }
 
 
