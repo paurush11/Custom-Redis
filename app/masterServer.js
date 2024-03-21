@@ -84,6 +84,7 @@ class MasterServer {
                 break;
             case "PSYNC":
                 socket.write(this.handlePsync())
+                socket.write("lol")
                 this.sendRDBfileForHandShake(socket)
                 break;
             case "WAIT":
