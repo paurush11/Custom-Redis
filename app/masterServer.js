@@ -144,6 +144,8 @@ class MasterServer {
             socket.write(Encoder.createInteger(0));
             return;
         }
+
+        console.log("here")
         if (this.masterReplOffset === 0) {
             socket.write(Encoder.createInteger(Object.keys(this.replicas).length));
             return;
