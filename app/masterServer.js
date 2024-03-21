@@ -131,7 +131,7 @@ class MasterServer {
     }
 
     handleWait(args, socket) {
-        socket.write(`:${this.replicas.length.toString()}\r\n`)
+        socket.write(`:${this.replicas.length}\r\n`)
     }
 
     handleReplicaConfiguration(args) {
