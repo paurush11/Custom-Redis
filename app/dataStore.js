@@ -115,6 +115,8 @@ class dataStore {
         const streamArrayValues = [];
         console.log(stream)
         stream.forEach((arrayValue) => {
+            console.log(arrayValue)
+            console.log(arrayValue[key])
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
                 console.log(startTime)
