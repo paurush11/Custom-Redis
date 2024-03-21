@@ -104,18 +104,20 @@ class MasterServer {
 
 
     handleStreamRangeOutputs(args) {
-        const stream_key = args[1];
-        const stream_key_start_value = args[2];
-        let value = "";
-        if (args.length === 4) {
+        if (args[0].toUpperCase() === "XRANGE") {
+            const stream_key = args[1];
+            const stream_key_start_value = args[2];
             const stream_key_end_value = args[3];
-            value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
+            const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
+            return value
         } else {
-            value = this.dataStore.getStreamValuesXread(stream_key, stream_key_start_value);
+            const [stream_key, stream_key_start_value] = args[1].split(" ");
+            const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value);
+            return value
         }
 
 
-        return value
+
     }
 
     handleStreams(args) {

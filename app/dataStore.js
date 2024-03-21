@@ -110,7 +110,7 @@ class dataStore {
         return streamArrayValues;
     }
 
-    getStreamValuesXread(key, start) {
+    getStreamValues(key, start) {
         let startTime = '0'
         let startSequence
         if (start !== "-") {
@@ -122,7 +122,7 @@ class dataStore {
 
         let stream = this.map.get(key);
         console.log(stream)
-        console.log("here")
+        console.log("here again")
         let streamArrayValues = [];
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
@@ -158,7 +158,8 @@ class dataStore {
         }
         let stream = this.map.get(key);
         let streamArrayValues = [];
-
+        console.log(stream)
+        console.log("here")
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
