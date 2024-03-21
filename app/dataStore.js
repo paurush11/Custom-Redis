@@ -32,7 +32,12 @@ class dataStore {
 
     appendStreamValues(key, value) {
         const oldValues = this.map.get(key);
-        this.map.set(key, [...oldValues, value])
+        if (!oldValues) {
+            this.map.set(key, [value])
+        } else {
+            this.map.set(key, [...oldValues, value])
+        }
+
     }
 
     insertStream(key, value, stream_key) {
