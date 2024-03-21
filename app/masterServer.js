@@ -67,6 +67,7 @@ class MasterServer {
                 break;
             case "SET":
                 socket.write(this.handleSet(args))
+                this.handleCommandsToReplica(currentRequest);
                 break;
             case "GET":
                 socket.write(this.handleGet(args))
@@ -79,15 +80,21 @@ class MasterServer {
                     socket.write(this.handleReplicaConfiguration(args));
                 } else {
                     socket.write(Encoder.generateOkValue());
-
                 }
                 break;
             case "PSYNC":
                 this.handlePsync(socket)
-
+                this.replicas[createUid(socket)] = { socket, state: "connected" }
                 break;
             case "WAIT":
                 break;
+        }
+    }
+
+    handleCommandsToReplica(currentRequest){
+        for(const [key, value] of Object.entries(this.replicas)){
+            let replicaSocket = value.socket;
+            replicaSocket.write(currentRequest)
         }
     }
 
@@ -120,7 +127,6 @@ class MasterServer {
         const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
         const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
         socket.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
-
     }
 
     handleReplicaConfiguration(args) {
