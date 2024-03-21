@@ -113,16 +113,13 @@ class dataStore {
         }
         let stream = this.map.get(key);
         const streamArrayValues = [];
-        console.log(stream)
+
         stream.forEach((arrayValue) => {
-            console.log(arrayValue)
-            console.log(arrayValue[key])
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
-                console.log(startTime)
-                console.log(endTime)
-                console.log(currTime)
-                console.log(currSequence)
+                console.log(startTime + "-" + startSequence)
+                console.log(endTime + "-" + endSequence)
+                console.log(currTime + "-" + currSequence)
             }
 
         })
