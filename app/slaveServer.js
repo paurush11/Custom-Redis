@@ -86,10 +86,10 @@ class SlaveServer {
                 masterResponse = data.toString().slice(idx);
                 this.handShakeStep += 1;
                 this.masterCommands = ''
+                console.log("here back")
             }
-
-
             if (this.handShakeStep === 5) {
+                console.log("here")
                 if (masterResponse === '') return;
                 this.masterCommands += masterResponse
                 this.processMasterCommand();
