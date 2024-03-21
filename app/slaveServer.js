@@ -81,10 +81,18 @@ class SlaveServer {
                     idx++;
                 }
                 idx += 2; // now real data
-                console.log(masterResponse.slice(idx, idx + sizeOfRDB - 1))
+                let rdbData = masterResponse.slice(idx, idx + sizeOfRDB)
+                idx += sizeOfRDB - 1;
+                masterResponse = data.toString().slice(idx);
+                this.handShakeStep += 1;
+                this.masterCommands = ''
+            }
 
 
-
+            if (this.handShakeStep === 5) {
+                if (masterResponse === '') return;
+                this.masterCommands += masterResponse
+                this.processMasterCommand();
             }
 
 
@@ -115,7 +123,30 @@ class SlaveServer {
             case "INFO":
                 socket.write(this.handleInfo());
                 break
+            case "SET":
+                socket.write(this.handleSet(args));
+                break;
+            case "GET":
+                socket.write(this.handleGet(args));
+                break;
+            case "REPLCONF":
+                break;
         }
+
+    }
+
+    processMasterCommand() {
+        let requestParser = new RequestParser(this.masterCommands);
+        while (true) {
+            const args = requestParser.parse();
+            if (args.length === 0) {
+                break;
+            }
+            let currentRequest = requestParser.currentRequest;
+            this.handleCommands(args, this.masterSocket, currentRequest)
+            this.masterReplOffset += currentRequest.length;
+        }
+        this.masterCommands = requestParser.getRemainingRequest();
 
     }
 
@@ -123,7 +154,17 @@ class SlaveServer {
         return Encoder.generateInfoString("slave", this.masterReplId, this.masterReplOffset);
     }
 
-
+    handleSet(args) {
+        if (args.length === 3) {
+            this.dataStore.insert(args[1], args[2]);
+        } else {
+            this.dataStore.insertWithExp(args[1], args[2], args[4])
+        }
+        return Encoder.generateOkValue();
+    }
+    handleGet(args) {
+        return Encoder.generateBulkString(this.dataStore.get(args[1]));
+    }
 }
 
 module.exports = {
