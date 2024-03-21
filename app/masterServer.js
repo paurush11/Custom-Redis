@@ -76,7 +76,7 @@ class MasterServer {
                 socket.write(this.handleInfo())
                 break;
             case "REPLCONF":
-                if (args[1] === "ack") {
+                if (args[1] === "ACK") {
                     socket.write(this.handleReplicaAcknowledgements(args));
                 } else {
                     socket.write(Encoder.generateOkValue());
@@ -178,7 +178,7 @@ class MasterServer {
 
     handleReplicaAcknowledgements(args) {
         if (this.wait.isDone) return;
-        console.log("Here")
+
         const [replicaMasterOffset] = args[2];
         if (replicaMasterOffset >= this.masterReplOffset) {
             this.wait.noOfAckReplies++;
