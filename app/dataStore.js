@@ -30,8 +30,9 @@ class dataStore {
         return "stream"
     }
 
-    appendStreamValues(key,) {
-
+    appendStreamValues(key, value) {
+        const oldValues = this.map.get(key);
+        this.map.set(key, [...oldValues, value])
     }
 
     insertStream(key, value, stream_key) {
@@ -92,7 +93,8 @@ class dataStore {
         this.streamCursor += 1;
         // value[key] = new_stream_key
         /// append values form the stream;
-        this.map.set(key, value);
+        appendStreamValues(key, [value]);
+        console.log(this.map.get(key))
         return Encoder.generateBulkString(new_stream_key);
     }
 
