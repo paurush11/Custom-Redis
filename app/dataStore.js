@@ -170,8 +170,8 @@ class dataStore {
                 }
             }
         })
-        console.log(streamArrayValuesParent)
         streamArrayValuesParent.push(streamArrayValues);
+        console.log(streamArrayValuesParent)
 
         return Encoder.generateBulkArray(streamArrayValuesParent);
     }
