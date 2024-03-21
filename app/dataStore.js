@@ -98,7 +98,7 @@ class dataStore {
         this.streamCursor += 1;
         // value[key] = new_stream_key
         /// append values form the stream;
-        this.appendStreamValues(key, [value]);
+        this.appendStreamValues(key, value);
         return Encoder.generateBulkString(new_stream_key);
     }
 
