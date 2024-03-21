@@ -72,6 +72,20 @@ class SlaveServer {
             } else if (this.handShakeStep === 4) {
                 if (!masterResponse.startsWith('+fullresync')) return;
                 this.handShakeStep += 1;
+                ///handle file rdb
+                let idx = masterResponse.indexOf('\r\n');
+                idx += 3;
+                let sizeOfRDB = 0;
+                while (masterResponse[idx] !== '\r') {
+                    sizeOfRDB = (sizeOfRDB * 10) + (masterResponse[idx] - '0');
+                    idx++;
+                }
+                idx += 2; // now real data
+                console.log(masterResponse)
+                console.log(sizeOfRDB)
+                console.log(idx)
+
+
             }
 
 
