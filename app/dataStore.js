@@ -132,7 +132,7 @@ class dataStore {
                 }
             }
         })
-        console.log(streamArrayValues)
+        console.log(Encoder.generateBulkArray(streamArrayValues))
         return Encoder.generateBulkArray(streamArrayValues);
 
     }
@@ -157,8 +157,7 @@ class dataStore {
         }
         let stream = this.map.get(key);
         let streamArrayValues = [];
-        console.log(stream)
-        console.log("here")
+
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
