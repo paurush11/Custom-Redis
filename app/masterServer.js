@@ -151,7 +151,7 @@ class MasterServer {
 
         for (const [key, val] of Object.entries(this.replicas)) {
             const replicaSocket = val.socket;
-            replicaSocket.write(Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset.toString()]));
+            replicaSocket.write(Encoder.generateBulkArray(['REPLCONF', 'GETACK', "*"]));
         }
         // socket.write(`:${Object.keys(this.replicas).length}\r\n`)
     }
