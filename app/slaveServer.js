@@ -53,12 +53,31 @@ class SlaveServer {
         this.masterSocket = socket;
         socket.write(Encoder.generateBulkArray(['ping']))
         this.handShakeStep += 1;
-        socket.write(Encoder.generateBulkArray(['REPLCONF', 'listening-port', this.port.toString()]))
-        socket.write(Encoder.generateBulkArray(['REPLCONF', 'capa', 'psync2']))
-        this.handShakeStep += 1;
-        socket.write(Encoder.generateBulkArray(['PSYNC', '?', '-1']))
-        this.handShakeStep += 1;
-        
+
+        socket.on("data", (data) => {
+            let masterResponse = data.toString();
+
+            if (this.handShakeStep === 1) {
+                if (masterResponse !== Encoder.generateSimpleString('PONG')) return;
+                this.handShakeStep += 1;
+                socket.write(Encoder.generateBulkArray(['REPLCONF', 'listening-port', this.port.toString()]))
+            } else if (this.handShakeStep === 2) {
+                if (masterResponse !== Encoder.generateOkValue()) return;
+                this.handShakeStep += 1;
+                socket.write(Encoder.generateBulkArray(['REPLCONF', 'capa', 'psync2']))
+            } else if (this.handShakeStep === 3) {
+                if (masterResponse !== Encoder.generateOkValue()) return;
+                this.handShakeStep += 1;
+                socket.write(Encoder.generateBulkArray(['PSYNC', '?', '-1']))
+            } else if (this.handShakeStep === 4) {
+                if (!masterResponse.startsWith('+fullresync')) return;
+                this.handShakeStep += 1;
+            }
+
+
+        })
+
+
     }
 
     processClientCommands(socket) {
