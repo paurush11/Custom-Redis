@@ -104,7 +104,6 @@ class MasterServer {
     }
 
     handleInfo() {
-        console.log(Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset));
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
     }
 }
