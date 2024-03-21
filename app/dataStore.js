@@ -3,22 +3,27 @@ class dataStore {
         this.map = new Map();
     }
 
-    insert(key, value){
+    insert(key, value) {
         this.map.set(key, value);
     }
 
-    insertWithExp(key, value, expiration){
+    insertWithExp(key, value, expiration) {
         this.map.set(key, value);
-        setTimeout(()=>{
+        setTimeout(() => {
             this.map.delete(key);
         }, expiration)
     }
 
-    get(key){
+    get(key) {
         return this.map.get(key);
     }
 
-    has(){
+    type(key) {
+        if (!this.map.get(key)) return "none"
+        return "string"
+    }
+
+    has() {
 
     }
 }

@@ -89,7 +89,15 @@ class MasterServer {
             case "WAIT":
                 this.handleWait(args, socket, currentRequest)
                 break;
+            case "TYPE":
+                socket.write(this.handleType(args));
+
         }
+    }
+
+    handleType(args) {
+        const key = args[1];
+        return Encoder.generateSimpleString(this.dataStore.type(key));
     }
 
     handleCommandsToReplica(currentRequest) {
