@@ -84,7 +84,6 @@ class SlaveServer {
                 let rdbData = masterResponse.slice(idx, idx + sizeOfRDB)
                 idx += sizeOfRDB - 1;
                 masterResponse = data.toString().slice(idx);
-                this.handShakeStep += 1;
                 this.masterCommands = ''
                 console.log("here back")
                 console.log(this.handShakeStep)
