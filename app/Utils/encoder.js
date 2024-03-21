@@ -1,6 +1,6 @@
 class Encoder {
     static createInteger(val) {
-        return `:${val}`
+        return `:${val}\r\n`
     }
     static generateInfoString(role, masterReplId, masterReplOffset) {
         const info = {
