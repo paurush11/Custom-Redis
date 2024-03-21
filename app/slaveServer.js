@@ -124,7 +124,7 @@ class SlaveServer {
                 socket.write(this.handleInfo());
                 break
             case "SET":
-                socket.write(this.handleSet(args));
+                this.handleSet(args);
                 break;
             case "GET":
                 socket.write(this.handleGet(args));
@@ -161,7 +161,6 @@ class SlaveServer {
         } else {
             this.dataStore.insertWithExp(args[1], args[2], args[4])
         }
-        return Encoder.generateOkValue();
     }
     handleGet(args) {
         console.log(args)
