@@ -87,6 +87,7 @@ class SlaveServer {
                 this.handShakeStep += 1;
                 this.masterCommands = ''
                 console.log("here back")
+                console.log(this.handShakeStep)
             }
             if (this.handShakeStep === 5) {
                 console.log("here")
