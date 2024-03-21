@@ -105,7 +105,7 @@ class MasterServer {
     handleStreamRangeOutputs(args) {
         const stream_key = args[1];
         const stream_key_start_value = args[2];
-        const stream_key_end_value = args[2];
+        const stream_key_end_value = args[3];
         this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
     }
 
