@@ -178,12 +178,12 @@ class MasterServer {
     }
 
     handleReplicaAcknowledgements(args) {
-        console.log(args)
         if (this.wait.isDone) return;
-        console.log(this.masterReplOffset)
+
         const [replicaMasterOffset] = args[2];
         if (replicaMasterOffset >= this.masterReplOffset) {
             this.wait.noOfAckReplies++;
+            console.log(this.noOfAckReplies)
             if (this.wait.noOfAckReplies >= this.wait.noOfReqReplies) {
                 this.handleWaitResponse()
             }
