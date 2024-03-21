@@ -111,8 +111,15 @@ class dataStore {
     }
 
     getStreamValues(key, start, end) {
-        let [startTime, startSequence] = start.split("-");
-        let [endTime, endSequence] = end.split("-");
+        let startTime = '0'
+        let endTime = 'max'
+        if (start !== "-") {
+            [startTime, startSequence] = start.split("-");
+        }
+        if (end !== "+") {
+            [endTime, endSequence] = end.split("-");
+        }
+
         if (!startSequence) {
             startSequence = '0'
         }
@@ -121,18 +128,18 @@ class dataStore {
         }
         let stream = this.map.get(key);
         let streamArrayValues = [];
+
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
                 let arrayKey = [arrayValue[key]]
-                if (Number(currTime) >= Number(startTime) && Number(currTime) <= Number(endTime) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
+
+                if (Number(currTime) >= Number(startTime) && (endTime === "max" || Number(currTime) <= Number(endTime)) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
                     arrayKey = this.pushAsArray(arrayValue, arrayKey, key);
                     streamArrayValues.push(arrayKey);
                 }
             }
         })
-        console.log(streamArrayValues);
-
         return Encoder.generateBulkArray(streamArrayValues);
     }
 
