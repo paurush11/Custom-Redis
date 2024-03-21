@@ -102,6 +102,14 @@ class dataStore {
         return Encoder.generateBulkString(new_stream_key);
     }
 
+    pushAsArray(arrayObject, streamArrayValues, stream_key) {
+        for (const [key, val] of Object.entries(arrayObject)) {
+            if (key === stream_key) continue;
+            streamArrayValues.push([key, val]);
+        }
+        return streamArrayValues;
+    }
+
     getStreamValues(key, start, end) {
         let [startTime, startSequence] = start.split("-");
         let [endTime, endSequence] = end.split("-");
@@ -112,12 +120,12 @@ class dataStore {
             endSequence = 'max'
         }
         let stream = this.map.get(key);
-        const streamArrayValues = [];
+        let streamArrayValues = [];
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
                 if (Number(currTime) >= Number(startTime) && Number(currTime) <= Number(endTime) && Number(currSequence) >= Number(startSequence) && (endSequence === "max" || Number(currSequence) <= Number(endSequence))) {
-                    streamArrayValues.push(arrayValue);
+                    streamArrayValues = pushAsArray(arrayValue, streamArrayValues, key);
                 }
             }
         })
