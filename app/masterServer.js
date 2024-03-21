@@ -120,6 +120,7 @@ class MasterServer {
                     return socket.write(Encoder.handleErrorValue());
                 }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
+                console.log("here again")
                 return socket.write(value)
             } else {
 
@@ -131,8 +132,10 @@ class MasterServer {
                         this.blockedKeys.push(stream_key)
                     }, timer)
 
-                } else {
 
+                    console.log("here")
+
+                } else {
                     let mid = (args.length - 2) / 2 + 2
                     let j = mid;
                     let value = [];
@@ -144,10 +147,8 @@ class MasterServer {
                             continue;
                         }
                         const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
-
                         value = [...value, ...val]
                     }
-
                     return socket.write(Encoder.generateBulkArray(value));
 
                 }
