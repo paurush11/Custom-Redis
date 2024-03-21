@@ -128,6 +128,7 @@ class SlaveServer {
                 socket.write(this.handleGet(args));
                 break;
             case "REPLCONF":
+                socket.write(this.handleAck());
                 break;
         }
 
@@ -168,7 +169,6 @@ class SlaveServer {
     }
 
     handleAck() {
-
         return Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset]);
     }
 }
