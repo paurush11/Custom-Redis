@@ -172,21 +172,15 @@ class MasterServer {
     handleWaitResponse() {
         clearTimeout(this.wait.timeout);
         this.masterReplOffset += this.wait.request.length
-        console.log("almost done " + this.wait.noOfAckReplies)
         this.wait.socket.write(`:${this.wait.noOfAckReplies}\r\n`);
         this.wait.isDone = true;
     }
 
     handleReplicaAcknowledgements(args) {
         if (this.wait.isDone) return;
-       
         const replicaMasterOffset = args[2];
-        console.log(replicaMasterOffset)
-        console.log(this.masterReplOffset)
         if (replicaMasterOffset >= this.masterReplOffset) {
             this.wait.noOfAckReplies++;
-            console.log(this.noOfAckReplies)
-            console.log(this.noOfReqReplies)
             if (this.wait.noOfAckReplies >= this.wait.noOfReqReplies) {
                 this.handleWaitResponse()
             }
