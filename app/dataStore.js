@@ -110,7 +110,7 @@ class dataStore {
         return streamArrayValues;
     }
 
-    getStreamValues(key, start) {
+    getStreamValuesXread(key, start) {
         let startTime = '0'
         let startSequence
         if (start !== "-") {
