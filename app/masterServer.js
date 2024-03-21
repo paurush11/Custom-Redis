@@ -138,7 +138,10 @@ class MasterServer {
 
         /// So any replica which has processed this command has also processed previous command
         /// ask all the replicas to send their ack.
-
+        if(this.masterReplOffset === 0){
+            socket.write(Encoder.createInteger(Object.keys(this.replicas).length));
+            return;
+        }
         this.wait = {}
         this.wait.noOfAckReplies = 0;
         this.wait.noOfReqReplies = noOfReqReplies;
@@ -151,6 +154,7 @@ class MasterServer {
 
         for (const [key, val] of Object.entries(this.replicas)) {
             const replicaSocket = val.socket;
+
             replicaSocket.write(Encoder.generateBulkArray(['REPLCONF', 'GETACK', "*"]));
         }
         // socket.write(`:${Object.keys(this.replicas).length}\r\n`)

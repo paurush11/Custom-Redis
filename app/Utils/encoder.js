@@ -1,5 +1,7 @@
 class Encoder {
-
+    static createInteger(val) {
+        return `:${val}`
+    }
     static generateInfoString(role, masterReplId, masterReplOffset) {
         const info = {
             role: role,
