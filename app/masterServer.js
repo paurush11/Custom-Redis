@@ -87,7 +87,7 @@ class MasterServer {
                 this.replicas[createUid(socket)] = { socket, state: "connected" }
                 break;
             case "WAIT":
-                this.handleWait(args, socket)
+                this.handleWait(args, socket, currentRequest)
                 break;
         }
     }
@@ -130,8 +130,13 @@ class MasterServer {
         socket.write(Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary]))
     }
 
-    handleWait(args, socket) {
+    handleWait(args, socket, request) {
+        const [waitCommand, noOfReqReplies, exp] = args
+
+        console.log(request);
         socket.write(`:${Object.keys(this.replicas).length}\r\n`)
+
+
     }
 
     handleReplicaConfiguration(args) {
