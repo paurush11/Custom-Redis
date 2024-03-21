@@ -75,10 +75,11 @@ class MasterServer {
                 socket.write(this.handleInfo())
                 break;
             case "REPLCONF":
-                if (args[1] === "listening-port") {
-                    socket.write(Encoder.generateOkValue());
-                } else {
+                if (args[1] === "ack") {
                     socket.write(this.handleReplicaConfiguration(args));
+                } else {
+                    socket.write(Encoder.generateOkValue());
+
                 }
                 break;
             case "PSYNC":
@@ -114,9 +115,6 @@ class MasterServer {
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
     }
 
-
-
-
     handlePsync(socket) {
         socket.write(`+FULLRESYNC ${this.masterReplId} ${this.masterReplOffset}\r\n`)
         const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
@@ -126,6 +124,7 @@ class MasterServer {
     }
 
     handleReplicaConfiguration(args) {
+        console.log(args);
 
 
     }
