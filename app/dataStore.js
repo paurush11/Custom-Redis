@@ -109,7 +109,7 @@ class dataStore {
         }
         return streamArrayValues;
     }
-    
+
     getXStreamValues(key, start) {
         let startTime = '0'
         let startSequence
@@ -121,8 +121,6 @@ class dataStore {
         }
 
         let stream = this.map.get(key);
-        console.log(stream)
-        console.log("here again")
         let streamArrayValues = [];
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
@@ -134,6 +132,7 @@ class dataStore {
                 }
             }
         })
+        console.log(streamArrayValues)
         return Encoder.generateBulkArray(streamArrayValues);
 
     }
