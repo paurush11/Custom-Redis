@@ -142,6 +142,7 @@ class SlaveServer {
             if (args.length === 0) {
                 break;
             }
+            console.log(args)
             let currentRequest = requestParser.currentRequest;
             this.handleCommands(args, this.masterSocket, currentRequest)
             this.masterReplOffset += currentRequest.length;
@@ -155,7 +156,7 @@ class SlaveServer {
     }
 
     handleSet(args) {
-        console.log(args)
+
         if (args.length === 3) {
             this.dataStore.insert(args[1], args[2]);
         } else {
