@@ -99,13 +99,30 @@ class dataStore {
         // value[key] = new_stream_key
         /// append values form the stream;
         this.appendStreamValues(key, [value]);
-        console.log(this.map.get(key))
         return Encoder.generateBulkString(new_stream_key);
     }
 
     getStreamValues(key, start, end) {
+        let [startTime, startSequence] = start.split("-");
+        let [endTime, endSequence] = end.split("-");
+        if (!startSequence) {
+            startSequence = '0'
+        }
+        if (!endSequence) {
+            endSequence = 'max'
+        }
         let stream = this.map.get(key);
-        console.log(stream);
+        const streamArrayValues = [];
+        stream.forEach((arrayValue) => {
+            if (arrayValue[key]) {
+                const [currTime, currSequence] = arrayValue[key].split("-");
+                console.log(startTime)
+                console.log(endTime)
+                console.log(currTime)
+                console.log(currSequence)
+            }
+
+        })
     }
 
     has() {
