@@ -112,11 +112,25 @@ class MasterServer {
             const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
             return value
         } else {
-            const stream_key = args[2]
-            const stream_key_start_value = args[3]
-            const value = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
-            return value
-            // return '*1\r\n*6\r\n$9\r\nstream_key\r\n*1\r\n*2\r\n$3\r\n0-1\r\n*2\r\n$11\r\ntemperature\r\n$2\r\n96\r\n'
+            if (args.length === 4) {
+                const stream_key = args[2]
+                const stream_key_start_value = args[3]
+                const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
+                return value
+            } else {
+                let mid = (args.length - 2) / 2 + 2
+                let value = [];
+                for (let i = 2; i < args.length; i++) {
+                    const stream_key = args[i]
+                    const stream_key_start_value = args[mid]
+                    const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
+                    value.push(val);
+                }
+                return Encoder.generateBulkArray(value);
+            }
+
+
+
         }
 
 

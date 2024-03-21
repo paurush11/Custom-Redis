@@ -135,7 +135,7 @@ class dataStore {
         })
 
         streamArrayValuesParent.push(streamArrayValues);
-        return Encoder.generateBulkArray([streamArrayValuesParent]);
+        return [streamArrayValuesParent];
 
     }
 
@@ -158,9 +158,7 @@ class dataStore {
             endSequence = 'max'
         }
         let stream = this.map.get(key);
-
         let streamArrayValues = [];
-
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
