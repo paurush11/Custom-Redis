@@ -81,8 +81,8 @@ class SlaveServer {
                     idx++;
                 }
                 idx += 2; // now real data
-                console.log(masterResponse[idx])
-                console.log(masterResponse[idx + sizeOfRDB])
+                console.log(masterResponse.slice(idx, idx + sizeOfRDB - 1))
+
 
 
             }
