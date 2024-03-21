@@ -82,6 +82,7 @@ class MasterServer {
                 }
                 break;
             case "PSYNC":
+                socket.write(this.handlePsync())
                 break;
             case "WAIT":
                 break;
@@ -110,6 +111,11 @@ class MasterServer {
 
     handleInfo() {
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
+    }
+
+    handlePsync(){
+        let str = `+FULLRESYNC ${this.masterReplId} ${this.masterReplOffset}\r\n`
+        return str;
     }
 
     handleReplicaConfiguration(args) {
