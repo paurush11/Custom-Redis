@@ -91,8 +91,23 @@ class MasterServer {
                 break;
             case "TYPE":
                 socket.write(this.handleType(args));
+                break;
+            case "XADD":
+                socket.write(this.handleStreams(args))
+                break;
+        }
+    }
+
+    handleStreams(args) {
+        const stream_key = args[2];
+        const streamObject = {
 
         }
+        for (let i = 1; i < args.length; i += 2) {
+            streamObject[args[i]] = args[i + 1];
+        }
+        console.log(streamObject)
+        return Encoder.generateSimpleString(stream_key);
     }
 
     handleType(args) {
