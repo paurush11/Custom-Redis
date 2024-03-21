@@ -30,12 +30,8 @@ class dataStore {
         return "stream"
     }
 
-    compareStreamValues(ms, sq, pms, psq) {
-        if (ms === '0' && sq === '0')
-            return Encoder.generateStreamError(false);
-        if (sq === "*") {
+    appendStreamValues(key,) {
 
-        }
     }
 
     insertStream(key, value, stream_key) {
@@ -94,7 +90,8 @@ class dataStore {
         let new_stream_key = [newMillisecondsTime, newSequenceNumber].join("-")
         this.streamTimeStamps.push(new_stream_key);
         this.streamCursor += 1;
-        value[key] = new_stream_key
+        // value[key] = new_stream_key
+        /// append values form the stream;
         this.map.set(key, value);
         return Encoder.generateBulkString(new_stream_key);
     }
