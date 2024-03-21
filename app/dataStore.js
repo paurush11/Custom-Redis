@@ -39,50 +39,40 @@ class dataStore {
     }
 
     insertStream(key, value, stream_key) {
-
+        let newSequenceNumber = '0'
+        let newMillisecondsTime = '1526919030474'
         if (stream_key === "*") {
             if (this.streamCursor === 0) {
-                let newSequenceNumber = '0'
-                let newMillisecondsTime = '1526919030474'
-                this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
-                this.streamCursor += 1;
-                this.map.set(key, value);
+                newSequenceNumber = '0'
+                newMillisecondsTime = '1526919030474'
             } else {
                 const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
-                let newSequenceNumber = '0'
-                let newMillisecondsTime = '1526919030474'
+                newSequenceNumber = '0'
+                newMillisecondsTime = '1526919030474'
             }
         } else {
             const [millisecondsTime, sequenceNumber] = stream_key.split("-");
 
             if (sequenceNumber === '*') {
                 if (this.streamCursor === 0) {
-                    let newSequenceNumber = millisecondsTime === '0' ? '1' : '0'
-                    let newMillisecondsTime = millisecondsTime
-                    this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
-                    this.streamCursor += 1;
-                    this.map.set(key, value);
-
+                    newSequenceNumber = millisecondsTime === '0' ? '1' : '0'
+                    newMillisecondsTime = millisecondsTime
                 } else {
                     const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
                     if (millisecondsTime < prevMillisecondsTime) {
                         return Encoder.generateStreamError(true);
                     } else if (prevMillisecondsTime === millisecondsTime) {
-                        let newSequenceNumber = (Number(prevSequenceNumber) + 1).toString();
-                        let newMillisecondsTime = millisecondsTime
+                        newSequenceNumber = (Number(prevSequenceNumber) + 1).toString();
+                        newMillisecondsTime = millisecondsTime
                     } else {
-                        let newSequenceNumber = '0'
-                        let newMillisecondsTime = millisecondsTime
+                        newSequenceNumber = '0'
+                        newMillisecondsTime = millisecondsTime
                     }
-
-                    this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
-                    this.streamCursor += 1;
-                    this.map.set(key, value);
                 }
 
             } else {
-                let newSequenceNumber = sequenceNumber
-                let newMillisecondsTime = millisecondsTime
+                newSequenceNumber = sequenceNumber
+                newMillisecondsTime = millisecondsTime
                 if (this.streamCursor === 0) {
                     if (millisecondsTime === '0' && sequenceNumber === '0')
                         return Encoder.generateStreamError(false);
@@ -94,10 +84,14 @@ class dataStore {
                         return Encoder.generateStreamError(true);
                     }
                 }
-                this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
-                this.streamCursor += 1;
-                this.map.set(key, value);
+
             }
+
+
+            this.streamTimeStamps.push([newMillisecondsTime, newSequenceNumber].join("-"));
+            this.streamCursor += 1;
+            console.log(value[key])
+            this.map.set(key, value);
         }
     }
 
