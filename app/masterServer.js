@@ -96,7 +96,7 @@ class MasterServer {
                 socket.write(this.handleStreams(args))
                 break;
             case "XRANGE":
-                this.handleStreamRangeOutputs(args)
+                socket.write(this.handleStreamRangeOutputs(args))
                 break;
         }
     }
@@ -106,7 +106,7 @@ class MasterServer {
         const stream_key = args[1];
         const stream_key_start_value = args[2];
         const stream_key_end_value = args[3];
-        this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
+        return this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
     }
 
     handleStreams(args) {

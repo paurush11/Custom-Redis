@@ -130,7 +130,7 @@ class dataStore {
             }
         })
 
-        console.log(streamArrayValues);
+        return Encoder.generateBulkArray(streamArrayValues);
     }
 
     has() {
