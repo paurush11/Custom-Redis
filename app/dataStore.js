@@ -172,6 +172,7 @@ class dataStore {
         })
         streamArrayValuesParent.push(streamArrayValues);
         console.log(JSON.stringify([streamArrayValuesParent]))
+        console.log(Encoder.generateBulkArray([streamArrayValuesParent]))
 
 
 
