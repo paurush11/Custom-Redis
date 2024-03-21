@@ -153,7 +153,7 @@ class MasterServer {
             const replicaSocket = val.socket;
             replicaSocket.write(Encoder.generateBulkArray(['REPLCONF', 'ACK', this.masterReplOffset.toString()]));
         }
-        socket.write(`:${Object.keys(this.replicas).length}\r\n`)
+        // socket.write(`:${Object.keys(this.replicas).length}\r\n`)
     }
 
     handleWaitResponse() {
