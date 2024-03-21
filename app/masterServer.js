@@ -138,6 +138,8 @@ class MasterServer {
 
         /// So any replica which has processed this command has also processed previous command
         /// ask all the replicas to send their ack.
+        console.log(args)
+        console.log(Object.keys(this.replicas).length)
         if (Object.keys(this.replicas).length === 0) {
             socket.write(Encoder.createInteger(0));
             return;
