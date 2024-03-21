@@ -172,6 +172,7 @@ class MasterServer {
     handleWaitResponse() {
         clearTimeout(this.wait.timeout);
         this.masterReplOffset += this.wait.request.length
+        console.log("almost done " + this.wait.noOfAckReplies)
         this.wait.socket.write(`:${this.wait.noOfAckReplies}\r\n`);
         this.wait.isDone = true;
     }
