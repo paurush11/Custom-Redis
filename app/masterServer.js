@@ -95,7 +95,19 @@ class MasterServer {
             case "XADD":
                 socket.write(this.handleStreams(args))
                 break;
+            case "XRANGE":
+                this.handleStreamRangeOutputs(args)
+                break;
         }
+    }
+
+
+    handleStreamRangeOutputs(args) {
+        const stream_key = args[1];
+        const stream_key_start_value = args[2];
+        const stream_key_end_value = args[2];
+
+        this.dataStore.getStreamValues()
     }
 
     handleStreams(args) {
