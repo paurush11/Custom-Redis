@@ -93,6 +93,7 @@ class dataStore {
             value[key] = new_stream_key
             console.log(value)
             this.map.set(key, value);
+            return Encoder.generateBulkString(new_stream_key);
         }
     }
 
