@@ -120,7 +120,7 @@ class MasterServer {
             } else {
                 let mid = (args.length - 2) / 2 + 2
                 let value = [];
-                for (let i = 2; i < mid; i++, mid++) {
+                for (let i = 2; i < mid - 1; i++, mid++) {
                     const stream_key = args[i]
                     const stream_key_start_value = args[mid]
                     console.log(stream_key)
