@@ -122,6 +122,7 @@ class dataStore {
 
         let stream = this.map.get(key);
         let streamArrayValues = [];
+        let streamArrayValuesParent = [key];
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
                 const [currTime, currSequence] = arrayValue[key].split("-");
@@ -132,8 +133,9 @@ class dataStore {
                 }
             }
         })
-        console.log(Encoder.generateBulkArray(streamArrayValues))
-        return Encoder.generateBulkArray(streamArrayValues);
+
+        streamArrayValuesParent.push(streamArrayValues);
+        return Encoder.generateBulkArray([streamArrayValuesParent]);
 
     }
 
@@ -156,7 +158,7 @@ class dataStore {
             endSequence = 'max'
         }
         let stream = this.map.get(key);
-        let streamArrayValuesParent = [key];
+
         let streamArrayValues = [];
 
         stream.forEach((arrayValue) => {
@@ -170,13 +172,7 @@ class dataStore {
                 }
             }
         })
-        streamArrayValuesParent.push(streamArrayValues);
-        console.log(JSON.stringify([streamArrayValuesParent]))
-        console.log(Encoder.generateBulkArray([streamArrayValuesParent]))
-
-
-
-        return Encoder.generateBulkArray([streamArrayValuesParent]);
+        return Encoder.generateBulkArray(streamArrayValues);
     }
 
     has() {
