@@ -3,7 +3,7 @@ const { dataStore } = require("./dataStore");
 const { createUid } = require("./Utils/sendMessages");
 const { RequestParser } = require("./requestParser");
 const { Encoder } = require("./Utils/encoder");
-
+const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
 class MasterServer {
     constructor(host, port) {
         this.port = port;
@@ -83,6 +83,7 @@ class MasterServer {
                 break;
             case "PSYNC":
                 socket.write(this.handlePsync())
+                socket.write(this.sendRDBfileForHandShake())
                 break;
             case "WAIT":
                 break;
@@ -113,7 +114,12 @@ class MasterServer {
         return Encoder.generateInfoString("master", this.masterReplId, this.masterReplOffset);
     }
 
-    handlePsync(){
+    sendRDBfileForHandShake() {
+        const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
+        return Buffer.concat([Buffer.from(`$${RDB_File_Binary.length}\r\n`), RDB_File_Binary])
+    }
+
+    handlePsync() {
         let str = `+FULLRESYNC ${this.masterReplId} ${this.masterReplOffset}\r\n`
         return str;
     }
