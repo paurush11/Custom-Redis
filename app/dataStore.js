@@ -129,6 +129,7 @@ class dataStore {
                 }
             }
         })
+        console.log(Encoder.generateBulkArray(streamArrayValues));
 
         return Encoder.generateBulkArray(streamArrayValues);
     }
