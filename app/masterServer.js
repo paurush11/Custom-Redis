@@ -128,7 +128,7 @@ class MasterServer {
                     console.log(stream_key_start_value)
                     const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
 
-                    value.push(val);
+                    value = [...val]
                 }
                 console.log(value)
                 return Encoder.generateBulkArray(value);
