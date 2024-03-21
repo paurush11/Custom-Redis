@@ -122,6 +122,7 @@ class dataStore {
 
         let stream = this.map.get(key);
         console.log(stream)
+        console.log("here")
         let streamArrayValues = [];
         stream.forEach((arrayValue) => {
             if (arrayValue[key]) {
