@@ -95,6 +95,7 @@ class MasterServer {
             case "XADD":
                 socket.write(this.handleStreams(args))
                 break;
+            case "XREAD":
             case "XRANGE":
                 socket.write(this.handleStreamRangeOutputs(args))
                 break;
@@ -105,8 +106,15 @@ class MasterServer {
     handleStreamRangeOutputs(args) {
         const stream_key = args[1];
         const stream_key_start_value = args[2];
-        const stream_key_end_value = args[3];
-        const value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
+        let value = "";
+        if (args.length === 4) {
+            const stream_key_end_value = args[3];
+            value = this.dataStore.getStreamValues(stream_key, stream_key_start_value, stream_key_end_value);
+        } else {
+            value = this.dataStore.getStreamValues(stream_key, stream_key_start_value);
+        }
+
+
         return value
     }
 

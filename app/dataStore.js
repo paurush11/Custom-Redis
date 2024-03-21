@@ -110,6 +110,32 @@ class dataStore {
         return streamArrayValues;
     }
 
+    getStreamValues(key, start) {
+        let startTime = '0'
+        let startSequence
+        if (start !== "-") {
+            [startTime, startSequence] = start.split("-");
+        }
+        if (!startSequence) {
+            startSequence = '0'
+        }
+
+        let stream = this.map.get(key);
+        let streamArrayValues = [];
+        stream.forEach((arrayValue) => {
+            if (arrayValue[key]) {
+                const [currTime, currSequence] = arrayValue[key].split("-");
+                let arrayKey = [arrayValue[key]]
+                if (Number(currTime) >= Number(startTime) && Number(currSequence) >= Number(startSequence)) {
+                    arrayKey = this.pushAsArray(arrayValue, arrayKey, key);
+                    streamArrayValues.push(arrayKey);
+                }
+            }
+        })
+        return Encoder.generateBulkArray(streamArrayValues);
+
+    }
+
     getStreamValues(key, start, end) {
         let startTime = '0'
         let endTime = 'max'
