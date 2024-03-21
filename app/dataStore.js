@@ -47,7 +47,7 @@ class dataStore {
             }
 
         }
-        this.streamTimeStamps.push(key);
+        this.streamTimeStamps.push(stream_key);
         this.streamCursor += 1;
         this.map.set(key, value);
     }
