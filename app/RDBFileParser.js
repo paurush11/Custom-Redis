@@ -30,7 +30,7 @@ class RDBFileParser {
         this.version = version;
     }
     readKeyValuePair() {
-        const data = this.buffer.toString('utf-8', this.cursor, this.cursor + 2);
+        const data = this.buffer.toString('binary', this.cursor, this.cursor + 2);
         console.log(data);
 
 
