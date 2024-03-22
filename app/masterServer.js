@@ -109,6 +109,7 @@ class MasterServer {
                 return ele.timer;
             }
         })
+        console.log(timer)
 
         this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
 
@@ -139,6 +140,7 @@ class MasterServer {
             } else {
                 if (args[1].toUpperCase() === "BLOCK") {
                     const timer = args[2]
+                    console.log(timer)
                     const stream_key = args[4]
                     const stream_key_start_value = args[5];
 
