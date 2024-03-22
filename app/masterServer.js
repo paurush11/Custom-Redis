@@ -13,7 +13,7 @@ class MasterServer {
         this.masterReplId = '8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb';
         this.masterReplOffset = 0;
         this.replicas = {}
-        this.blockedKeys = []
+        this.blockedClients = {}
     }
 
     startServer() {
@@ -103,11 +103,13 @@ class MasterServer {
         }
     }
 
+    unblockClient(){
+
+    }
+
 
     handleStreamRangeOutputs(args, socket) {
-        console.log("I am here")
         if (args[0].toUpperCase() === "XRANGE") {
-            console.log("here")
             const stream_key = args[1];
             const stream_key_start_value = args[2];
             const stream_key_end_value = args[3];
@@ -117,24 +119,18 @@ class MasterServer {
             if (args.length === 4) {
                 const stream_key = args[2]
                 const stream_key_start_value = args[3]
-                if (this.blockedKeys.includes(stream_key)) {
-                    return socket.write(Encoder.handleErrorValue());
-                }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
-                console.log("here again")
                 return socket.write(value)
             } else {
 
                 if (args[1].toUpperCase() === "BLOCK") {
                     const timer = args[2]
+                    const stream_key = args[4]
+                    const stream_key_start_value = args[5];
+                    this.blockedClients[stream_key].push({ socket, stream_key_start_value, timeout })
                     setTimeout(() => {
-                        const stream_key = args[4]
-                        const stream_key_start_value = args[5];
-                        this.blockedKeys.push(stream_key)
+
                     }, timer)
-
-
-                    console.log("here")
 
                 } else {
                     let mid = (args.length - 2) / 2 + 2
@@ -151,19 +147,9 @@ class MasterServer {
                         value = [...value, ...val]
                     }
                     return socket.write(Encoder.generateBulkArray(value));
-
                 }
-
-
-
             }
-
-
-
         }
-
-
-
     }
 
     handleStreams(args) {
