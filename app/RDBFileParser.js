@@ -1,4 +1,5 @@
-const fs = require('fs')
+const fs = require('fs');
+const { dataStore } = require('./dataStore');
 
 class RDBFileParser {
     constructor(filePath) {
@@ -8,7 +9,7 @@ class RDBFileParser {
         this.magicString = '';
         this.version = 0;
         this.readFile();
-        this.dataStore = new HashTable();
+        this.dataStore = new dataStore();
     }
     readFile() {
         if (fs.existsSync(this.filePath)) {
@@ -16,8 +17,6 @@ class RDBFileParser {
             this.parseHeader();
             this.parse();
         }
-
-
     }
 
     parseHeader() {
