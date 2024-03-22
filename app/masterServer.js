@@ -127,7 +127,7 @@ class MasterServer {
                     const timer = args[2]
                     const stream_key = args[4]
                     const stream_key_start_value = args[5];
-                    this.blockedClients[stream_key].push({ socket, stream_key_start_value, timeout })
+                    // this.blockedClients[stream_key].push({ socket, stream_key_start_value, timeout })
                     setTimeout(() => {
 
                     }, timer)
