@@ -103,7 +103,7 @@ class MasterServer {
         }
     }
 
-    unblockClient(){
+    unblockClient() {
 
     }
 
@@ -139,10 +139,10 @@ class MasterServer {
                     for (let i = 2; i < mid; i++, j++) {
                         const stream_key = args[i]
                         const stream_key_start_value = args[j]
-                        if (this.blockedKeys.includes(stream_key)) {
-                            value = [...value, Encoder.handleErrorValue()]
-                            continue;
-                        }
+                        // if (this.blockedKeys.includes(stream_key)) {
+                        //     value = [...value, Encoder.handleErrorValue()]
+                        //     continue;
+                        // }
                         const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
                         value = [...value, ...val]
                     }
