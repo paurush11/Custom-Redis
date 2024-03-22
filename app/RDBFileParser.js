@@ -8,6 +8,7 @@ class RDBFileParser {
         this.buffer = null;
         this.magicString = '';
         this.version = 0;
+        this.auxData = {};
         this.readFile();
         this.dataStore = new dataStore();
     }
