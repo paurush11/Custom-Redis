@@ -3,6 +3,8 @@ const { dataStore } = require("./dataStore");
 const { createUid } = require("./Utils/sendMessages");
 const { RequestParser } = require("./requestParser");
 const { Encoder } = require("./Utils/encoder");
+const { RDBFileParser } = require("./RDBFileParser");
+const path = require("path");
 
 class MasterServer {
 
@@ -17,6 +19,15 @@ class MasterServer {
         this.blockedClients = {}
         this.rdbFileDir = dir
         this.rdbFileName = filename
+        setRdbFile()
+    }
+
+    setRdbFile() {
+        if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
+            const rdbFilePath = path.join(this.rdbFileDir, this.rdbFileName);
+            this.rdbFileParser = new RDBFileParser(rdbFilePath)
+            this.rdbFileParser.parseHeader();
+        }
     }
 
     startServer() {
@@ -106,6 +117,18 @@ class MasterServer {
             case "CONFIG":
                 socket.write(this.handleRdbConfiguration(args))
                 break;
+            case "KEYS":
+                socket.write(this.handleRdbKeysRead(args))
+                break;
+        }
+    }
+
+
+    handleRdbKeysRead(args) {
+        if (args[1] === "*") {
+            const keyValPair = this.rdbFileParser.readKeyValuePair();
+            const keys = Object.keys(keyValPair);
+            return Encoder.generateBulkArray(keys);
         }
     }
 
@@ -237,6 +260,11 @@ class MasterServer {
         return Encoder.generateOkValue();
     }
     handleGet(args) {
+        if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
+            const keyValPair = this.rdbFileParser.readKeyValuePair();
+            const value = keyValPair[args[1]];
+            return Encoder.generateBulkString(value);
+        }
         return Encoder.generateBulkString(this.dataStore.get(args[1]));
     }
 
