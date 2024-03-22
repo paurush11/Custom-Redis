@@ -70,7 +70,7 @@ class RDBFileParser {
 
     readString() {
         const length = this.readLength();
-        const string = this.buffer(this.cursor, this.cursor + length).toString('binary');
+        const string = this.buffer.toString('binary', this.cursor, this.cursor + length)
         this.cursor += length;
         return string;
     }
