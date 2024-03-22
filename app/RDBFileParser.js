@@ -118,6 +118,7 @@ class RDBFileParser {
         if (valueType == 0) {
             return this.readStringEncoding();
         }
+        console.log(valueType)
         throw new Error(`Value Type not handled: ${valueType}`);
     }
     readAUX() {
@@ -167,7 +168,7 @@ class RDBFileParser {
     parse() {
         /// Here after reading magic number and version
         while (true) {
-            const opcode = this.readOPcode();
+            const opcode = this.readCurrByte();
             switch (opcode) {
                 case 0xFA:
                     this.readAUX();
