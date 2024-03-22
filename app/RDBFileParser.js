@@ -24,33 +24,33 @@ class RDBFileParser {
     }
 
     parse() {
-        let redisMagicString = this.readStringOfLen(RDBParser.CONSTANTS.MAGIC_REDIS_STRING);
-        let rdbVersion = this.readStringOfLen(RDBParser.CONSTANTS.RDB_VERSION);
+        let redisMagicString = this.readStringOfLen(RDBFileParser.CONSTANTS.MAGIC_REDIS_STRING);
+        let rdbVersion = this.readStringOfLen(RDBFileParser.CONSTANTS.RDB_VERSION);
 
         while (true) {
             const opCode = this.readByte();
             switch (opCode) {
-                case RDBParser.OPCodes.AUX:
+                case RDBFileParser.OPCodes.AUX:
                     this.readAUX();
                     break;
 
-                case RDBParser.OPCodes.RESIZEDB:
+                case RDBFileParser.OPCodes.RESIZEDB:
                     this.readResizeDB();
                     break;
 
-                case RDBParser.OPCodes.EXPIRETIMEMS:
+                case RDBFileParser.OPCodes.EXPIRETIMEMS:
                     this.readExpireTimeMS();
                     break;
 
-                case RDBParser.OPCodes.EXPIRETIME:
+                case RDBFileParser.OPCodes.EXPIRETIME:
                     this.readExpireTime();
                     break;
 
-                case RDBParser.OPCodes.SELECTDB:
+                case RDBFileParser.OPCodes.SELECTDB:
                     this.readSelectDB();
                     break;
 
-                case RDBParser.OPCodes.EOF:
+                case RDBFileParser.OPCodes.EOF:
                     this.readEOF();
                     return;
                 default:
