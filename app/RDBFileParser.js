@@ -3,21 +3,20 @@ const fs = require('fs')
 class RDBFileParser {
     constructor(filePath) {
         this.filePath = filePath;
-        this.keyValPair = {}
-        this.cursor = 0
+        this.cursor = 0;
         this.buffer = null;
+        this.magicString = '';
+        this.version = 0;
         this.readFile();
-        this.magicString = ''
-        this.version = 0
+        this.parseHeader();
+        this.parse();
+        this.dataStore = new HashTable();
     }
     readFile() {
         if (fs.existsSync(this.filePath))
             this.buffer = fs.readFileSync(this.filePath);
     }
-    readOPcode() {
-        const code = this.buffer[this.cursor];
-        return code;
-    }
+
     parseHeader() {
         if (this.cursor !== 0) {
             this.cursor = 0;
@@ -34,96 +33,162 @@ class RDBFileParser {
         this.version = version;
     }
 
-    readLength() {
-        // Get 2 most significant bits
-        // 00	The next 6 bits represent the length
-        // 01	Read one additional byte. The combined 14 bits represent the length
-        // 10	Discard the remaining 6 bits. The next 4 bytes from the stream represent the length
-        // 11	The next object is encoded in a special format. The remaining 6 bits indicate the format. May be used to store numbers or Strings, see String Encoding
-
-        const firstByte = this.buffer.readUInt8(this.cursor);
-        this.cursor += 1;
-        //0xC0 ---> 11000000 in Hex ---> Bitwise and clears all the bytes except the first one. Now since we get 2 bits we right shift all zeros thus we get >>6
-        const type = (firstByte & 0xC0) >> 6
-
-        switch (type) {
-            case 0: // 00
-                return firstByte & 0x3F; // Return the 6 least significant bits
-            case 1: // 01
-                const secondByte = this.buffer.readUInt8(this.cursor++);
-                this.cursor += 1
-                return ((firstByte & 0x3F) << 8) | secondByte; // Combine the next 8 bits with the 6 least significant bits
-            case 2: // 10
-                return this.buffer.readUInt32BE(this.cursor++); // Read the next 4 bytes
-            case 3: // 11
-                // This is a special encoding, handle according to the remaining 6 bits
-                const specialType = firstByte & 0x3F;
-                // Handling of special encoding will depend on the Redis RDB file version and format
-                console.log(`Special format with type: ${specialType}`);
-                // Specific handling here
-                return specialType;
-            default:
-                break
-        }
-
+    readCurrByte() {
+        return this.buffer[this.cursor++];
     }
 
-    readString() {
-        const length = this.readLength();
-        const string = this.buffer.toString('binary', this.cursor, this.cursor + length)
-        this.cursor += length;
+    read2Bytes() {
+        const value = this.buffer.readInt16LE(this.cursor);
+        this.cursor += 2;
+        return value
+    }
+    read4Bytes() {
+        const value = this.buffer.readInt32LE(this.cursor);
+        this.cursor += 4;
+        return value
+    }
+    read8Bytes() {
+        const value = this.buffer.readInt64LE(this.cursor);
+        this.cursor += 8;
+        return value
+    }
+
+    readOPcode() {
+        const code = this.readCurrByte();
+        return code;
+    }
+
+    readStringOfLen(len) {
+        let string = String.fromCharCode(...(this.buffer.subarray(this.cursor, this.cursor + len)));
+        this.cursor += len;
         return string;
     }
-
-    readDataBaseSelector() {
-        const dbNumber = this.readLength();  // Read the database number
-        console.log(`Database number: ${dbNumber}`);
+    readStringEncoding() {
+        let { type, value } = this.readLengthEncoding();
+        if (type === 'length') {
+            let length = value;
+            return this.readStringOfLen(length);
+        }
+        if (value === 0) {
+            return `${this.readByte()}`;
+        }
+        else if (value === 1) {
+            return `${this.read2Bytes()}`;
+        }
+        else if (value === 2) {
+            return `${this.read4Bytes()}`;
+        }
     }
 
-    readResizedb() {
-        const hashtableSize = this.readLength();
-        const expiresSize = this.readLength();
-        console.log(`Hashtable size: ${hashtableSize}, Expires size: ${expiresSize}`);
+    readValueType() {
+        return this.readCurrByte();
     }
+
+    readLengthEncoding() {
+        let firstByte = this.readCurrByte();
+        firstByte = firstByte >> 6;
+
+        let value = firstByte;
+        let type = "length"
+        switch (firstByte) {
+            case 0b00:
+                value = (firstByte & 0b00111111)
+                break;
+            case 0b01:
+                let secondByte = this.readCurrByte();
+                value = ((firstByte & 0b00111111) << 8) | secondByte;
+                break;
+            case 0b10:
+                value = this.read4Bytes();
+                break;
+            case 0b11:
+                type = 'format';
+                value = firstByte & 0b00111111;
+                break;
+        }
+
+        return { value, type }
+
+    }
+
+    readValue(valueType) {
+        if (valueType == 0) {
+            return this.readStringEncoding();
+        }
+        throw new Error(`Value Type not handled: ${valueType}`);
+    }
+    readAUX() {
+        let key = this.readStringEncoding();
+        let value = this.readStringEncoding();
+        this.auxData[key] = value;
+    }
+
+    readResizeDB() {
+        let hashTableSize = this.readLengthEncoding().value;
+        let expireHashTableSize = this.readLengthEncoding().value;
+    }
+
+    readExpireTimeMS() {
+        let timestamp = this.read8Bytes();
+        let valueType = this.readValueType();
+        let key = this.readStringEncoding();
+        let value = this.readValue(valueType);
+
+        this.dataStore.insertKeyWithTimeStamp(key, value, timestamp);
+    }
+
+    readExpireTime() {
+        let timestamp = this.read4Bytes() * 1000;
+        let valueType = this.readValueType();
+        let key = this.readStringEncoding();
+        let value = this.readValue(valueType);
+
+        this.dataStore.insertKeyWithTimeStamp(key, value, timestamp);
+
+    }
+
+    readSelectDB() {
+        let { type, value } = this.readLengthEncoding();
+    }
+
+    readEOF() {
+        console.log(`Read EOF`);
+    }
+
+    readKeyWithoutExpiry(valueType) {
+        let key = this.readStringEncoding();
+        let value = this.readValue(valueType);
+        this.dataStore.insert(key, value);
+    }
+
     parse() {
         /// Here after reading magic number and version
-
-        while (this.cursor < this.buffer.length) {
+        while (true) {
             const opcode = this.readOPcode();
-            this.cursor += 1;
-
             switch (opcode) {
                 case 0xFA:
-                    // Auxiliary field
-                    // May contain arbitrary metadata such as Redis version, creation time, used memory
-                    const keyLength = this.readLength();
-                    const key = this.readString(keyLength);
-
-                    const valueLength = this.readLength();
-                    const value = this.readString(valueLength);
-
-                    console.log(key, value)
+                    this.readAUX();
                     break;
                 case 0xFE:
-                    this.readDatabaseSelector();
+                    this.readSelectDB();
                     break;
                 case 0xFB:
                     this.readResizedb();
                     break;
                 case 0xFD:
+                    this.readExpireTime();
                     break;
                 case 0xFC:
+                    this.readExpireTimeMS();
                     break;
                 case 0xFF:
+                    this.readEOF();
+                    return;
+                default:
+                    this.readKeyWithoutExpiry(opCode);
                     break;
             }
         }
-
-
-    }
-
-    readKeyValuePair() {
-        this.parse()
 
 
     }
