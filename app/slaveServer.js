@@ -50,8 +50,6 @@ class SlaveServer {
             console.log(`Connected to master server on ${this.masterHost}:${this.masterPort}`);
         });
 
-        console.log("here")
-
         this.masterSocket = socket;
         socket.write(Encoder.generateBulkArray(['ping']))
         this.handShakeStep += 1;
