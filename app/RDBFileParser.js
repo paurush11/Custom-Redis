@@ -102,7 +102,7 @@ class RDBFileParser {
                     const valueLength = this.readLength();
                     const value = this.readString(valueLength);
 
-                    // console.log(key, value)
+                    console.log(key, value)
                     break;
                 case 0xFE:
                     this.readDatabaseSelector();
