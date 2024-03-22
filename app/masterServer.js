@@ -182,7 +182,7 @@ class MasterServer {
             return Encoder.generateBulkString(stream_key_value);
         if (this.blockedClients[stream_key]) {
             this.blockedClients[stream_key].forEach((ele) => {
-                this.unblockClient(stream_key, ele.socket, ele.stream_key_start_value, true);
+                this.unblockClient(stream_key, ele.socket, stream_key_value, true);
             })
         }
 
