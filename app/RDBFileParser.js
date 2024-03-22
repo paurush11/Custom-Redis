@@ -6,6 +6,7 @@ class RDBFileParser {
         this.keyValPair = {}
         this.cursor = 0
         this.buffer = null;
+        this.readFile();
     }
     readFile() {
         this.buffer = fs.readFileSync(this.filePath);
@@ -21,7 +22,7 @@ class RDBFileParser {
 
     }
     readKeyValuePair() {
-        
+
     }
 }
 
