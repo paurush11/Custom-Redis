@@ -104,7 +104,7 @@ class MasterServer {
     }
 
     unblockClient(stream_key, socket, stream_key_start_value, newDataArrived) {
-        let timer = 0;
+        let timer = '0';
         this.blockedClients[stream_key].forEach((ele) => {
             if (ele.socket === socket && ele.stream_key === stream_key && ele.stream_key_start_value === stream_key_start_value) {
                 console.log(timer === ele.timer)
