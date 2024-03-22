@@ -172,9 +172,7 @@ class MasterServer {
         if (this.blockedClients[stream_key]) {
             this.blockedClients[stream_key].forEach((ele) => {
                 this.unblockClient(stream_key, ele.socket, ele.stream_key_start_value, true);
-                return
             })
-
         }
         const stream_key_value = args[2];
         const streamObject = {}
