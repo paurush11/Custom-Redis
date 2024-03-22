@@ -20,7 +20,9 @@ class RDBFileParser {
             return;
         }
         const magicString = this.buffer.toString('utf-8', this.cursor, this.cursor + 5);
+        this.cursor += 5
         const version = parseInt(this.buffer.toString('utf-8', this.cursor, this.cursor + 4), 10);
+        this.cursor+=4
 
         return { magicString, version }
 

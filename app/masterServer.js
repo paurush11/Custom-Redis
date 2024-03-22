@@ -260,11 +260,11 @@ class MasterServer {
         return Encoder.generateOkValue();
     }
     handleGet(args) {
-        if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
-            const keyValPair = this.rdbFileParser.readKeyValuePair();
-            const value = keyValPair[args[1]];
-            return Encoder.generateBulkString(value);
-        }
+        // if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
+        //     const keyValPair = this.rdbFileParser.readKeyValuePair();
+        //     const value = keyValPair[args[1]];
+        //     return Encoder.generateBulkString(value);
+        // }
         return Encoder.generateBulkString(this.dataStore.get(args[1]));
     }
 
