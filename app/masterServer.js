@@ -111,10 +111,10 @@ class MasterServer {
 
     handleRdbConfiguration(args) {
         console.log(args)
-        if (args[1] === "GET") {
-            if (args[2] === 'dir')
+        if (args[1].toUpperCase() === "GET") {
+            if (args[2].toLowerCase() === 'dir')
                 return Encoder.generateBulkArray(['dir', this.rdbFileDir])
-            else if (args[2] === 'dbfilename')
+            else if (args[2].toLowerCase() === 'dbfilename')
                 return Encoder.generateBulkArray(['dbfilename', this.rdbFileName])
         }
     }
