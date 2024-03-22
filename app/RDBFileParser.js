@@ -7,6 +7,8 @@ class RDBFileParser {
         this.cursor = 0
         this.buffer = null;
         this.readFile();
+        this.magicString = ''
+        this.version = 0
     }
     readFile() {
         if (fs.existsSync(this.filePath))
@@ -24,11 +26,14 @@ class RDBFileParser {
         const version = parseInt(this.buffer.toString('utf-8', this.cursor, this.cursor + 4), 10);
         this.cursor += 4
 
-        console.log("Parsing header")
-        return { magicString, version }
-
+        this.magicString = magicString;
+        this.version = version;
     }
     readKeyValuePair() {
+
+        const data = this.buffer.toString('utf-8', this.cursor);
+        console.log(data);
+
 
     }
 }

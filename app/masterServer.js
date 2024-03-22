@@ -26,7 +26,7 @@ class MasterServer {
         if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
             const rdbFilePath = path.join(this.rdbFileDir, this.rdbFileName);
             this.rdbFileParser = new RDBFileParser(rdbFilePath)
-            console.log(this.rdbFileParser.parseHeader());
+            this.rdbFileParser.parseHeader();
         }
     }
 
