@@ -44,7 +44,7 @@ class RDBFileParser {
         const firstByte = this.buffer.readUInt8(this.cursor);
         this.cursor += 1;
         //0xC0 ---> 11000000 in Hex ---> Bitwise and clears all the bytes except the first one. Now since we get 2 bits we right shift all zeros thus we get >>6
-        const type = (firstByte && 0xC0) >> 6
+        const type = (firstByte & 0xC0) >> 6
 
         switch (type) {
             case 0: // 00
@@ -60,7 +60,6 @@ class RDBFileParser {
                 const specialType = firstByte & 0x3F;
                 // Handling of special encoding will depend on the Redis RDB file version and format
                 console.log(`Special format with type: ${specialType}`);
-                this.readString()
                 // Specific handling here
                 return specialType;
             default:
