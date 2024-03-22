@@ -107,7 +107,8 @@ class MasterServer {
         this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
         if (newDataArrived) {
             const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
-            return socket.write(value)
+            // return socket.write(value)
+            
         } else {
             socket.write(Encoder.handleErrorValue());
         }
