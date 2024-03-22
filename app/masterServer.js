@@ -105,6 +105,7 @@ class MasterServer {
 
 
     handleStreamRangeOutputs(args, socket) {
+        console.log("I am here")
         if (args[0].toUpperCase() === "XRANGE") {
             console.log("here")
             const stream_key = args[1];
