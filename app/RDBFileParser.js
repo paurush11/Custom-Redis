@@ -8,13 +8,16 @@ class RDBFileParser {
         this.magicString = '';
         this.version = 0;
         this.readFile();
-        this.parseHeader();
-        this.parse();
         this.dataStore = new HashTable();
     }
     readFile() {
-        if (fs.existsSync(this.filePath))
+        if (fs.existsSync(this.filePath)) {
             this.buffer = fs.readFileSync(this.filePath);
+            this.parseHeader();
+            this.parse();
+        }
+
+
     }
 
     parseHeader() {
