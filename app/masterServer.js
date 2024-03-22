@@ -19,7 +19,7 @@ class MasterServer {
         this.blockedClients = {}
         this.rdbFileDir = dir
         this.rdbFileName = filename
-        setRdbFile()
+        this.setRdbFile()
     }
 
     setRdbFile() {
