@@ -68,6 +68,13 @@ class RDBFileParser {
 
     }
 
+    readString() {
+        const length = this.readLength();
+        const string = this.buffer(this.cursor, this.cursor + length).toString('binary');
+        this.cursor += length;
+        return string;
+    }
+
     parse() {
         /// Here after reading magic number and version
 
