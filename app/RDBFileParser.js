@@ -169,6 +169,7 @@ class RDBFileParser {
         /// Here after reading magic number and version
         while (true) {
             const opcode = this.readCurrByte();
+            console.log(opcode)
             switch (opcode) {
                 case 0xFA:
                     this.readAUX();
