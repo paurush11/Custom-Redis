@@ -141,7 +141,10 @@ class MasterServer {
                 if (args[1].toUpperCase() === "BLOCK") {
                     const timer = args[2]
                     const stream_key = args[4]
-                    const stream_key_start_value = args[5];
+                    let stream_key_start_value = args[5];
+                    if (stream_key_start_value === '$') {
+                        stream_key_start_value = this.dataStore.getLastElementFromStream()
+                    }
 
                     setTimeout(() => {
                         this.unblockClient(stream_key, socket, stream_key_start_value, false);

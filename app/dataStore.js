@@ -4,7 +4,7 @@ class dataStore {
     constructor() {
         this.map = new Map();
         this.streamCursor = 0;
-        this.streamTimeStamps = [];
+        this.streamTimeStamps = []; /// make it a map
     }
 
     insert(key, value) {
@@ -40,13 +40,16 @@ class dataStore {
 
     }
 
+    getLastElementFromStream() {
+        return this.streamTimeStamps[this.streamCursor - 1].split("-")[0];
+    }
+
     insertStream(key, value, stream_key) {
         let newSequenceNumber = '0'
         let newMillisecondsTime = '1526919030474'
         if (stream_key === "*") {
             const time = Date.now()
             if (this.streamCursor === 0) {
-
                 newSequenceNumber = '0'
                 newMillisecondsTime = time.toString()
             } else {
