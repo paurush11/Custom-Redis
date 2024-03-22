@@ -103,8 +103,14 @@ class MasterServer {
         }
     }
 
-    unblockClient() {
-
+    unblockClient(stream_key, socket, stream_key_start_value, newDataArrived) {
+        this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
+        if (newDataArrived) {
+            const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
+            return socket.write(value)
+        } else {
+            socket.write(Encoder.handleErrorValue());
+        }
     }
 
 
@@ -119,15 +125,28 @@ class MasterServer {
             if (args.length === 4) {
                 const stream_key = args[2]
                 const stream_key_start_value = args[3]
+                if (this.blockedClients[stream_key] && this.blockedClients[stream_key].includes({ socket, stream_key_start_value, stream_key })) {
+                    this.unblockClient(stream_key, socket, stream_key_start_value, true);
+                    return
+                }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
                 return socket.write(value)
             } else {
-
                 if (args[1].toUpperCase() === "BLOCK") {
                     const timer = args[2]
                     const stream_key = args[4]
                     const stream_key_start_value = args[5];
-                    // this.blockedClients[stream_key].push({ socket, stream_key_start_value, timeout })
+
+                    const timeout = setTimeout(() => {
+                        this.unblockClient(stream_key, socket, stream_key_start_value, false);
+                    }, timer);
+                    /// block the client till the timeout. if new data arives unblock it. if no new data arrives then unblock it and give null array/
+                    if (this.blockedClients[stream_key]) {
+                        this.blockedClients[stream_key].push({ socket, stream_key_start_value, stream_key })
+                    } else {
+                        this.blockedClients[stream_key] = [{ socket, stream_key_start_value, stream_key }]
+                    }
+
                     setTimeout(() => {
 
                     }, timer)
