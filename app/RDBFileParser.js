@@ -9,7 +9,8 @@ class RDBFileParser {
         this.readFile();
     }
     readFile() {
-        this.buffer = fs.readFileSync(this.filePath);
+        if (fs.existsSync(this.filePath))
+            this.buffer = fs.readFileSync(this.filePath);
     }
     parseHeader() {
         if (this.cursor !== 0) {
