@@ -1,126 +1,67 @@
-const fs = require('fs');
-const { dataStore } = require('./dataStore');
+const { dataStore } = require("./dataStore");
 
-class RDBFileParser {
-    constructor(filePath) {
-        this.filePath = filePath;
+class RDBParser {
+
+    static CONSTANTS = {
+        MAGIC_REDIS_STRING: 5,
+        RDB_VERSION: 4
+    };
+
+    static OPCodes = {
+        AUX: 0xFA,
+        RESIZEDB: 0xFB,
+        EXPIRETIMEMS: 0xFC,
+        EXPIRETIME: 0xFD,
+        SELECTDB: 0xFE,
+        EOF: 0xFF
+    }
+
+    constructor(buffer) {
+        this.buffer = buffer;
         this.cursor = 0;
-        this.buffer = null;
-        this.magicString = '';
-        this.version = 0;
-        this.auxData = {};
-        this.readFile();
         this.dataStore = new dataStore();
-    }
-    readFile() {
-        if (fs.existsSync(this.filePath)) {
-            this.buffer = fs.readFileSync(this.filePath);
-            this.parseHeader();
-            this.parse();
-        }
+
+        this.auxData = {};
     }
 
-    parseHeader() {
-        if (this.cursor !== 0) {
-            this.cursor = 0;
-        }
-        if (!this.buffer) {
-            return;
-        }
-        const magicString = this.buffer.toString('utf-8', this.cursor, this.cursor + 5);
-        this.cursor += 5
-        const version = parseInt(this.buffer.toString('utf-8', this.cursor, this.cursor + 4), 10);
-        this.cursor += 4
+    parse() {
+        let redisMagicString = this.readStringOfLen(RDBParser.CONSTANTS.MAGIC_REDIS_STRING);
+        let rdbVersion = this.readStringOfLen(RDBParser.CONSTANTS.RDB_VERSION);
 
-        this.magicString = magicString;
-        this.version = version;
-    }
+        while (true) {
+            const opCode = this.readByte();
+            switch (opCode) {
+                case RDBParser.OPCodes.AUX:
+                    this.readAUX();
+                    break;
 
-    readCurrByte() {
-        return this.buffer[this.cursor++];
-    }
+                case RDBParser.OPCodes.RESIZEDB:
+                    this.readResizeDB();
+                    break;
 
-    read2Bytes() {
-        const value = this.buffer.readInt16LE(this.cursor);
-        this.cursor += 2;
-        return value
-    }
-    read4Bytes() {
-        const value = this.buffer.readInt32LE(this.cursor);
-        this.cursor += 4;
-        return value
-    }
-    read8Bytes() {
-        const value = this.buffer.readInt64LE(this.cursor);
-        this.cursor += 8;
-        return value
-    }
+                case RDBParser.OPCodes.EXPIRETIMEMS:
+                    this.readExpireTimeMS();
+                    break;
 
-    readOPcode() {
-        const code = this.readCurrByte();
-        return code;
-    }
+                case RDBParser.OPCodes.EXPIRETIME:
+                    this.readExpireTime();
+                    break;
 
-    readStringOfLen(len) {
-        let string = String.fromCharCode(...(this.buffer.subarray(this.cursor, this.cursor + len)));
-        this.cursor += len;
-        return string;
-    }
-    readStringEncoding() {
-        let { type, value } = this.readLengthEncoding();
-        if (type === 'length') {
-            let length = value;
-            return this.readStringOfLen(length);
-        }
-        if (value === 0) {
-            return `${this.readByte()}`;
-        }
-        else if (value === 1) {
-            return `${this.read2Bytes()}`;
-        }
-        else if (value === 2) {
-            return `${this.read4Bytes()}`;
-        }
-    }
+                case RDBParser.OPCodes.SELECTDB:
+                    this.readSelectDB();
+                    break;
 
-    readValueType() {
-        return this.readCurrByte();
-    }
-
-    readLengthEncoding() {
-        let firstByte = this.readCurrByte();
-        firstByte = firstByte >> 6;
-
-        let value = firstByte;
-        let type = "length"
-        switch (firstByte) {
-            case 0b00:
-                value = (firstByte & 0b00111111)
-                break;
-            case 0b01:
-                let secondByte = this.readCurrByte();
-                value = ((firstByte & 0b00111111) << 8) | secondByte;
-                break;
-            case 0b10:
-                value = this.read4Bytes();
-                break;
-            case 0b11:
-                type = 'format';
-                value = firstByte & 0b00111111;
-                break;
+                case RDBParser.OPCodes.EOF:
+                    this.readEOF();
+                    return;
+                default:
+                    this.readKeyWithoutExpiry(opCode);
+                    break;
+            }
         }
 
-        return { value, type }
-
     }
 
-    readValue(valueType) {
-        if (valueType == 0) {
-            return this.readStringEncoding();
-        }
-        console.log(valueType)
-        throw new Error(`Value Type not handled: ${valueType}`);
-    }
     readAUX() {
         let key = this.readStringEncoding();
         let value = this.readStringEncoding();
@@ -138,7 +79,7 @@ class RDBFileParser {
         let key = this.readStringEncoding();
         let value = this.readValue(valueType);
 
-        this.dataStore.insertKeyWithTimeStamp(key, value, timestamp);
+        this.dataStore.insertWithExp(key, value, timestamp);
     }
 
     readExpireTime() {
@@ -147,7 +88,7 @@ class RDBFileParser {
         let key = this.readStringEncoding();
         let value = this.readValue(valueType);
 
-        this.dataStore.insertKeyWithTimeStamp(key, value, timestamp);
+        this.dataStore.insertWithExp(key, value, timestamp);
 
     }
 
@@ -165,41 +106,91 @@ class RDBFileParser {
         this.dataStore.insert(key, value);
     }
 
-    parse() {
-        /// Here after reading magic number and version
-        while (true) {
-            const opcode = this.readCurrByte();
-            console.log(opcode)
-            switch (opcode) {
-                case 0xFA:
-                    this.readAUX();
-                    break;
-                case 0xFE:
-                    this.readSelectDB();
-                    break;
-                case 0xFB:
-                    this.readResizedb();
-                    break;
-                case 0xFD:
-                    this.readExpireTime();
-                    break;
-                case 0xFC:
-                    this.readExpireTimeMS();
-                    break;
-                case 0xFF:
-                    this.readEOF();
-                    return;
-                default:
-                    this.readKeyWithoutExpiry(opcode);
-                    break;
-            }
+    readStringEncoding() {
+        let { type, value } = this.readLengthEncoding();
+
+        if (type === 'length') {
+            let length = value;
+            return this.readStringOfLen(length);
         }
 
+        if (value === 0) {
+            return `${this.readByte()}`;
+        }
+        else if (value === 1) {
+            return `${this.read2Bytes()}`;
+        }
+        else if (value === 2) {
+            return `${this.read4Bytes()}`;
+        }
 
+        throw new Error('Error while reading string encoding');
+    }
+
+    readLengthEncoding() {
+        let firstByte = this.readByte();
+        let twoBits = firstByte >> 6;
+
+        let value = 0;
+        let type = 'length';
+        if (twoBits === 0b00) {
+            value = firstByte & 0b00111111;
+        }
+        else if (twoBits === 0b01) {
+            let secondByte = this.readByte();
+            value = ((firstByte & 0b00111111) << 8) | (secondByte);
+        }
+        else if (twoBits === 0b10) {
+            value = this.read4Bytes();
+        }
+        else if (twoBits === 0b11) {
+            type = 'format';
+            value = firstByte & 0b00111111;
+        }
+        else {
+            throw new Error(`Error while reading length encoding, got first byte as : ${firstByte}`);
+        }
+        return { type, value };
+    }
+
+    readValueType() {
+        return this.readByte();
+    }
+
+    readValue(valueType) {
+        if (valueType == 0) {
+            return this.readStringEncoding();
+        }
+        throw new Error(`Value Type not handled: ${valueType}`);
+    }
+
+    readByte() {
+        return this.buffer[this.cursor++];
+    }
+
+    read2Bytes() {
+        let bytes = this.buffer.readUInt16LE(this.cursor);
+        this.cursor += 2;
+        return bytes;
+    }
+
+    read4Bytes() {
+        let bytes = this.buffer.readUInt32LE(this.cursor);
+        this.cursor += 4;
+        return bytes;
+    }
+
+    read8Bytes() {
+        let bytes = +this.buffer.readBigUint64LE(this.cursor);
+        this.cursor += 8;
+        return bytes;
+    }
+
+    readStringOfLen(len) {
+        let string = String.fromCharCode(...(this.buffer.subarray(this.cursor, this.cursor + len)));
+        this.cursor += len;
+        return string;
     }
 }
 
-
-module.exports = {
-    RDBFileParser
-}
+module.exports = RDBParser;
