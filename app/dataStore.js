@@ -53,7 +53,7 @@ class dataStore {
                 newSequenceNumber = '0'
                 newMillisecondsTime = time.toString()
             } else {
-                const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
+                // const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
                 newSequenceNumber = '0'
                 newMillisecondsTime = time.toString()
             }
