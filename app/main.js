@@ -5,7 +5,6 @@ const HOST = 'localhost';
 const PORT = '6379';
 
 const func = (args) => {
-    console.log(args)
     if (args.length === 0) {
         let server = new MasterServer(HOST, PORT)
         server.startServer();
