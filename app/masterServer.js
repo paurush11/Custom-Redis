@@ -125,10 +125,6 @@ class MasterServer {
             if (args.length === 4) {
                 const stream_key = args[2]
                 const stream_key_start_value = args[3]
-                if (this.blockedClients[stream_key] && this.blockedClients[stream_key].includes({ socket, stream_key_start_value, stream_key })) {
-                    this.unblockClient(stream_key, socket, stream_key_start_value, true);
-                    return
-                }
                 const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
                 return socket.write(value)
             } else {
@@ -137,7 +133,7 @@ class MasterServer {
                     const stream_key = args[4]
                     const stream_key_start_value = args[5];
 
-                    const timeout = setTimeout(() => {
+                    setTimeout(() => {
                         this.unblockClient(stream_key, socket, stream_key_start_value, false);
                     }, timer);
                     /// block the client till the timeout. if new data arives unblock it. if no new data arrives then unblock it and give null array/
@@ -173,11 +169,19 @@ class MasterServer {
 
     handleStreams(args) {
         const stream_key = args[1];
+        if (this.blockedClients[stream_key]) {
+            this.blockedClients[stream_key].forEach((ele) => {
+                this.unblockClient(stream_key, ele.socket, ele.stream_key_start_value, true);
+                return
+            })
+
+        }
         const stream_key_value = args[2];
         const streamObject = {}
         for (let i = 1; i < args.length; i += 2) {
             streamObject[args[i]] = args[i + 1];
         }
+
         const message = this.dataStore.insertStream(stream_key, streamObject, stream_key_value);
         if (!message)
             return Encoder.generateBulkString(stream_key_value);
