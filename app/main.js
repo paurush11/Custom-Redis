@@ -13,7 +13,13 @@ const func = (args) => {
         const [portFlag, port] = args;
         let server = new MasterServer(HOST, port)
         server.startServer();
-    } else if (args.length === 5) {
+    } else if (args.length === 4) {
+        const directory = args[1];
+        const fileName = args[3];
+        let server = new MasterServer(HOST, PORT, directory, fileName)
+        server.startServer();
+    }
+    else if (args.length === 5) {
         const [portFlag, port, replicaFlag, masterHost, masterPort] = args;
         let server = new SlaveServer(HOST, port, masterHost, masterPort)
         server.startServer();

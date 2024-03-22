@@ -5,7 +5,8 @@ const { RequestParser } = require("./requestParser");
 const { Encoder } = require("./Utils/encoder");
 
 class MasterServer {
-    constructor(host, port) {
+
+    constructor(host, port, dir = '', filename = '') {
         this.port = port;
         this.host = host;
         this.dataStore = new dataStore()
@@ -14,6 +15,8 @@ class MasterServer {
         this.masterReplOffset = 0;
         this.replicas = {}
         this.blockedClients = {}
+        this.rdbFileDir = dir
+        this.rdbFileName = filename
     }
 
     startServer() {
@@ -100,6 +103,18 @@ class MasterServer {
             case "XRANGE":
                 this.handleStreamRangeOutputs(args, socket)
                 break;
+            case "CONFIG":
+                socket.write(this.handleRdbConfiguration(args))
+
+        }
+    }
+
+    handleRdbConfiguration(args) {
+        if (args[1] === "GET") {
+            if (args[2] === 'dir')
+                return Encoder.generateBulkArray(['dir', this.rdbFileDir])
+            else if (args[2] === 'dbfilename')
+                return Encoder.generateBulkArray(['dbfilename', this.rdbFileName])
         }
     }
 
