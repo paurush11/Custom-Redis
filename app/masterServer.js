@@ -27,6 +27,7 @@ class MasterServer {
             const rdbFilePath = path.join(this.rdbFileDir, this.rdbFileName);
             this.rdbFileParser = new RDBFileParser(rdbFilePath)
             this.rdbFileParser.parse()
+            this.dataStore = this.rdbFileParser.dataStore;
         }
     }
 
