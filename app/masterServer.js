@@ -3,7 +3,7 @@ const { dataStore } = require("./dataStore");
 const { createUid } = require("./Utils/sendMessages");
 const { RequestParser } = require("./requestParser");
 const { Encoder } = require("./Utils/encoder");
-const { RDBFileParser } = require("./RDBFileParser");
+const RDBFileParser = require("./RDBFileParser");
 const path = require("path");
 
 class MasterServer {
