@@ -97,6 +97,7 @@ class dataStore {
 
 
         }
+        
         let new_stream_key = [newMillisecondsTime, newSequenceNumber].join("-")
         if (this.streamTimeStamps[key]) {
             this.streamTimeStamps[key].push(new_stream_key);

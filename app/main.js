@@ -5,7 +5,7 @@ const HOST = 'localhost';
 const PORT = '6379';
 
 const func = (args) => {
-
+    console.log(args)
     if (args.length === 0) {
         let server = new MasterServer(HOST, PORT)
         server.startServer();
@@ -15,7 +15,7 @@ const func = (args) => {
         server.startServer();
     } else if (args.length === 5) {
         const [portFlag, port, replicaFlag, masterHost, masterPort] = args;
-        let server = new SlaveServer(HOST, port,masterHost, masterPort)
+        let server = new SlaveServer(HOST, port, masterHost, masterPort)
         server.startServer();
     }
 }
