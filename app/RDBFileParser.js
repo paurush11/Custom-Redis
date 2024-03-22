@@ -1,6 +1,6 @@
 const { dataStore } = require("./dataStore");
 
-class RDBParser {
+class RDBFileParser {
 
     static CONSTANTS = {
         MAGIC_REDIS_STRING: 5,
@@ -20,7 +20,6 @@ class RDBParser {
         this.buffer = buffer;
         this.cursor = 0;
         this.dataStore = new dataStore();
-
         this.auxData = {};
     }
 
@@ -193,4 +192,4 @@ class RDBParser {
     }
 }
 
-module.exports = RDBParser;
+module.exports = RDBFileParser;
