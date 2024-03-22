@@ -186,7 +186,7 @@ class RDBFileParser {
     }
 
     readStringOfLen(len) {
-        let string = String.fromCharCode(...(this.buffer(this.cursor, this.cursor + len)));
+        let string = String.fromCharCode(...(this.buffer.toString('binary', this.cursor, this.cursor + len)));
         this.cursor += len;
         return string;
     }
