@@ -103,14 +103,22 @@ class MasterServer {
         }
     }
 
-    unblockClient(stream_key, socket, stream_key_start_value, newDataArrived) {
+    unblockClient(stream_key, socket, stream_key_start_value, newDataArrived, doitNow) {
+        const timer = this.blockedClients[stream_key].forEach((ele) => {
+            if (ele.socket === socket && ele.stream_key === stream_key && ele.stream_key_start_value === stream_key_start_value) {
+                return ele.timer;
+            }
+        })
+
         this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
+
         if (newDataArrived) {
             const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
             return socket.write(value)
 
         } else {
-            socket.write(Encoder.handleErrorValue());
+            if (timer !== '0')
+                socket.write(Encoder.handleErrorValue());
         }
     }
 
@@ -135,13 +143,13 @@ class MasterServer {
                     const stream_key_start_value = args[5];
 
                     setTimeout(() => {
-                        this.unblockClient(stream_key, socket, stream_key_start_value, false);
+                        this.unblockClient(stream_key, socket, stream_key_start_value, false, false);
                     }, timer);
                     /// block the client till the timeout. if new data arives unblock it. if no new data arrives then unblock it and give null array/
                     if (this.blockedClients[stream_key]) {
-                        this.blockedClients[stream_key].push({ socket, stream_key_start_value, stream_key })
+                        this.blockedClients[stream_key].push({ socket, stream_key_start_value, stream_key, timer })
                     } else {
-                        this.blockedClients[stream_key] = [{ socket, stream_key_start_value, stream_key }]
+                        this.blockedClients[stream_key] = [{ socket, stream_key_start_value, stream_key, timer }]
                     }
 
                     setTimeout(() => {
@@ -155,10 +163,6 @@ class MasterServer {
                     for (let i = 2; i < mid; i++, j++) {
                         const stream_key = args[i]
                         const stream_key_start_value = args[j]
-                        // if (this.blockedKeys.includes(stream_key)) {
-                        //     value = [...value, Encoder.handleErrorValue()]
-                        //     continue;
-                        // }
                         const val = this.dataStore.getXStreamValues(stream_key, stream_key_start_value);
                         value = [...value, ...val]
                     }
@@ -176,13 +180,12 @@ class MasterServer {
         for (let i = 1; i < args.length; i += 2) {
             streamObject[args[i]] = args[i + 1];
         }
-
         const message = this.dataStore.insertStream(stream_key, streamObject, stream_key_value);
         if (!message)
             return Encoder.generateBulkString(stream_key_value);
         if (this.blockedClients[stream_key]) {
             this.blockedClients[stream_key].forEach((ele) => {
-                this.unblockClient(stream_key, ele.socket, stream_key_value, true);
+                this.unblockClient(stream_key, ele.socket, stream_key_value, true, true);
             })
         }
 
