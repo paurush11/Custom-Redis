@@ -60,6 +60,7 @@ class RDBFileParser {
                 const specialType = firstByte & 0x3F;
                 // Handling of special encoding will depend on the Redis RDB file version and format
                 console.log(`Special format with type: ${specialType}`);
+                this.readString()
                 // Specific handling here
                 return specialType;
             default:
