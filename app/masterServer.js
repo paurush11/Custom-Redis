@@ -107,8 +107,8 @@ class MasterServer {
         this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
         if (newDataArrived) {
             const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
-            // return socket.write(value)
-            
+            return socket.write(value)
+
         } else {
             socket.write(Encoder.handleErrorValue());
         }
@@ -170,11 +170,7 @@ class MasterServer {
 
     handleStreams(args) {
         const stream_key = args[1];
-        if (this.blockedClients[stream_key]) {
-            this.blockedClients[stream_key].forEach((ele) => {
-                this.unblockClient(stream_key, ele.socket, ele.stream_key_start_value, true);
-            })
-        }
+
         const stream_key_value = args[2];
         const streamObject = {}
         for (let i = 1; i < args.length; i += 2) {
@@ -184,6 +180,12 @@ class MasterServer {
         const message = this.dataStore.insertStream(stream_key, streamObject, stream_key_value);
         if (!message)
             return Encoder.generateBulkString(stream_key_value);
+        if (this.blockedClients[stream_key]) {
+            this.blockedClients[stream_key].forEach((ele) => {
+                this.unblockClient(stream_key, ele.socket, ele.stream_key_start_value, true);
+            })
+        }
+
         return message
     }
 
