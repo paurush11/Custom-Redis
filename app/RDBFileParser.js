@@ -188,7 +188,7 @@ class RDBFileParser {
                     this.readEOF();
                     return;
                 default:
-                    this.readKeyWithoutExpiry(opCode);
+                    this.readKeyWithoutExpiry(opcode);
                     break;
             }
         }
