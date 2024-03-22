@@ -107,14 +107,11 @@ class MasterServer {
         let timer = '0';
         this.blockedClients[stream_key].forEach((ele) => {
             if (ele.socket === socket && ele.stream_key === stream_key && ele.stream_key_start_value === stream_key_start_value) {
-                console.log(timer === ele.timer)
                 timer = ele.timer;
             }
         })
-
-
-
-        this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
+        if (timer !== '0')
+            this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
 
         if (newDataArrived) {
             const value = Encoder.generateBulkArray(this.dataStore.getXStreamValues(stream_key, stream_key_start_value));
