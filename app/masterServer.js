@@ -143,7 +143,7 @@ class MasterServer {
                     const stream_key = args[4]
                     let stream_key_start_value = args[5];
                     if (stream_key_start_value === '$') {
-                        stream_key_start_value = this.dataStore.getLastElementFromStream()
+                        stream_key_start_value = this.dataStore.getLastElementFromStream(stream_key)
                     }
 
                     setTimeout(() => {

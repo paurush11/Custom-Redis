@@ -4,7 +4,7 @@ class dataStore {
     constructor() {
         this.map = new Map();
         this.streamCursor = 0;
-        this.streamTimeStamps = []; /// make it a map
+        this.streamTimeStamps = {}; /// make it a map
     }
 
     insert(key, value) {
@@ -40,8 +40,8 @@ class dataStore {
 
     }
 
-    getLastElementFromStream() {
-        return this.streamTimeStamps[this.streamCursor - 1].split("-")[0];
+    getLastElementFromStream(key) {
+        return this.streamTimeStamps[key][this.streamCursor - 1].split("-")[0];
     }
 
     insertStream(key, value, stream_key) {
@@ -53,7 +53,7 @@ class dataStore {
                 newSequenceNumber = '0'
                 newMillisecondsTime = time.toString()
             } else {
-                const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
+                const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
                 newSequenceNumber = '0'
                 newMillisecondsTime = time.toString()
             }
@@ -65,7 +65,7 @@ class dataStore {
                     newSequenceNumber = millisecondsTime === '0' ? '1' : '0'
                     newMillisecondsTime = millisecondsTime
                 } else {
-                    const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
+                    const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
                     if (millisecondsTime < prevMillisecondsTime) {
                         return Encoder.generateStreamError(true);
                     } else if (prevMillisecondsTime === millisecondsTime) {
@@ -84,7 +84,7 @@ class dataStore {
                     if (millisecondsTime === '0' && sequenceNumber === '0')
                         return Encoder.generateStreamError(false);
                 } else {
-                    const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[this.streamCursor - 1].split("-");
+                    const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
                     if (millisecondsTime === '0' && sequenceNumber === '0')
                         return Encoder.generateStreamError(false);
                     if (millisecondsTime < prevMillisecondsTime || (prevMillisecondsTime === millisecondsTime && sequenceNumber <= prevSequenceNumber)) {
@@ -97,7 +97,10 @@ class dataStore {
 
         }
         let new_stream_key = [newMillisecondsTime, newSequenceNumber].join("-")
-        this.streamTimeStamps.push(new_stream_key);
+        if (this.streamTimeStamps[key])
+            this.streamTimeStamps[key].push(new_stream_key);
+        else
+            this.streamTimeStamps[key] = [new_stream_key];
         this.streamCursor += 1;
         // value[key] = new_stream_key
         /// append values form the stream;
