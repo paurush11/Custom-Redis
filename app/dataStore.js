@@ -85,6 +85,7 @@ class dataStore {
                         return Encoder.generateStreamError(false);
                 } else {
                     console.log(this.streamTimeStamps)
+                    console.log(key)
                     const [prevMillisecondsTime, prevSequenceNumber] = this.streamTimeStamps[key][this.streamCursor - 1].split("-");
                     if (millisecondsTime === '0' && sequenceNumber === '0')
                         return Encoder.generateStreamError(false);
