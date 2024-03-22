@@ -103,15 +103,16 @@ class MasterServer {
         }
     }
 
-    unblockClient(stream_key, socket, stream_key_start_value, newDataArrived, doitNow) {
+    unblockClient(stream_key, socket, stream_key_start_value, newDataArrived) {
         let timer = 0;
         this.blockedClients[stream_key].forEach((ele) => {
             if (ele.socket === socket && ele.stream_key === stream_key && ele.stream_key_start_value === stream_key_start_value) {
+                console.log(timer === ele.timer)
                 timer = ele.timer;
             }
         })
-        
-        console.log(timer)
+
+
 
         this.blockedClients[stream_key] = this.blockedClients[stream_key].filter(ele => ele.socket !== socket);
 
@@ -146,7 +147,7 @@ class MasterServer {
                     const stream_key_start_value = args[5];
 
                     setTimeout(() => {
-                        this.unblockClient(stream_key, socket, stream_key_start_value, false, false);
+                        this.unblockClient(stream_key, socket, stream_key_start_value, false);
                     }, timer);
                     /// block the client till the timeout. if new data arives unblock it. if no new data arrives then unblock it and give null array/
                     if (this.blockedClients[stream_key]) {
@@ -177,7 +178,6 @@ class MasterServer {
 
     handleStreams(args) {
         const stream_key = args[1];
-
         const stream_key_value = args[2];
         const streamObject = {}
         for (let i = 1; i < args.length; i += 2) {
@@ -188,7 +188,7 @@ class MasterServer {
             return Encoder.generateBulkString(stream_key_value);
         if (this.blockedClients[stream_key]) {
             this.blockedClients[stream_key].forEach((ele) => {
-                this.unblockClient(stream_key, ele.socket, stream_key_value, true, true);
+                this.unblockClient(stream_key, ele.socket, stream_key_value, true);
             })
         }
 
