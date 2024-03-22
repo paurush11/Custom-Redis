@@ -75,6 +75,16 @@ class RDBFileParser {
         return string;
     }
 
+    readDataBaseSelector() {
+        const dbNumber = this.readLength();  // Read the database number
+        console.log(`Database number: ${dbNumber}`);
+    }
+
+    readResizedb() {
+        const hashtableSize = this.readLength();
+        const expiresSize = this.readLength();
+        console.log(`Hashtable size: ${hashtableSize}, Expires size: ${expiresSize}`);
+    }
     parse() {
         /// Here after reading magic number and version
 
@@ -95,8 +105,10 @@ class RDBFileParser {
                     console.log(key, value)
                     break;
                 case 0xFE:
+                    this.readDatabaseSelector();
                     break;
                 case 0xFB:
+                    this.readResizedb();
                     break;
                 case 0xFD:
                     break;
@@ -111,8 +123,6 @@ class RDBFileParser {
     }
 
     readKeyValuePair() {
-        const data = this.buffer.toString('binary', this.cursor, this.cursor + 2);
-        console.log(data);
         this.parse()
 
 
