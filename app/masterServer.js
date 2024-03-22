@@ -105,7 +105,7 @@ class MasterServer {
                 break;
             case "CONFIG":
                 socket.write(this.handleRdbConfiguration(args))
-
+                break;
         }
     }
 
