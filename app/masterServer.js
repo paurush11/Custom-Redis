@@ -110,6 +110,7 @@ class MasterServer {
     }
 
     handleRdbConfiguration(args) {
+        console.log(args)
         if (args[1] === "GET") {
             if (args[2] === 'dir')
                 return Encoder.generateBulkArray(['dir', this.rdbFileDir])

@@ -58,7 +58,6 @@ class SlaveServer {
 
         socket.on("data", (data) => {
             let masterResponse = data.toString();
-
             if (this.handShakeStep === 1) {
                 if (masterResponse !== Encoder.generateSimpleString('PONG')) return;
                 this.handShakeStep += 1;
