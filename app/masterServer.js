@@ -262,7 +262,7 @@ class MasterServer {
     }
     handleGet(args) {
         if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
-            const keyValPair = this.rdbFileParser.readKeyValuePair();
+            const keyValPair = this.rdbFileParser.dataStore
             const value = keyValPair[args[1]];
             if (!value) {
                 return Encoder.generateBulkString(this.dataStore.get(args[1]));
