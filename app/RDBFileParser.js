@@ -117,6 +117,16 @@ class RDBFileParser {
 
     }
     readKeyWithExpireTimeMS() {
+        const eightByteInt = this.read8Bytes();
+        const key = this.readStringEncoding();
+        const value = this.readStringEncoding();
+        console.log({ key, value })
+        // const valueType = this.readValueType();
+        // if (valueType === "STRING") {
+        //     const key = this.readStringEncoding();
+        //     const value = this.readStringEncoding();
+        //     console.log({ key, value })
+        // }
 
     }
     readResizedb() {
