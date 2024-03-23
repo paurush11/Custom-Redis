@@ -3,7 +3,7 @@ const { dataStore } = require("./dataStore");
 const { createUid } = require("./Utils/sendMessages");
 const { RequestParser } = require("./requestParser");
 const { Encoder } = require("./Utils/encoder");
-const RDBFileParser = require("./RDBFileParser");
+const { RDBFileParser } = require("./RDBFileParser");
 const path = require("path");
 
 class MasterServer {
@@ -26,7 +26,7 @@ class MasterServer {
         if (this.rdbFileDir !== '' && this.rdbFileName !== '') {
             const rdbFilePath = path.join(this.rdbFileDir, this.rdbFileName);
             this.rdbFileParser = new RDBFileParser(rdbFilePath)
-            
+            this.rdbFileParser.parse()
             // this.rdbFileParser.parse()
             // this.dataStore = this.rdbFileParser.dataStore;
         }
