@@ -137,10 +137,11 @@ class RDBFileParser {
         return;
     }
     parse() {
-
+        if (!this.buffer) return
         this.parseHeader();
         console.log(this.magicString)
         console.log(this.version)
+
         /// Here after reading magic number and version
         while (this.cursor < this.buffer.length) {
             const opcode = this.readByte()
