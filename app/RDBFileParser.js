@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { dataStore } = require('./dataStore');
+const { inspect } = require('util');
 
 class RDBFileParser {
     constructor(filePath) {
@@ -14,9 +15,8 @@ class RDBFileParser {
     readFile() {
         if (fs.existsSync(this.filePath))
             this.buffer = fs.readFileSync(this.filePath);
-        // else this.buffer = RDB_File_Binary
+        else this.buffer = RDB_File_Binary
     }
-
     parseHeader() {
         if (this.cursor !== 0) {
             this.cursor = 0;
@@ -32,8 +32,15 @@ class RDBFileParser {
         this.magicString = magicString;
         this.version = version;
     }
-
-
+    readValueType() {
+        const value = this.readByte();
+        switch (value) {
+            case 0:
+                return "STRING"
+            case 1:
+                return "LIST";
+        }
+    }
     readStringEncoding() {
         let { type, value } = this.readLengthEncoding();
         if (type === 'length') {
@@ -49,20 +56,18 @@ class RDBFileParser {
         else if (value === 2) {
             return `${this.read4Bytes()}`;
         }
+        throw new Error('Error while reading string encoding');
     }
-
     readLengthEncoding() {
-        let firstByte = this.readCurrByte();
-        firstByte = firstByte >> 6;
-
+        let firstByte = this.readByte();
         let value = firstByte;
         let type = "length"
-        switch (firstByte) {
+        switch (firstByte >> 6) {
             case 0b00:
                 value = (firstByte & 0b00111111)
                 break;
             case 0b01:
-                let secondByte = this.readCurrByte();
+                let secondByte = this.readByte();
                 value = ((firstByte & 0b00111111) << 8) | secondByte;
                 break;
             case 0b10:
@@ -77,62 +82,91 @@ class RDBFileParser {
         return { value, type }
 
     }
-
-
-
-
-
-    OPCodes = {
-        AUX: 0xFA,
-        RESIZEDB: 0xFB,
-        EXPIRETIMEMS: 0xFC,
-        EXPIRETIME: 0xFD,
-        SELECTDB: 0xFE,
-        EOF: 0xFF
+    readStringOfLen(length) {
+        const value = this.buffer.toString('utf-8', this.cursor, this.cursor + length);
+        this.cursor += length;
+        return value
+    }
+    readByte() {
+        return this.buffer[this.cursor++];
+    }
+    read2Bytes() {
+        const value = this.buffer.readInt16LE(this.cursor);
+        this.cursor += 2;
+        return value;
+    }
+    read4Bytes() {
+        const value = this.buffer.readInt32LE(this.cursor);
+        this.cursor += 4;
+        return value;
+    }
+    read8Bytes() {
+        const value = this.buffer.readInt64LE(this.cursor);
+        this.cursor += 8;
+        return value;
     }
 
     readKeyWithExpireTime() {
+        const fourByteInt = this.read4Bytes();
+        const valueType = this.readValueType();
+        if (valueType === "STRING") {
+            const key = this.readStringEncoding();
+            const value = this.readStringEncoding();
+            console.log({ key, value })
+        }
 
     }
     readKeyWithExpireTimeMS() {
 
     }
     readResizedb() {
-
+        const hashTableLength = this.readLengthEncoding();
+        const expiredHashTableLength = this.readLengthEncoding();
+        console.log('hashTableLength' + hashTableLength.value)
+        console.log('expiredHashTableLength' + expiredHashTableLength.value)
+        return
     }
     readAux() {
-
+        const key = this.readStringEncoding();
+        const value = this.readStringEncoding();
+        console.log({ key, value })
+    }
+    readDatabaseSelector() {
+        const databaseValue = this.readLengthEncoding();
+        console.log('databaseValue' + databaseValue.value)
+        return;
     }
     parse() {
-        console.log(JSON.stringify(this.buffer))
-        this.parseHeader();
-        /// Here after reading magic number and version
 
-        // while (this.cursor < this.buffer.length) {
-        //     const opcode = this.readOPcode();
-        //     switch (opcode) {
-        //         case 0xFA:
-        //             this.readAux();
-        //             break;
-        //         case 0xFE:
-        //             this.readDatabaseSelector();
-        //             break;
-        //         case 0xFB:
-        //             this.readResizedb();
-        //             break;
-        //         case 0xFD:
-        //             this.readKeyWithExpireTime()
-        //             break;
-        //         case 0xFC:
-        //             this.readKeyWithExpireTimeMS()
-        //             break;
-        //         case 0xFF:
-        //             this.readEOF()
-        //             break;
-        //         default:
-        //             this.readKeyWithoutExpiry();
-        //     }
-        // }
+        this.parseHeader();
+        console.log(this.magicString)
+        console.log(this.version)
+        /// Here after reading magic number and version
+        while (this.cursor < this.buffer.length) {
+            const opcode = this.readByte()
+            switch (opcode) {
+                case 0xFA: //250
+                    this.readAux();
+                    break;
+                case 0xFE://254
+                    this.readDatabaseSelector();
+                    break;
+                case 0xFB://251
+                    this.readResizedb();
+                    break;
+                case 0xFD://253
+                    this.readKeyWithExpireTime()
+                    break;
+                case 0xFC://252
+                    this.readKeyWithExpireTimeMS()
+                    break;
+                case 0xFF://255
+                    this.readEOF()
+                    return;
+                default:
+                    this.readKeyWithoutExpiry();
+            }
+        }
         return
     }
 
@@ -141,10 +175,11 @@ class RDBFileParser {
         console.log(`Read EOF`);
     }
 
-    readKeyWithoutExpiry(valueType) {
-        // let key = this.readStringEncoding();
-        // let value = this.readValue(valueType);
-        // this.dataStore.insert(key, value);
+    readKeyWithoutExpiry() {
+        const key = this.readStringEncoding();
+        const value = this.readStringEncoding();
+        console.log({ key, value })
+        this.dataStore.insert(key, value);
     }
 }
 
@@ -153,8 +188,8 @@ module.exports = {
     RDBFileParser
 }
 
-const emptyRDBFileHex = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2"
-const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
+// const emptyRDBFileHex = "524544495330303033fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fe00fb010000056d616e676f09726173706265727279ff3859b950a54617570a"
+// const RDB_File_Binary = Buffer.from(emptyRDBFileHex, "hex");
 
 
 // const parser = new RDBFileParser('');
