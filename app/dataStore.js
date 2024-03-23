@@ -27,7 +27,8 @@ class dataStore {
 
     get(key) {
         const value = this.map.get(key);
-        if (value.timeStamp) {
+
+        if (value?.timeStamp) {
             if (Date.now() < value.timeStamp) {
                 return value;
             } else {
