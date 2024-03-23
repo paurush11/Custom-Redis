@@ -1,119 +1,43 @@
-const { dataStore } = require("./dataStore");
+const fs = require('fs')
 
 class RDBFileParser {
-
-    static CONSTANTS = {
-        MAGIC_REDIS_STRING: 5,
-        RDB_VERSION: 4
-    };
-
-    static OPCodes = {
-        AUX: 0xFA,
-        RESIZEDB: 0xFB,
-        EXPIRETIMEMS: 0xFC,
-        EXPIRETIME: 0xFD,
-        SELECTDB: 0xFE,
-        EOF: 0xFF
-    }
-
-    constructor(buffer) {
-        this.buffer = buffer;
+    constructor(filePath) {
+        this.filePath = filePath;
         this.cursor = 0;
-        this.dataStore = new dataStore();
-        this.auxData = {};
+        this.buffer = null;
+        this.magicString = '';
+        this.version = 0;
+        this.readFile();
+        this.dataStore = new HashTable();
+    }
+    readFile() {
+        if (fs.existsSync(this.filePath))
+            this.buffer = fs.readFileSync(this.filePath);
     }
 
-    parse() {
-        let redisMagicString = this.readStringOfLen(RDBFileParser.CONSTANTS.MAGIC_REDIS_STRING);
-        let rdbVersion = this.readStringOfLen(RDBFileParser.CONSTANTS.RDB_VERSION);
-        console.log(opCode)
-        console.log(this.cursor)
-        while (true) {
-            const opCode = this.readByte();
-            switch (opCode) {
-                case RDBFileParser.OPCodes.AUX:
-                    this.readAUX();
-                    break;
-
-                case RDBFileParser.OPCodes.RESIZEDB:
-                    this.readResizeDB();
-                    break;
-
-                case RDBFileParser.OPCodes.EXPIRETIMEMS:
-                    this.readExpireTimeMS();
-                    break;
-
-                case RDBFileParser.OPCodes.EXPIRETIME:
-                    this.readExpireTime();
-                    break;
-
-                case RDBFileParser.OPCodes.SELECTDB:
-                    this.readSelectDB();
-                    break;
-
-                case RDBFileParser.OPCodes.EOF:
-                    this.readEOF();
-                    return;
-                default:
-                    this.readKeyWithoutExpiry(opCode);
-                    break;
-            }
+    parseHeader() {
+        if (this.cursor !== 0) {
+            this.cursor = 0;
         }
+        if (!this.buffer) {
+            return;
+        }
+        const magicString = this.buffer.toString('utf-8', this.cursor, this.cursor + 5);
+        this.cursor += 5
+        const version = parseInt(this.buffer.toString('utf-8', this.cursor, this.cursor + 4), 10);
+        this.cursor += 4
 
+        this.magicString = magicString;
+        this.version = version;
     }
 
-    readAUX() {
-        let key = this.readStringEncoding();
-        let value = this.readStringEncoding();
-        this.auxData[key] = value;
-    }
-
-    readResizeDB() {
-        let hashTableSize = this.readLengthEncoding().value;
-        let expireHashTableSize = this.readLengthEncoding().value;
-    }
-
-    readExpireTimeMS() {
-        let timestamp = this.read8Bytes();
-        let valueType = this.readValueType();
-        let key = this.readStringEncoding();
-        let value = this.readValue(valueType);
-
-        this.dataStore.insertWithExp(key, value, timestamp);
-    }
-
-    readExpireTime() {
-        let timestamp = this.read4Bytes() * 1000;
-        let valueType = this.readValueType();
-        let key = this.readStringEncoding();
-        let value = this.readValue(valueType);
-
-        this.dataStore.insertWithExp(key, value, timestamp);
-
-    }
-
-    readSelectDB() {
-        let { type, value } = this.readLengthEncoding();
-    }
-
-    readEOF() {
-        console.log(`Read EOF`);
-    }
-
-    readKeyWithoutExpiry(valueType) {
-        let key = this.readStringEncoding();
-        let value = this.readValue(valueType);
-        this.dataStore.insert(key, value);
-    }
 
     readStringEncoding() {
         let { type, value } = this.readLengthEncoding();
-
         if (type === 'length') {
             let length = value;
             return this.readStringOfLen(length);
         }
-
         if (value === 0) {
             return `${this.readByte()}`;
         }
@@ -123,75 +47,107 @@ class RDBFileParser {
         else if (value === 2) {
             return `${this.read4Bytes()}`;
         }
-
-        throw new Error('Error while reading string encoding');
     }
 
     readLengthEncoding() {
-        let firstByte = this.readByte();
-        let twoBits = firstByte >> 6;
+        let firstByte = this.readCurrByte();
+        firstByte = firstByte >> 6;
 
-        let value = 0;
-        let type = 'length';
-        if (twoBits === 0b00) {
-            value = firstByte & 0b00111111;
+        let value = firstByte;
+        let type = "length"
+        switch (firstByte) {
+            case 0b00:
+                value = (firstByte & 0b00111111)
+                break;
+            case 0b01:
+                let secondByte = this.readCurrByte();
+                value = ((firstByte & 0b00111111) << 8) | secondByte;
+                break;
+            case 0b10:
+                value = this.read4Bytes();
+                break;
+            case 0b11:
+                type = 'format';
+                value = firstByte & 0b00111111;
+                break;
         }
-        else if (twoBits === 0b01) {
-            let secondByte = this.readByte();
-            value = ((firstByte & 0b00111111) << 8) | (secondByte);
+
+        return { value, type }
+
+    }
+
+
+
+
+
+    OPCodes = {
+        AUX: 0xFA,
+        RESIZEDB: 0xFB,
+        EXPIRETIMEMS: 0xFC,
+        EXPIRETIME: 0xFD,
+        SELECTDB: 0xFE,
+        EOF: 0xFF
+    }
+
+    readKeyWithExpireTime() {
+
+    }
+    readKeyWithExpireTimeMS() {
+
+    }
+    readResizedb() {
+
+    }
+    readAux() {
+
+    }
+    parse() {
+        console.log(JSON.stringify(this.buffer))
+        this.parseHeader();
+        /// Here after reading magic number and version
+
+        while (this.cursor < this.buffer.length) {
+            const opcode = this.readOPcode();
+            switch (opcode) {
+                case 0xFA:
+                    this.readAux();
+                    break;
+                case 0xFE:
+                    this.readDatabaseSelector();
+                    break;
+                case 0xFB:
+                    this.readResizedb();
+                    break;
+                case 0xFD:
+                    this.readKeyWithExpireTime()
+                    break;
+                case 0xFC:
+                    this.readKeyWithExpireTimeMS()
+                    break;
+                case 0xFF:
+                    this.readEOF()
+                    break;
+                default:
+                    this.readKeyWithoutExpiry();
+            }
         }
-        else if (twoBits === 0b10) {
-            value = this.read4Bytes();
-        }
-        else if (twoBits === 0b11) {
-            type = 'format';
-            value = firstByte & 0b00111111;
-        }
-        else {
-            throw new Error(`Error while reading length encoding, got first byte as : ${firstByte}`);
-        }
-        return { type, value };
+        return
     }
 
-    readValueType() {
-        return this.readByte();
+
+    readEOF() {
+        console.log(`Read EOF`);
     }
 
-    readValue(valueType) {
-        if (valueType == 0) {
-            return this.readStringEncoding();
-        }
-        console.log(valueType)
-        throw new Error(`Value Type not handled: ${valueType}`);
-    }
-
-    readByte() {
-        return this.buffer[this.cursor++];
-    }
-
-    read2Bytes() {
-        let bytes = this.buffer.readUInt16LE(this.cursor);
-        this.cursor += 2;
-        return bytes;
-    }
-
-    read4Bytes() {
-        let bytes = this.buffer.readUInt32LE(this.cursor);
-        this.cursor += 4;
-        return bytes;
-    }
-
-    read8Bytes() {
-        let bytes = +this.buffer.readBigUint64LE(this.cursor);
-        this.cursor += 8;
-        return bytes;
-    }
-
-    readStringOfLen(len) {
-        let string = String.fromCharCode(...(this.buffer.toString('binary', this.cursor, this.cursor + len)));
-        this.cursor += len;
-        return string;
+    readKeyWithoutExpiry(valueType) {
+        // let key = this.readStringEncoding();
+        // let value = this.readValue(valueType);
+        // this.dataStore.insert(key, value);
     }
 }
 
-module.exports = RDBFileParser;
+
+module.exports = {
+    RDBFileParser
+}
+
