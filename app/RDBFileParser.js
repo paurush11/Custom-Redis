@@ -124,7 +124,7 @@ class RDBFileParser {
             const key = this.readStringEncoding();
             const value = this.readStringEncoding();
             console.log({ key, value })
-            this.dataStore.insertWithExp(key, value, eightByteInt);
+            this.dataStore.insertWithExp(key, value, Number(eightByteInt));
         }
 
 
