@@ -26,7 +26,8 @@ class RDBFileParser {
     parse() {
         let redisMagicString = this.readStringOfLen(RDBFileParser.CONSTANTS.MAGIC_REDIS_STRING);
         let rdbVersion = this.readStringOfLen(RDBFileParser.CONSTANTS.RDB_VERSION);
-
+        console.log(opCode)
+        console.log(this.cursor)
         while (true) {
             const opCode = this.readByte();
             switch (opCode) {
