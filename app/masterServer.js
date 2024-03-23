@@ -267,6 +267,7 @@ class MasterServer {
             if (!value) {
                 return Encoder.generateBulkString(this.dataStore.get(args[1]));
             }
+            console.log(value)
             return Encoder.generateBulkString(value);
         }
         return Encoder.generateBulkString(this.dataStore.get(args[1]));

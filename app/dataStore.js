@@ -32,7 +32,7 @@ class dataStore {
             if (Date.now() < value.timeStamp) {
                 return value;
             } else {
-                return undefined;
+                return "ERROR";
             }
         }
 
