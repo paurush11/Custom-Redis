@@ -108,31 +108,31 @@ class RDBFileParser {
         this.parseHeader();
         /// Here after reading magic number and version
 
-        while (this.cursor < this.buffer.length) {
-            const opcode = this.readOPcode();
-            switch (opcode) {
-                case 0xFA:
-                    this.readAux();
-                    break;
-                case 0xFE:
-                    this.readDatabaseSelector();
-                    break;
-                case 0xFB:
-                    this.readResizedb();
-                    break;
-                case 0xFD:
-                    this.readKeyWithExpireTime()
-                    break;
-                case 0xFC:
-                    this.readKeyWithExpireTimeMS()
-                    break;
-                case 0xFF:
-                    this.readEOF()
-                    break;
-                default:
-                    this.readKeyWithoutExpiry();
-            }
-        }
+        // while (this.cursor < this.buffer.length) {
+        //     const opcode = this.readOPcode();
+        //     switch (opcode) {
+        //         case 0xFA:
+        //             this.readAux();
+        //             break;
+        //         case 0xFE:
+        //             this.readDatabaseSelector();
+        //             break;
+        //         case 0xFB:
+        //             this.readResizedb();
+        //             break;
+        //         case 0xFD:
+        //             this.readKeyWithExpireTime()
+        //             break;
+        //         case 0xFC:
+        //             this.readKeyWithExpireTimeMS()
+        //             break;
+        //         case 0xFF:
+        //             this.readEOF()
+        //             break;
+        //         default:
+        //             this.readKeyWithoutExpiry();
+        //     }
+        // }
         return
     }
 
