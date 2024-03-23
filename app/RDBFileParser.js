@@ -160,6 +160,7 @@ class RDBFileParser {
         if (valueType == 0) {
             return this.readStringEncoding();
         }
+        console.log(valueType)
         throw new Error(`Value Type not handled: ${valueType}`);
     }
 
