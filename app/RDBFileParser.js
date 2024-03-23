@@ -156,9 +156,11 @@ class RDBFileParser {
                     this.readResizedb();
                     break;
                 case 0xFD://253
+                    console.log("here")
                     this.readKeyWithExpireTime()
                     break;
                 case 0xFC://252
+                    console.log("here in ms")
                     this.readKeyWithExpireTimeMS()
                     break;
                 case 0xFF://255
