@@ -32,10 +32,11 @@ class dataStore {
             if (Date.now() < value.timeStamp) {
                 return value;
             } else {
-                return "ERROR"
+                return undefined;
             }
         }
-        return value
+
+        return value;
     }
 
     type(key) {
