@@ -127,9 +127,7 @@ class MasterServer {
 
     handleRdbKeysRead(args) {
         if (args[1] === "*") {
-            const keyValPair = this.rdbFileParser.dataStore
-            console.log(keyValPair)
-            const keys = Object.keys(keyValPair);
+            const keys = this.rdbFileParser.dataStore.allKeys()
             return Encoder.generateBulkArray(keys);
         }
     }

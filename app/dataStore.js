@@ -7,6 +7,10 @@ class dataStore {
         this.streamTimeStamps = {}; /// make it a map
     }
 
+    allKeys() {
+        return this.map.keys;
+    }
+
     insert(key, value) {
         this.map.set(key, value);
     }
@@ -97,7 +101,7 @@ class dataStore {
 
 
         }
-        
+
         let new_stream_key = [newMillisecondsTime, newSequenceNumber].join("-")
         if (this.streamTimeStamps[key]) {
             this.streamTimeStamps[key].push(new_stream_key);
