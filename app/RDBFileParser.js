@@ -118,6 +118,7 @@ class RDBFileParser {
     }
     readKeyWithExpireTimeMS() {
         const eightByteInt = this.read8Bytes();
+        console.log(eightByteInt);
         const valueType = this.readValueType();
         if (valueType === "STRING") {
             const key = this.readStringEncoding();
