@@ -14,7 +14,7 @@ class RDBFileParser {
     readFile() {
         if (fs.existsSync(this.filePath))
             this.buffer = fs.readFileSync(this.filePath);
-        else this.buffer = RDB_File_Binary
+        // else this.buffer = RDB_File_Binary
     }
 
     parseHeader() {
