@@ -30,7 +30,7 @@ class dataStore {
 
         if (value?.timeStamp) {
             if (Date.now() < value.timeStamp) {
-                return value;
+                return value.value;
             } else {
                 return "ERROR";
             }
