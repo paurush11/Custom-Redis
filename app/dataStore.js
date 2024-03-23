@@ -8,7 +8,7 @@ class dataStore {
     }
 
     allKeys() {
-        return this.map.keys();
+        return Array.from(this.map.keys());
     }
 
     insert(key, value) {
