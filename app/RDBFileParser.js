@@ -101,7 +101,7 @@ class RDBFileParser {
         return value;
     }
     read8Bytes() {
-        const value = this.buffer.readBigInt64LE(this.cursor);
+        const value = this.buffer.readBigUInt64LE(this.cursor);
         this.cursor += 8;
         return value;
     }
@@ -124,10 +124,8 @@ class RDBFileParser {
             const key = this.readStringEncoding();
             const value = this.readStringEncoding();
             console.log({ key, value })
-            this.dataStore.insertWithExp(key, value, Number(eightByteInt));
+            this.dataStore.insertTimeStamp(key, value, eightByteInt);
         }
-
-
     }
     readResizedb() {
         const hashTableLength = this.readLengthEncoding();

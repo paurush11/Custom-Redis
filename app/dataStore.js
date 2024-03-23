@@ -14,6 +14,9 @@ class dataStore {
     insert(key, value) {
         this.map.set(key, value);
     }
+    insertTimeStamp(key, value, time) {
+        this.map.set(key, { value, timeStamp: time });
+    }
 
     insertWithExp(key, value, expiration) {
         this.map.set(key, value);
@@ -23,7 +26,15 @@ class dataStore {
     }
 
     get(key) {
-        return this.map.get(key);
+        const value = this.map.get(key);
+        if (value.timeStamp) {
+            if (Date.now() < value.timeStamp) {
+                return value;
+            } else {
+                return "ERROR"
+            }
+        }
+        return value
     }
 
     type(key) {
