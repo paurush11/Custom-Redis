@@ -101,7 +101,7 @@ class RDBFileParser {
         return value;
     }
     read8Bytes() {
-        const value = this.buffer.readInt64LE(this.cursor);
+        const value = this.buffer.readBigUInt64LE(this.cursor);
         this.cursor += 8;
         return value;
     }
